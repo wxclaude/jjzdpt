@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>综合指挥质效平台-巡检情况</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		 .select {
+			border: 1px solid rgba(48, 43, 43, 0.3);
+			/*内容居中显示*/
+			/* text-align: center; */
+			text-align-last: center;
+			/* 去掉select自带的样式 */
+			appearance: none;
+			/* IE */
+			-webkit-appearance: none;
+			/* google */
+			-moz-appearance: none;
+			/* firefox */
+			/* 手势样式 */
+			cursor: pointer;
+			font-size: 16px;
+		
+		    }
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList"><a :href="k.url">{{k.modelName}}</a></dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 40px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>巡检情况</legend>
+	     </fieldset>  
+		<div class="layui-container">
+			<div class="layui-row">
+				<!-- <div class="layui-col-lg2">
+					<span style="font-size: 18px;">查询单位</span>
+				</div> -->
+				<div class="layui-col-lg12">
+					<div class="layui-form">
+					  <div class="layui-inline">
+					        <label class="layui-form-label" style="width: auto;">请选择单位</label>
+					        <div class="layui-input-inline">
+					          <select name="danwei" lay-verify="required" id="danwei" lay-filter="change">
+									  <!-- <option value="">请选择</option> -->
+					                  <option value="0">指挥中心</option>
+									  <option value="1">派出所自建</option>
+					                  <option value="2">交警大队</option>
+					                  <option value="3">教育监控</option>
+					                  <option value="4">小区监控</option>
+									  <option value="5">内部监控</option>
+									  <option value="6">其他单位</option>
+					           </select>
+					        </div>
+					      </div>
+					      <div class="layui-inline">
+					        <label class="layui-form-label" style="width: auto;">请选择时间</label>
+					        <div class="layui-input-inline">
+								<input type="text" class="layui-input" id="time1" autocomplete="off" lay-verify="required">
+					        </div>
+					      </div>
+						  <div class="layui-inline">
+							  <button class="layui-btn" style="margin-left: 10px;" id="cx" lay-filter="cx" lay-submit="">查询</button>
+							  <a href="peizhi.html" class="layui-btn" style="margin-left: 10px;" id="peizhi" lay-filter="peizhi" >巡检项目配置</a>
+							   <a href="duibi.html" class="layui-btn" style="margin-left: 10px;" id="shaixuan" lay-filter="shaixuan" >查看差异监控</a>
+						  </div>
+						 
+					</div>
+				</div>
+			</div>
+			<div class="layui-row">
+					<div class="layui-col-lg2" style="padding: 10px;">
+						 <div class="layui-form-item">
+						  <div style="margin-bottom: 10px;">最近巡检时间</div>
+						 <!-- <select id="zjsc" multiple="multiple" class="select" style="width:155px;height: 202px;"></select> -->
+						 <ul class="flow-default layui-btn-container"  id="allGoods"></ul>
+						</div>
+					</div>	
+				<div class="layui-col-lg10">
+					<table class="layui-hide" id="videodetail" lay-filter="demo"></table>
+				</div>
+			</div>
+			
+			
+		</div>  
+		  
+		
+	
+	</div>
+	
+	<div class="zhibantable" style="margin-bottom: 150px;" id="singlBox">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+			<legend id="singTime"></legend>
+	    </fieldset>  
+		<div class="demoTable" style="display: none;">
+		  点位名称搜索：
+		  <div class="layui-inline">
+		    <input class="layui-input"  autocomplete="off" id="searchName">
+			<input type="text" id="hetongconfigid" hidden="hidden">
+		  </div>
+		  <button class="layui-btn" id="hetongsearch">搜索</button>
+		</div>
+		<table class="layui-hide" id="singldetail" lay-filter="singldetail"></table>
+	</div>
+	
+	
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+
+
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	var laydate = layui.laydate;
+	var flow = layui.flow;
+	  //执行一个laydate实例
+	  laydate.render({
+	    elem: '#time1' //指定元素
+	  });
+	
+	// 开启自动渲染
+	// randerzhihui(0,0);
+	// 获取最近一次巡检结果默任为指挥中心
+	$.get(baseUrl+"/video/queryLastVideoDateByType?type=0",function(res){
+		var resTime = res.data[0];
+		$("#time1").val(resTime);
+		randerzhihui(resTime,0);
+		$.get(baseUrl+"/video/queryLastVideoDateByType?type=0",function(data){
+			$("#zjsc").empty();
+			for(var k in data.data){
+				// console.log(k)
+				if(resTime==data.data[k]){
+					$("#zjsc").append("<option selected value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+				}else{
+					$("#zjsc").append("<option value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+				}
+			}
+		})
+	})
+	
+	flow.load({
+	      elem: '#allGoods' //指定列表容器
+	      ,done: function(page, next){ //到达临界点（默认滚动触发），触发下一页
+	        var lis = [];
+	        //以jQuery的Ajax请求为例，请求下一页数据
+	        $.get('/allGoods/?page='+page, function(res){
+	                layui.each(res.data, function(index, item){
+	                  lis.push('<a href="/curExam/'+item.id+'"><li class="layui-btn" data-id="'+item.id+'">'+ item.name +'</li></a>');
+	                }); 
+	                
+	                //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+	                //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+	                next(lis.join(''), page < res.last_page);
+	        });
+	      }
+	  });
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// 选择显示默认值
+	form.on('select(change)',function(data){
+		console.log(data.value);
+		if(data.value==0){
+			$.get(baseUrl+"/video/queryLastVideoDateByType?type=0",function(res){
+				$("#time1").val(res.data[0]);
+				randerzhihui(res.data[0],0);
+				// 默认关闭数据
+				randertotal(1,2,3,1);
+				$("#singTime").html("暂无数据");
+				// 刷新选中框中的值
+				$.get(baseUrl+"/video/queryLastVideoDateByType?type=0",function(data){
+					$("#zjsc").empty();
+					for(var k in data.data){
+						// console.log(k)
+						if(res.data[0]==data.data[k]){
+							$("#zjsc").append("<option selected value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}else{
+							$("#zjsc").append("<option value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}
+					}
+				})
+			})
+		}else if(data.value==1){
+			$.get(baseUrl+"/video/queryLastVideoDateByType?type=1",function(res){
+				$("#time1").val(res.data[0]);
+				randerzijian(res.data[0],1);
+				// 默认关闭数据
+				randertotal(1,2,3,1);
+				$("#singTime").html("暂无数据");
+				$.get(baseUrl+"/video/queryLastVideoDateByType?type=1",function(data){
+					$("#zjsc").empty();
+					for(var k in data.data){
+						// console.log(k)
+						if(res.data[0]==data.data[k]){
+							$("#zjsc").append("<option selected value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}else{
+							$("#zjsc").append("<option value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}
+					}
+				})
+			})
+		}else if(data.value==2){
+			$.get(baseUrl+"/video/queryLastVideoDateByType?type=2",function(res){
+				$("#time1").val(res.data[0]);
+				randerjiaojin(res.data[0],2);
+				// 默认关闭数据
+				randertotal(1,2,3,1);
+				$("#singTime").html("暂无数据");
+				$.get(baseUrl+"/video/queryLastVideoDateByType?type=2",function(data){
+					$("#zjsc").empty();
+					for(var k in data.data){
+						// console.log(k)
+						if(res.data[0]==data.data[k]){
+							$("#zjsc").append("<option selected value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}else{
+							$("#zjsc").append("<option value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}
+					}
+				})
+			})
+		}else if(data.value==3){
+			$.get(baseUrl+"/video/queryLastVideoDateByType?type=3",function(res){
+				$("#time1").val(res.data[0]);
+				randerjiaoyu(res.data[0],3);
+				// 默认关闭数据
+				randertotal(1,2,3,1);
+				$("#singTime").html("暂无数据");
+				$.get(baseUrl+"/video/queryLastVideoDateByType?type=3",function(data){
+					$("#zjsc").empty();
+					for(var k in data.data){
+						// console.log(k)
+						if(res.data[0]==data.data[k]){
+							$("#zjsc").append("<option selected value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}else{
+							$("#zjsc").append("<option value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}
+					}
+				})
+			})
+		}else if(data.value==4){
+			$.get(baseUrl+"/video/queryLastVideoDateByType?type=4",function(res){
+				$("#time1").val(res.data[0]);
+				randerxiaoqu(res.data[0],4);
+				// 默认关闭数据
+				randertotal(1,2,3,1);
+				$("#singTime").html("暂无数据");
+				$.get(baseUrl+"/video/queryLastVideoDateByType?type=4",function(data){
+					$("#zjsc").empty();
+					for(var k in data.data){
+						// console.log(k)
+						if(res.data[0]==data.data[k]){
+							$("#zjsc").append("<option selected value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}else{
+							$("#zjsc").append("<option value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}
+					}
+				})
+			})
+		}else if(data.value==5){
+			$.get(baseUrl+"/video/queryLastVideoDateByType?type=5",function(res){
+				$("#time1").val(res.data[0]);
+				randerneibu(res.data[0],5);
+				// 默认关闭数据
+				randertotal(1,2,3,1);
+				$("#singTime").html("暂无数据");
+				$.get(baseUrl+"/video/queryLastVideoDateByType?type=5",function(data){
+					$("#zjsc").empty();
+					for(var k in data.data){
+						// console.log(k)
+						if(res.data[0]==data.data[k]){
+							$("#zjsc").append("<option selected value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}else{
+							$("#zjsc").append("<option value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}
+					}
+				})
+			})
+		}else if(data.value==6){
+			$.get(baseUrl+"/video/queryLastVideoDateByType?type=6",function(res){
+				$("#time1").val(res.data[0]);
+				randerqita(res.data[0],6);
+				// 默认关闭数据
+				randertotal(1,2,3,1);
+				$("#singTime").html("暂无数据");
+				$.get(baseUrl+"/video/queryLastVideoDateByType?type=6",function(data){
+					$("#zjsc").empty();
+					for(var k in data.data){
+						// console.log(k)
+						if(res.data[0]==data.data[k]){
+							$("#zjsc").append("<option selected value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}else{
+							$("#zjsc").append("<option value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+						}
+					}
+				})
+			})
+		}
+		
+	});
+	
+	
+	
+	
+	
+	// 监听提交事件
+	form.on('submit(cx)', function(data){
+			var danwei = $("#danwei").val();
+			var time1 = $("#time1").val();
+			randertotal(1,2,3,1);
+			$("#singTime").html("暂无数据");
+			if(danwei == 0){
+				randerzhihui(time1,danwei);
+				$("#zjsc option").prop("selected",false);
+				$("#zjsc option").each(function(){
+					if($(this).val()==time1){
+						$(this).prop("selected",true);
+					}
+				})
+			}else if(danwei == 1){
+				randerzijian(time1,danwei);
+				$("#zjsc option").prop("selected",false);
+				$("#zjsc option").each(function(){
+					if($(this).val()==time1){
+						$(this).prop("selected",true);
+						
+					}
+				})
+			}else if(danwei == 2){
+				randerjiaojin(time1,danwei);
+				$("#zjsc option").prop("selected",false);
+				$("#zjsc option").each(function(){
+					if($(this).val()==time1){
+						$(this).prop("selected",true);
+						
+					}
+				})
+			}else if(danwei == 3){
+				randerjiaoyu(time1,danwei);
+				$("#zjsc option").prop("selected",false);
+				$("#zjsc option").each(function(){
+					if($(this).val()==time1){
+						$(this).prop("selected",true);
+						
+					}
+				})
+			}else if(danwei == 4){
+				randerxiaoqu(time1,danwei);
+				$("#zjsc option").prop("selected",false);
+				$("#zjsc option").each(function(){
+					if($(this).val()==time1){
+						$(this).prop("selected",true);
+						
+					}
+				})
+			}else if(danwei == 5){
+				randerneibu(time1,danwei);
+				$("#zjsc option").prop("selected",false);
+				$("#zjsc option").each(function(){
+					if($(this).val()==time1){
+						$(this).prop("selected",true);
+						
+					}
+				})
+			}else if(danwei == 6){
+				randerqita(time1,danwei);
+				$("#zjsc option").prop("selected",false);
+				$("#zjsc option").each(function(){
+					if($(this).val()==time1){
+						$(this).prop("selected",true);
+						
+					}
+				})
+			}
+	  return false;
+	});
+	
+	
+	// 指挥中心
+	function randerzhihui(time,danwei){
+		table.render({
+		  elem: '#videodetail'
+		  ,url:baseUrl+"/video/queryVideoDataByTypeAndDate?date="+time+"&type="+danwei
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'dept',  title: '项目名称',align:"left",event: 'itemDetial',style:'color: #083485;cursor: pointer;'}
+			,{field:'htdws',  title: '合同点位数',align:"center",event: 'hetongDetial',style:'color: #083485;cursor: pointer;'}
+			,{field:'xjdws',  title: '巡检点位数',align:"center"}
+			,{field:'xjdwzxs',  title: '巡检点位在线数',align:"center"}
+			,{field:'xjjks',  title: '巡检监控数',align:"center",event: 'itemAll',style:'color: #083485;cursor: pointer;'}
+			,{field:'xjjkzxs',  title: '巡检监控在线数',align:"center"}
+			,{field:'xjdwgzs',width:100,  title: '故障数',align:"center",event: 'itemFail',style:'color: #083485;cursor: pointer;'}
+		  ]]
+		});
+	}
+	
+	// 自建
+	function randerzijian(time,danwei){
+		table.render({
+		  elem: '#videodetail'
+		  ,url:baseUrl+"/video/queryVideoDataByTypeAndDate?date="+time+"&type="+danwei
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'dept',  title: '单位名称',align:"left",event: 'itemDetial',style:'color: #083485;cursor: pointer;'}
+		    ,{field:'total',  title: '监控总数',align:"center",event: 'zjTotal',style:'color: #083485;cursor: pointer;'}
+			,{field:'zxs',  title: '在线数',align:"center"}
+			,{field:'zxl',  title: '在线率',align:"center",templet:function(d){ return (d.zxl*100).toFixed(0)+"%"}}
+			,{field:'lxs',  title: '故障数',align:"center",event: 'zjFail',style:'color: #083485;cursor: pointer;'}
+		  ]]
+		});
+	}
+	
+	// 交警
+	function randerjiaojin(time,danwei){
+		table.render({
+		  elem: '#videodetail'
+		  ,url:baseUrl+"/video/queryVideoDataByTypeAndDate?date="+time+"&type="+danwei
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'dept',  title:'单位名称',align:"left",event: 'itemDetial',style:'color: #083485;cursor: pointer;'}
+		    ,{field:'total',  title:'监控总数',align:"center",event: 'zjTotal',style:'color: #083485;cursor: pointer;'}
+			,{field:'zxs',  title: '在线数',align:"center"}
+			,{field:'zxl',  title: '在线率',align:"center",templet:function(d){ return (d.zxl*100).toFixed(0)+"%"}}
+			,{field:'lxs',  title: '故障数',align:"center",event: 'zjFail',style:'color: #083485;cursor: pointer;'}
+		  ]]
+		});
+	}
+	
+	// 教育
+	function randerjiaoyu(time,danwei){
+		table.render({
+		  elem: '#videodetail'
+		  ,url:baseUrl+"/video/queryVideoDataByTypeAndDate?date="+time+"&type="+danwei
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'pointName',width:250,  title: '单位名称',align:"left",event: 'itemTel',style:'color: #083485;cursor: pointer;'}
+		    ,{field:'xlzt',  title: '线路状态',align:"center",}
+			,{field:'zjzxsj',  title: '最近在线时间',align:"center",}
+			,{field:'total',  title: '监控接入数',align:"center",}
+			,{field:'zxs',  title: '在线数',align:"center"}
+			,{field:'zxl',  title: '在线率',align:"center",templet:function(d){ return (d.zxl*100).toFixed(0)+"%"}}
+			,{field:'wz',  title: '位置',align:"center",}
+			,{field:'luh',  title: '链路号',align:"center",}
+			,{field:'bz',  title: '备注',align:"center",}
+		  ]]
+		});
+	}
+	
+	// 小区
+	function randerxiaoqu(time,danwei){
+		table.render({
+		  elem: '#videodetail'
+		  ,url:baseUrl+"/video/queryVideoDataByTypeAndDate?date="+time+"&type="+danwei
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'pointName', width:250, title: '单位名称',align:"left",}
+		    ,{field:'xlzt',  title: '线路状态',align:"center",}
+			,{field:'zjzxsj',  title: '最近在线时间',align:"center",}
+			,{field:'total',  title: '监控接入数',align:"center"}
+			,{field:'zxs',  title: '在线数',align:"center"}
+			,{field:'zxl',  title: '在线率',align:"center",templet:function(d){ return (d.zxl*100).toFixed(0)+"%"}}
+			// ,{field:'wz',  title: '位置',align:"center",}
+			,{field:'bz',  title: '备注',align:"center",}
+		  ]]
+		});
+	}
+	
+	// 内部单位
+	function randerneibu(time,danwei){
+		table.render({
+		  elem: '#videodetail'
+		  ,url:baseUrl+"/video/queryVideoDataByTypeAndDate?date="+time+"&type="+danwei
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'pointName',width:250,  title: '单位名称',align:"left",}
+		    ,{field:'xlzt',  title: '线路状态',align:"center",}
+			,{field:'zjzxsj',  title: '最近在线时间',align:"center",}
+			,{field:'total',  title: '监控接入数',align:"center"}
+			,{field:'zxs',  title: '在线数',align:"center"}
+			,{field:'zxl',  title: '在线率',align:"center",templet:function(d){ return (d.zxl*100).toFixed(0)+"%"}}
+			// ,{field:'wz',  title: '位置',align:"center",}
+			,{field:'bz',  title: '备注',align:"center",}
+		  ]]
+		});
+	}
+	
+	// 其他
+	function randerqita(time,danwei){
+		table.render({
+		  elem: '#videodetail'
+		  ,url:baseUrl+"/video/queryVideoDataByTypeAndDate?date="+time+"&type="+danwei
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'pointName',width:160,  title: '单位名称',align:"left",}
+		    ,{field:'xlzt',  title: '线路状态',align:"center",}
+			,{field:'zjzxsj',  title: '最近在线时间',align:"center",}
+			,{field:'total',  title: '监控接入数',align:"center"}
+			,{field:'zxs',  title: '在线数',align:"center"}
+			,{field:'zxl',  title: '在线率',align:"center",templet:function(d){ return (d.zxl*100).toFixed(0)+"%"}}
+			// ,{field:'wz',  title: '位置',align:"center",}
+			,{field:'bz',  title: '备注',align:"center",}
+		  ]]
+		});
+	}
+	
+	
+	
+	
+	
+	// /video/queryNormalVideoDataDetailByConfigId?configId=1&page=1&limit=10&date=2020-04-19
+	
+	
+	// 查看监控总数
+	function randertotal(configId,date){
+		table.render({
+		  elem: '#singldetail'
+		  ,page:true
+		  ,url:baseUrl+"/video/queryNormalVideoDataDetailByConfigId?configId="+configId+"&date="+date
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    // ,{field:'所属单位',  title: '所属单位',align:"center",}
+		    ,{field:'监控点名称',  title: '监控点名称',}
+			,{field:'监控点SN',  title: '监控点SN',align:"left"}
+			,{field:'状态',  title: '状态',align:"center"}
+		
+		  ]]
+		});
+	}
+	
+	
+	// 查看失败监控总数
+	function randerfail(configId,time){
+		table.render({
+		  elem: '#singldetail'
+		  ,page:true
+		  ,url:baseUrl+"/video/queryErrorVideoDataDetailByConfigId?configId="+ configId +"&date="+time
+		  ,toolbar:"#toolbarDemo"
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    // ,{field:'所属单位',  title: '所属单位',align:"center",}
+		    ,{field:'dwmc',  title: '点位名称',width:240,}
+			,{field:'jkzs',  title: '监控总数',align:"center",width:90}
+			,{field:'gzjks',  title: '故障监控数',align:"center",width:110}
+			,{field:'gztc',  title: '故障推测',align:"center",}
+			,{field:'zjsxsj',  title: '最近上线时间',align:"center",}
+			,{field:'ljlxsj',  title: '累计离线时间',align:"center",}
+			,{field:'bz',  title: '备注',align:"center",event: 'setBz',}
+			,{field:'',  title: '历史记录',align:"center",event: 'lishidetail',templet: function(d){ return "查看详情"; },style:'color: #083485;cursor: pointer;'}
+		  ]]
+		});
+	}
+	
+	
+	// 监听表单数据
+	table.on('tool(demo)', function(obj){
+	    var data = obj.data;
+		var configId = obj.data.configId;
+		var danwei = $("#danwei").val();
+		var time1 = $("#time1").val();
+	    if(obj.event === 'itemDetial'){
+			// 查看详情
+	      console.log(data);
+	    }else if(obj.event === 'itemAll'){
+			$(".demoTable").hide();
+			// 查看所有
+			$("#singTime").html(data.dept);
+			randertotal(configId,time1);
+		}else if(obj.event === "itemFail"){
+			$(".demoTable").hide();
+			$("#singTime").html(data.dept);
+			randerfail(configId,time1);
+		}else if(obj.event === "itemTel"){
+			layer.alert('该单位联系人  ：'+data.linkContact);
+		}else if(obj.event === "zjTotal"){
+			$(".demoTable").hide();
+			// 查看失败 最后1是全部，0是失败
+			$("#singTime").html(data.dept);
+			oldRender(time1,danwei,data.dept,1);
+		}else if(obj.event === "zjFail"){
+			// 查看失败 最后1是全部，0是失败
+			$(".demoTable").hide();
+			$("#singTime").html(data.dept);
+			oldFail(time1,danwei,data.dept,0);
+		}else if(obj.event==="hetongDetial"){
+			$("#singTime").html(data.dept);
+			$(".demoTable").show();
+			hetongdianwei(configId,"");
+			$("#hetongconfigid").val(configId);
+		}
+	  });
+
+
+	// 合同点位查询
+	
+	$("#hetongsearch").click(function(){
+		var sContent = $("#searchName").val();
+		var hetongid = $("#hetongconfigid").val();
+		hetongdianwei(hetongid,sContent)
+	})
+
+// 合同点位查询
+
+	// 查看合同点位
+		function hetongdianwei(configId,pointName){
+			table.render({
+			  elem: '#singldetail'
+			  ,page:true
+			  ,url:baseUrl+"/video/queryHtVideoDataDetailByConfigId?configId="+ configId+"&pointName="+pointName
+			  ,cols: [[
+				 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			    // ,{field:'所属单位',  title: '所属单位',align:"center",}
+			    ,{field:'PointName',  title: '监控点名称',}
+				,{field:'Lng',  title: 'Lng坐标',align:"center"}
+				,{field:'Lat',  title: 'Lat坐标',align:"center"}
+				,{field:'BZd4',  title: '创建时间',align:"left"}
+			  ]]
+			});
+		}
+
+	// 查看合同点位end
+
+	
+	// 自建交警
+	// 查看监控总数
+		function oldRender(time,danwei,dept,kind){
+			table.render({
+			  elem: '#singldetail'
+			  ,page:true
+			  ,url:baseUrl+"/video/queryVideoDataDetail?date="+time+"&type="+danwei+"&dept="+dept+"&kind="+kind
+			  ,cols: [[
+				 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			    // ,{field:'所属单位',  title: '所属单位',align:"center",}
+			    ,{field:'监控点名称',  title: '监控点名称',}
+				,{field:'监控点SN',  title: '监控点SN',align:"left"}
+				,{field:'状态',  title: '状态',align:"center"}
+			
+			  ]]
+			});
+		}
+		// 查看失败监控总数
+		function oldFail(time,danwei,dept,kind){
+			table.render({
+			  elem: '#singldetail'
+			  ,page:true
+			  ,url:baseUrl+"/video/queryVideoDataDetail?date="+time+"&type="+danwei+"&dept="+dept+"&kind="+kind
+			  ,toolbar:"#toolbarDemo"
+			  ,cols: [[
+				 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			    // ,{field:'所属单位',  title: '所属单位',align:"center",}
+			    ,{field:'监控点名称',  title: '监控点名称',width:240}
+				,{field:'监控点SN',  title: '监控点SN',align:"left"}
+				,{field:'状态',  title: '状态',align:"center"}
+				,{field:'状态描述',  title: '状态描述',align:"center",}
+				,{field:'zjsxsj',  title: '最近上线时间',align:"center",}
+				,{field:'ljlxsj',  title: '累计离线时间',align:"center",}
+				,{field:'备注',  title: '备注',align:"center",event: 'setBz',}
+				,{field:'',  title: '历史记录',align:"center",event: 'lishidetail',templet: function(d){ return "查看详情"; },style:'color: #083485;cursor: pointer;'}
+			  ]]
+			});
+		}
+	
+	// 自建交警end
+	
+	
+	
+	
+	
+	
+	  //监听单元格事件
+	 
+	  table.on('tool(singldetail)', function(obj){
+	    var data = obj.data;
+		console.log(data)
+		// var datas = {};
+	    if(obj.event === 'setBz'){
+	      layer.prompt({
+	        formType: 2
+	        ,title: '修改当前备注'
+	        ,value: data.bz
+			,yes:function(index, layero){
+				var value = layero.find(".layui-layer-input").val();
+				var datas = {};
+				datas.id = data.id;
+				datas.bz = value;
+				if(value==""){
+					datas.bz=" ";
+					layer.close(index);
+				}else{
+					layer.close(index);
+					  $.ajax({
+					      url:baseUrl + "/video/updateVideoBz",
+					      type:"post",
+					      cache:false,
+									data:JSON.stringify({  "bh":data.dwid,   "bz": value }),
+									dataType : 'JSON',
+									contentType: "application/json",
+					  	beforeSend: function (XMLHttpRequest) {
+					  	   XMLHttpRequest.setRequestHeader("token", token);
+					  	},
+					      success:function(data) {
+					  		if(data.code==0){
+					  		    layer.msg("添加成功");
+					  		}else {
+					  		    layer.msg(data.msg);
+					  		}
+					      },
+					      error : function (res) {
+					          layer.msg('添加失败');
+					      }
+					  })
+					    obj.update({
+					      bz: value
+					    });
+				}
+				
+			 }
+	       });
+		   // /video/queryVideoBzDataPage?bh=V201708210137&page=1&limit=10
+		   
+	    }else if(obj.event=="lishidetail"){
+			//console.log(data)
+			layer.open({
+			      type: 1,
+				  scrollbar: false,
+			      area: ['800px', '580px'],
+				  title:"查看历史记录",
+			      shadeClose: true, //点击遮罩关闭
+			      content: '<table id="history"></table>',
+				  success:function(layero, index){
+						table.render({
+						  elem: '#history'
+						  ,page:true
+						  ,url:baseUrl+"/video/queryVideoBzDataPage?bh="+data.dwid
+						  ,cols: [[
+							 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+							,{field:'xcr', title: '创建人',width:100}
+							,{field:'createTime',  title: '时间',width:180}
+							,{field:'bz',  title: '备注内容',align:"left",}
+						  ]]
+						});	
+							
+				   }
+			    });
+		}
+	  });
+	
+	function layuiSelect(selectID,url,value){
+		$.get(url,function(data){
+			if(selectID.indexOf("#")!=0){
+				selectID="#"+selectID;
+			}
+			$(selectID).empty();
+			for(var k in data.data){
+				// console.log(k)
+				$(selectID).append("<option  value='"+data.data[k]+"'>"+data.data[k]+"</option>");
+			}
+			if(value!=undefined||value!=null||value!=""){
+				$(selectID).val(value);
+			}
+			// layui.form.render();
+		})
+	}
+	
+	
+	
+	
+	$("#zjsc").change(function(){
+		// alert($(this).val());
+		console.log($(this).val())
+		var danweiType = $("#danwei").val();
+		if(danweiType==0){
+			randerzhihui($(this).val(),0);
+			$("#time1").val($(this).val());
+		}else if(danweiType==1){
+			randerzijian($(this).val(),1);
+			$("#time1").val($(this).val());
+		}else if(danweiType==2){
+			randerjiaojin($(this).val(),2);
+			$("#time1").val($(this).val());
+		}else if(danweiType==3){
+			randerjiaoyu($(this).val(),3);
+			$("#time1").val($(this).val());
+		}else if(danweiType==4){
+			randerxiaoqu($(this).val(),4);
+			$("#time1").val($(this).val());
+		}else if(danweiType==5){
+			randerneibu($(this).val(),5);
+			$("#time1").val($(this).val());
+		}else if(danweiType==6){
+			randerneibu($(this).val(),6);
+			$("#time1").val($(this).val());
+		}
+	
+	})
+	
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

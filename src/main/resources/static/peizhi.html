@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-配置</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-tool{
+			z-index: 1;
+		}
+		/* 下拉多选样式 需要引用*/
+		select[multiple]+.layui-form-select>.layui-select-title>input.layui-input{ border-bottom: 0}
+		select[multiple]+.layui-form-select dd{ padding:0;}
+		select[multiple]+.layui-form-select .layui-form-checkbox[lay-skin=primary]{ margin:0 !important; display:block; line-height:36px !important; position:relative; padding-left:26px;}
+		select[multiple]+.layui-form-select .layui-form-checkbox[lay-skin=primary] span{line-height:36px !important;padding-left: 10px; float:none;}
+		select[multiple]+.layui-form-select .layui-form-checkbox[lay-skin=primary] i{ position:absolute; left:10px; top:0; margin-top:9px;}
+		.multiSelect{ line-height:normal; height:auto; padding:4px 10px; overflow:hidden;min-height:38px; margin-top:-38px; left:0; z-index:99;position:relative;background:none;}
+		.multiSelect a{ padding:2px 5px; background:#908e8e; border-radius:2px; color:#fff; display:block; line-height:20px; height:20px; margin:2px 5px 2px 0; float:left;}
+		.multiSelect a span{ float:left;}
+		.multiSelect a i {float:left;display:block;margin:2px 0 0 2px;border-radius:2px;width:8px;height:8px;padding:4px;position:relative;-webkit-transition:all .3s;transition:all .3s}
+		.multiSelect a i:before, .multiSelect a i:after {position:absolute;left:8px;top:2px;content:'';height:12px;width:1px;background-color:#fff}
+		.multiSelect a i:before {-webkit-transform:rotate(45deg);transform:rotate(45deg)}
+		.multiSelect a i:after {-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}
+		.multiSelect a i:hover{ background-color:#545556;}
+		.multiOption{display: inline-block; padding: 0 5px;cursor: pointer; color: #999;}
+		.multiOption:hover{color: #5FB878}
+
+		@font-face {font-family: "iconfont"; src: url('data:application/x-font-woff;charset=utf-8;base64,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') format('woff')}
+		.iconfont {font-family:"iconfont" !important;font-size:16px;font-style:normal;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
+		.icon-fanxuan:before { content: "\e837"; }
+		.icon-quanxuan:before { content: "\e623"; }
+		.icon-qingkong:before { content: "\e63e"; }
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 100px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>已配置项目</legend>
+	     </fieldset>  
+		<table class="layui-hide" id="videodetail" lay-filter="demo"></table>
+	</div>
+	
+	<form class="layui-form" id="addnew" style="display:none;width: 700px;padding: 10px;">
+	  <div class="layui-form-item" style="margin-top: 20px;" id="searchBox">
+	    <label class="layui-form-label">单位</label>
+	    <div class="layui-input-inline" >
+	      <select name="danwei" lay-verify="required" id="danwei" lay-filter="change">
+	      			<!-- <option value="">请选择</option> -->
+	              <option value="0">指挥中心</option>
+	      		  <option value="1">派出所自建</option>
+	              <option value="2">交警大队</option>
+	              <option value="3">教育监控</option>
+	              <option value="4">小区监控</option>
+	      		  <option value="5">内部监控</option>
+	      		  <option value="6">其他单位</option>
+	       </select>
+	    </div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;" id="searchBox">
+	    <label class="layui-form-label">显示名称</label>
+	    <div class="layui-input-inline">
+	  		<input type="text" class="layui-input" id="xmmc">
+	    </div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label">项目名称</label>
+	    <div class="layui-input-inline" style="width: 550px;">
+	      <select name="xmName" lay-verify="required" id="xmName" lay-filter="xmName" multiple >
+				 
+	       </select>
+	    </div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;" id="searchBox">
+	    <label class="layui-form-label">排序</label>
+	    <div class="layui-input-inline">
+			<input type="number" class="layui-input" id="paixu">
+	    </div>
+	  </div>
+		 
+	</form>
+	
+	
+	<form class="layui-form" id="xiugai" style="display:none;width: 700px;padding: 10px;">
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label">单位</label>
+	    <div class="layui-input-inline" >
+	      <select name="danwei1" id="danwei1" lay-filter="change1">
+	      			<!-- <option value="">请选择</option> -->
+	              <option value="0">指挥中心</option>
+	      		  <option value="1">派出所自建</option>
+	              <option value="2">交警大队</option>
+	              <option value="3">教育监控</option>
+	              <option value="4">小区监控</option>
+	      		  <option value="5">内部监控</option>
+	      		  <option value="6">其他单位</option>
+	       </select>
+	    </div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;" >
+	    <label class="layui-form-label">显示名称</label>
+	    <div class="layui-input-inline">
+	  		<input type="text" class="layui-input" id="xmmc1">
+	    </div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label">项目名称</label>
+	    <div class="layui-input-inline" style="width: 550px;">
+	      <select name="xmName1"  id="xmName1" lay-filter="xmName1" multiple>	 </select>
+	    </div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;" id="searchBox">
+	    <label class="layui-form-label">排序</label>
+	    <div class="layui-input-inline">
+			<input type="number" class="layui-input" id="paixu1">
+	    </div>
+	  </div>
+		 
+	</form>
+	
+	
+	
+	
+	
+	
+<div id="footer"></div>
+    
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="form.js" type="text/javascript" charset="utf-8"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="getCheckData">新增配置</button>
+	<button class="layui-btn layui-btn-sm" lay-event="delALL">删除选中</button>
+  </div>
+</script>
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="xiugai">修改</a>
+	<!-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="del">删除</a> -->
+</script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	
+	var table = layui.table;
+	var laydate = layui.laydate;
+	var form = layui.form;
+	var formSelects = layui.formSelects;
+	// //日期范围
+	//   laydate.render({
+	//     elem: '#chooseTime'
+	//     ,range: true
+	//   });
+	
+	// 渲染数据
+	table.render({
+	  elem: '#videodetail'
+	   ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+	   ,defaultToolbar: []
+	  ,page:true
+	  ,url:baseUrl+"/video/queryAllXmConfig"
+	  ,cols: [[
+		   {type:'checkbox'}
+		 ,{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		 ,{field:'dw', title: '单位名称',align:"left",width:150,
+			 templet:function(d){ 
+				 if(d.dw==0){return "指挥中心"}
+				 else if(d.dw==1){return "派出所自建"}
+				 else if(d.dw==2){return "交警大队" }
+				 else if(d.dw==3){return "教育监控"}
+				 else if(d.dw==4){ return "小区监控" }
+				 else if(d.dw==5){ return "内部监控" }
+				 else{ return "其他单位" }},
+		  }
+		 ,{field:'xmmc',  title: '显示名称',align:"left",width:150}
+		,{field:'xmmcShow',  title: '包含项目',align:"left"}
+		,{title:'操作', toolbar: '#barDemo',align:"center" ,width:80,}
+	  ]]
+	  ,id:"testReload"
+	});
+	
+
+//头工具栏事件
+  table.on('toolbar(demo)', function(obj){
+	var checkStatus = table.checkStatus(obj.config.id);
+    switch(obj.event){
+      case 'getCheckData':
+		layer.open({
+			 type:1,
+			 area:['800px','500px'],
+			  title: '更改配置',
+			  content: $("#addnew"),
+			  shade: 0,
+			  btn: ['提交', '取消']
+			  ,btn1: function(index, layero){
+				  var dw = $("#danwei").val();
+				  var xmid = $("#xmName").val().toString();
+				  var sort = $("#paixu").val();
+				  var xmmc = $("#xmmc").val();
+				  if(xmid==""||xmid==null||xmid==undefined){
+					  layer.msg('项目名称不能为空！');
+					  return
+				  }
+				  
+				  var load1 = layer.load(1);  
+					$.ajax({
+					    url:baseUrl+"/video/addXmConfig",
+					    type:"post",
+					    cache:false,
+						data:JSON.stringify(
+							{
+							  "dw":dw,
+							  "xmid":xmid,
+							  "xmmc":xmmc,
+							  "sort":sort
+							}
+						),
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+						   XMLHttpRequest.setRequestHeader("token", token);
+						},
+					    success:function(data) {
+							if(data.code==0){
+								table.reload("testReload");
+								layer.close(load1);
+							    layer.msg("配置成功");
+								$("#addnew").hide();
+							}else {
+								layer.close(load1);
+							    layer.msg(data.msg);
+								$("#addnew").hide();
+							}
+					    },
+					    error : function (res) {
+							layer.close(load1);
+					        layer.msg('配置失败');
+							$("#addnew").hide();
+					    }
+					})
+					layer.closeAll();
+					$("#addnew").hide();
+			  },
+			  btn2: function(index, layero){
+					layer.closeAll();
+					$("#addnew").hide();
+			  },
+			cancel: function(layero,index){ 
+					layer.closeAll();
+					$("#addnew").hide();
+			  }
+			});
+      break;
+	  case "delALL" :
+		var data = checkStatus.data;
+		if(data.length>0){
+			$.ajax({
+			    url:baseUrl + "/video/deleteXmConfig",
+			    type:"POST",
+			    cache:false,
+				dataType : 'JSON',
+				data:JSON.stringify(data),
+				contentType: "application/json",
+				beforeSend: function (XMLHttpRequest) {
+				   XMLHttpRequest.setRequestHeader("token", token);
+				},
+			    success:function(data) {
+					if(data.code==0){
+					    layer.msg("删除成功");
+						table.reload('testReload');
+					}else {
+					    layer.msg(data.msg);
+					}
+			    },
+			    error : function (res) {
+			        layer.msg('删除失败');
+			    }
+			})
+		}else{
+			layer.msg("您未选中任何数据!");
+			return false
+		}
+	  break;
+    };
+  });
+
+	
+	// 动态添加select下拉,带搜索
+	function layuiSelect(selectID,url,value){
+		$.get(url,function(data){
+			if(selectID.indexOf("#")!=0){
+				selectID="#"+selectID;
+			}
+			$(selectID).empty();
+			// console.log(data)
+			for(var k of data.data){
+				// console.log(k)
+				$(selectID).append("<option value='"+k.V_XMId+"'>"+k.ProjectName+"</option>");
+			}
+			if(value!=undefined||value!=null||value!=""){
+				$(selectID).val(value);
+			}
+			
+			layui.form.render();
+		})
+	}
+	// 调用该方法
+	layuiSelect("xmName",baseUrl+"/video/queryAllXm");
+	
+	
+	
+	table.on('tool(demo)', function(obj){
+	    var data = obj.data;
+		console.log(data)
+		// console.log(data.xmmcShow.split(","))
+		// layui.form.render();
+	    if(obj.event ==="xiugai"){
+			var xmidArr = data.xmid.split(",");
+			console.log(data.xmid)
+			$("#danwei1").val(data.dw);
+			$("#paixu1").val(data.sort);
+			$("#xmmc1").val(data.xmmc);
+			$.get(baseUrl+"/video/queryAllXm",function(res){
+				$("#xmName1").empty();
+				// console.log(data)
+				// 展示以添加项目
+				for(var k of res.data){
+					$("#xmName1").append("<option value='"+k.V_XMId+"'>"+k.ProjectName+"</option>");
+				}
+				$('select[name="xmName1"]').val(xmidArr);
+				layui.form.render();
+			})
+			// console.log(xmid1);
+			layer.open({
+			 type:1,
+			 area:['800px','500px'],
+			  title: '修改配置',
+			  content: $("#xiugai"),
+			  shade: 0,
+			  btn: ['提交', '取消']
+			  ,btn1: function(index, layero){
+					var load1 = layer.load(1);  
+					$.ajax({
+					    url:baseUrl+"/video/updateXmConfig",
+					    type:"post",
+					    cache:false,
+						data:JSON.stringify(
+							{
+							  "id":data.id,
+							  "dw":$("#danwei1").val(),
+							  "xmid":$("#xmName1").val().toString(),
+							  "xmmc":$("#xmmc1").val(),
+							  "sort":$("#paixu1").val()
+							}
+						),
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+						   XMLHttpRequest.setRequestHeader("token", token);
+						},
+					    success:function(data) {
+							if(data.code==0){
+								layer.close(load1);
+							    layer.msg("修改成功");
+								table.reload("testReload");
+									$("#xiugai").hide();
+							}else {
+								layer.close(load1);
+							    layer.msg(data.msg);
+									$("#xiugai").hide();
+							}
+					    },
+					    error : function (res) {
+							layer.close(load1);
+					        layer.msg('修改失败');
+								$("#xiugai").hide();
+					    }
+					})
+					layer.closeAll();
+						$("#xiugai").hide();
+			  },
+			  btn2: function(index, layero){
+					layer.closeAll();
+						$("#xiugai").hide();
+			  },
+			cancel: function(layero,index){ 
+					layer.closeAll();
+						$("#xiugai").hide();
+			  }
+			});
+		}
+	  });
+	
+	
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

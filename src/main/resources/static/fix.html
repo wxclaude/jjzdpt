@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-故障报修</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-tool{
+			z-index: 1;
+		}
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	<div class="zhibantable" style="margin-top: 15px;margin-bottom: 80px;">
+		<div class="layui-tab">
+		  <ul class="layui-tab-title">
+		    <li class="layui-this">通道故障报修</li>
+		    <li>点位故障报修</li>
+		  </ul>
+		  <div class="layui-tab-content">
+		    <div class="layui-tab-item layui-show">
+				<!-- <div class="layui-row">
+				  <div class="layui-col-lg12">
+					  <div class="layui-form">
+						  <div class="layui-inline">
+								<label class="layui-form-label" style="width: auto;">请选择类型</label>
+								<div class="layui-input-inline">
+								  <select name="xfstate" id="xfstate" lay-filter="change">
+									  <option value="">全部</option>
+									  <option value="0">未修复</option>
+									  <option value="1">已修复</option>
+								   </select>
+								</div>
+							  </div>
+					  </div>
+				  </div>
+				</div> -->
+				
+		      <table id="singldetail" lay-filter="singldetail"></table>
+		    </div>
+		    <div class="layui-tab-item">
+				
+			<!-- 	<div class="layui-row">
+				  <div class="layui-col-lg12">
+					  <div class="layui-form">
+						  <div class="layui-inline">
+								<label class="layui-form-label" style="width: auto;">请选择类型</label>
+								<div class="layui-input-inline">
+								  <select name="dwstate" id="dwstate" lay-filter="change1">
+									  <option value="">全部</option>
+									  <option value="0">未修复</option>
+									  <option value="1">已修复</option>
+								   </select>
+								</div>
+							  </div>
+					  </div>
+				  </div>
+				</div> -->
+				
+				<table id="dianwei" lay-filter="dianwei"></table>
+			</div>
+		  </div>
+		</div>
+	</div>
+		
+		
+		
+	<div id="toolbarDemo" style="display: none;">
+	  <div class="layui-btn-container">
+	    <button class="layui-btn layui-btn-sm" lay-event="tdqrxf">确认修复</button>
+	  </div>
+	</div>	
+	
+	<div id="toolbarDemo1" style="display: none;">
+	  <div class="layui-btn-container">
+	    <button class="layui-btn layui-btn-sm" lay-event="dwqrxf">确认修复</button>
+	  </div>
+	</div>	
+	
+	
+	<div class="layui-form" style="display: none;padding: 10px;" id="tdBox">
+		<table class="layui-table">
+		  <colgroup>
+		    <col width="60">
+		    <col width="200">
+		    <col>
+		  </colgroup>
+		  <tbody>
+			  <tr>
+			    <td>通道名称</td>
+			    <td id="tdtdmc"></td>
+			  </tr>
+			  <tr>
+			    <td>保修时间</td>
+			    <td id="tdbxsj"></td>
+			  </tr>
+			  <tr>
+			    <td>处置情况</td>
+			    <td id="tdczqk"></td>
+			  </tr>
+			  <tr>
+			    <td>故障类型</td>
+			    <td id="tdgzlx"></td>
+			  </tr>
+			<tr>
+			  <td>所属项目</td>
+			  <td id="tdssxm"></td>
+			</tr>
+			<tr>
+				<td>报修人</td>
+				<td id="tdbxr"></td>
+			</tr>
+			<tr>
+				<td>报修人IP</td>
+				<td id="tdbxrip"></td>
+			</tr>
+			<tr>
+				<td>最后在线时间</td>
+				<td id="tdzhzxsj"></td>
+			</tr>
+			<tr>
+				<td>详细描述</td>
+				<td id="tdxxms"></td>
+			</tr>
+		  </tbody>
+		</table>
+	</div>
+	
+	<div class="layui-form" style="display: none;padding: 10px;" id="dwBox">
+		<table class="layui-table">
+		  <colgroup>
+		    <col width="60">
+		    <col width="200">
+		    <col>
+		  </colgroup>
+		  <tbody>
+			  <tr>
+			    <td>通道名称</td>
+			    <td id="dwtdmc"></td>
+			  </tr>
+			  <tr>
+			    <td>保修时间</td>
+			    <td id="dwbxsj"></td>
+			  </tr>
+			  <tr>
+			    <td>处置情况</td>
+			    <td id="dwczqk"></td>
+			  </tr>
+			  <tr>
+			    <td>故障类型</td>
+			    <td id="dwgzlx"></td>
+			  </tr>
+			<tr>
+			  <td>所属项目</td>
+			  <td id="dwssxm"></td>
+			</tr>
+			<tr>
+				<td>报修人</td>
+				<td id="dwbxr"></td>
+			</tr>
+			<tr>
+				<td>报修人IP</td>
+				<td id="dwbxrip"></td>
+			</tr>
+			<tr>
+				<td>最后在线时间</td>
+				<td id="dwzhzxsj"></td>
+			</tr>
+			<tr>
+				<td>详细描述</td>
+				<td id="dwxxms"></td>
+			</tr>
+		  </tbody>
+		</table>
+	</div>
+		
+		
+	
+<div id="footer">
+	
+</div>
+    
+
+<script type="text/html" id="tdBar">
+		<a class="layui-btn  layui-btn-normal layui-btn-xs" lay-event="tdDetail">详情</a>
+</script>
+<script type="text/html" id="dwBar">
+		<a class="layui-btn  layui-btn-normal layui-btn-xs" lay-event="dwDetail">详情</a>
+</script>
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	
+	var table = layui.table;
+
+	function tongdaoguzhang(url){
+		table.render({
+		  elem: '#singldetail'
+		  ,page:true
+		  ,url:url
+		  ,toolbar:"#toolbarDemo"
+		  ,cols: [[
+			  {type:'checkbox'}
+			 ,{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    // ,{field:'所属单位',  title: '所属单位',align:"center",}
+		    ,{field:'s1',  title: '通道名称',width:300}
+			// ,{field:'s2',  title: '所属项目',align:"center"}
+			,{field:'createTime',  title: '报修时间',align:"center"}
+			// ,{field:'userId',  title: '报修人',align:"center",}
+			// ,{field:'s3',  title: '最后在线时间',align:"center",}
+			,{field:'category',  title: '故障类型',align:"center",
+				templet:function(d){
+					if(d.category=="0"){return "画面树木遮挡"}
+					else if(d.category==""){return " "}
+					else if(d.category==null){return " "}
+					else if(d.category=="1"){return "监控角度异常"}
+					else if(d.category=="2"){ return "设备离线" }
+					else if(d.category=="3"){return "画面异常"}
+					else if(d.category=="4"){return "录像异常"}
+					else if(d.category=="5"){return "其他"}
+					else if(d.category=="6"){return "人脸抓拍异常"}
+				}
+			}
+			// ,{field:'bz',  title: '详细描述',width:180}
+			,{field:'state',  title: '处置情况',align:"center",
+				templet:function(d){
+					if(d.state==0){
+						return "未修复"
+					}else{
+						return "已修复"
+					}
+				}
+			}
+			,{title:'操作', toolbar: '#tdBar',align:"center" ,width:100}
+		  ]]
+		});
+	}
+	tongdaoguzhang(baseUrl+"/video/queryBxData?kind=0");
+	
+	table.on('toolbar(singldetail)', function(obj){
+		var checkStatus = table.checkStatus(obj.config.id);
+		switch(obj.event){
+			case "tdqrxf":
+				var data = checkStatus.data;
+				// console.log(data);
+				var stateArr = [];
+				for (var i in data){
+					// console.log(i);
+					var obj={};
+					obj.id=data[i].id;
+					if(data[i].state==0){
+						data[i].state=1;
+						obj.state=data[i].state;
+					}else{
+						obj.state=data[i].state;
+					}
+					stateArr.push(obj);
+				}
+				// console.log(stateArr);
+				$.ajax({
+				    url:baseUrl + "/video/updateBxById",
+				    data:JSON.stringify(stateArr),
+				    type:"POST",
+				    cache:false,
+				    dataType : 'JSON',
+				    contentType: "application/json",
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+				    success:function(data) {
+				        if(data.code==0){
+				            layer.msg("修复成功");
+				        }else {
+				            layer.msg(data.msg);
+				        }
+						table.reload('singldetail', {
+						  url: baseUrl+"/video/queryBxData?kind=0",
+						});
+				    },
+				    error : function (res) {
+				        layer.msg('修复失败');
+				    }
+				})
+			break;
+		}
+	})
+	
+	function getSbgz(d){
+		if(d.category=="0"){return "画面树木遮挡"}
+		else if(d.category==""){return " "}
+		else if(d.category==null){return " "}
+		else if(d.category=="1"){return "监控角度异常"}
+		else if(d.category=="2"){ return "设备离线" }
+		else if(d.category=="3"){return "画面异常"}
+		else if(d.category=="4"){return "录像异常"}
+		else if(d.category=="5"){return "其他"}
+		else if(d.category=="6"){return "人脸抓拍异常"}
+	}
+	function getCzqk(d){
+		if(d.state==0){
+			return "未修复"
+		}else{
+			return "已修复"
+		}
+	}
+	
+	table.on('tool(singldetail)', function(obj){
+		var data = obj.data;
+		if(obj.event=="tdDetail"){
+			console.log(data)
+			$("#tdtdmc").text(data.s1);
+			$("#tdbxsj").text(data.createTime);
+			$("#tdgzlx").text(getSbgz(data));
+			// $("#tdgzlx").text(data.category);
+			$("#tdbxrip").text(data.ip);
+			$("#tdczqk").text(getCzqk(data));
+			$("#tdssxm").text(data.s2);
+			$("#tdbxr").text(data.userId);
+			$("#tdzhzxsj").text(data.s3);
+			$("#tdxxms").text(data.bz);
+			layer.open({
+			 type:1,
+			 area:['800px','550px'],
+			  title: '详情',
+			  content: $("#tdBox"),
+			  shade: 0,
+			  btn: ['确定']
+			  ,btn1: function(index, layero){
+					var load1 = layer.load(1);  
+					layer.closeAll();
+					 $("#tdBox").hide();
+			  },
+				cancel: function(layero,index){ 
+					 $("#tdBox").hide();
+						layer.closeAll();
+				  }
+			});
+		}
+	})
+	
+	form.on('select(change)',function(data){
+		console.log(data.value);
+		if(data.value==""){
+			tongdaoguzhang(baseUrl+"/video/queryBxData?kind=0&state=")
+		}else if(data.value=="1"){
+			tongdaoguzhang(baseUrl+"/video/queryBxData?kind=0&state=1")
+		}else if(data.value=="0"){
+			tongdaoguzhang(baseUrl+"/video/queryBxData?kind=0&state=0")
+		}
+	})
+	
+	
+	
+	
+	
+	
+	
+	// 点位故障
+	function dianweiguzhang(url){
+		table.render({
+		  elem: '#dianwei'
+		  ,page:true
+		  ,toolbar:"#toolbarDemo1"
+		  ,url:url
+		  ,cols: [[
+			  {type:'checkbox'}
+			 ,{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			 // ,{field:'所属单位',  title: '所属单位',align:"center",}
+			 ,{field:'s1',  title: '点位名称',width:300}
+			 // ,{field:'s2',  title: '所属项目',align:"center"}
+			 ,{field:'createTime',  title: '报修时间',align:"center"}
+			 // ,{field:'userId',  title: '报修人',align:"center",}
+			 // ,{field:'s3',  title: '最后在线时间',align:"center",}
+			 ,{field:'category',  title: '故障类型',align:"center",
+			 	templet:function(d){
+			 		if(d.category=="0"){return "画面树木遮挡"}
+			 		else if(d.category==""){return " "}
+					else if(d.category==null){return " "}
+			 		else if(d.category=="1"){return "监控角度异常"}
+			 		else if(d.category=="2"){ return "设备离线" }
+			 		else if(d.category=="3"){return "画面异常"}
+			 		else if(d.category=="4"){return "录像异常"}
+			 		else if(d.category=="5"){return "其他"}
+					else if(d.category=="6"){return "人脸抓拍异常"}
+			 	}
+			 }
+			 // ,{field:'bz',  title: '详细描述',}
+			 ,{field:'state',  title: '处置情况',align:"center",
+			 	templet:function(d){
+			 		if(d.state==0){
+			 			return "未修复"
+			 		}else{
+			 			return "已修复"
+			 		}
+			 	}
+			 }
+			 ,{title:'操作', toolbar: '#dwBar',align:"center" ,width:100}
+		  ]]
+		});
+	}
+	dianweiguzhang(baseUrl+"/video/queryBxData?kind=1");
+	
+	table.on('toolbar(dianwei)', function(obj){
+		var checkStatus = table.checkStatus(obj.config.id);
+		switch(obj.event){
+			case "dwqrxf":
+				var data = checkStatus.data;
+				// console.log(data);
+				var stateArr = [];
+				for (var i in data){
+					// console.log(i);
+					var obj={};
+					obj.id=data[i].id;
+					if(data[i].state==0){
+						data[i].state=1;
+						obj.state=data[i].state;
+					}else{
+						obj.state=data[i].state;
+					}
+					stateArr.push(obj);
+				}
+				// console.log(stateArr);
+				$.ajax({
+				    url:baseUrl + "/video/updateBxById",
+				    data:JSON.stringify(stateArr),
+				    type:"POST",
+				    cache:false,
+				    dataType : 'JSON',
+				    contentType: "application/json",
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+				    success:function(data) {
+				        if(data.code==0){
+				            layer.msg("修复成功");
+				        }else {
+				            layer.msg(data.msg);
+				        }
+						table.reload('dianwei', {
+						  url: baseUrl+"/video/queryBxData?kind=1",
+						});
+				    },
+				    error : function (res) {
+				        layer.msg('修复失败');
+				    }
+				})
+			
+			break;
+		}
+	})
+	
+	
+	table.on('tool(dianwei)', function(obj){
+		var data = obj.data;
+		if(obj.event=="dwDetail"){
+			console.log(data)
+			$("#dwtdmc").text(data.s1);
+			$("#dwbxsj").text(data.createTime);
+			$("#dwgzlx").text(getSbgz(data));
+			// $("#tdgzlx").text(data.category);
+			$("#dwbxrip").text(data.ip);
+			$("#dwczqk").text(getCzqk(data));
+			$("#dwssxm").text(data.s2);
+			$("#dwbxr").text(data.userId);
+			$("#dwzhzxsj").text(data.s3);
+			$("#dwxxms").text(data.bz);
+			layer.open({
+			 type:1,
+			 area:['800px','550px'],
+			  title: '详情',
+			  content: $("#dwBox"),
+			  shade: 0,
+			  btn: ['确定']
+			  ,btn1: function(index, layero){
+					var load1 = layer.load(1);  
+					layer.closeAll();
+					 $("#dwBox").hide();
+			  },
+				cancel: function(layero,index){ 
+					 $("#dwBox").hide();
+						layer.closeAll();
+				  }
+			});
+		}
+	})
+	
+	
+	form.on('select(change1)',function(data){
+		if(data.value==""){
+			dianweiguzhang(baseUrl+"/video/queryBxData?kind=1&state=")
+		}else if(data.value=="1"){
+			dianweiguzhang(baseUrl+"/video/queryBxData?kind=1&state=1")
+		}else if(data.value=="0"){
+			dianweiguzhang(baseUrl+"/video/queryBxData?kind=1&state=0")
+		}
+	})
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

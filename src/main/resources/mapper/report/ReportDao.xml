@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">    
+<mapper namespace="io.renren.modules.report.dao.ReportDao">
+
+	<select id="queryTwData" resultType="java.util.Map">
+		select
+		left(检测开始时间, 10) as day,
+		isnull(count(id),0) as total,
+		isnull(SUM(CASE WHEN 状态= '成功' THEN 1 ELSE 0 END),0) AS 'zxs',
+		isnull(SUM(CASE WHEN 状态!='成功' THEN 1 ELSE 0 END),0) AS 'lxs'
+		from tXDJ_TWJK_MRXJ
+		where (所属单位 like '天网%' or 所属单位 like '高清项目%' or 所属单位 like '人脸%')
+		and left(检测开始时间, 7)=#{params.date}
+		group by left(检测开始时间, 10)
+		order by left(检测开始时间, 10)
+	</select>
+
+    <select id="queryZjData" resultType="java.util.Map">
+		select
+		所属单位,
+		isnull(count(id),0) as total,
+		isnull(SUM(CASE WHEN 状态= '成功' THEN 1 ELSE 0 END),0) AS 'zxs',
+		isnull(SUM(CASE WHEN 状态!='成功' THEN 1 ELSE 0 END),0) AS 'lxs'
+		from tXDJ_TWJK_MRXJ
+		where 所属单位 like '%自建%'
+		and left(检测开始时间, 7)=#{params.date}
+		group by 所属单位
+		order by 所属单位
+	</select>
+
+	<select id="queryYdjcjData" resultType="java.util.Map">
+		select
+		temp.*, d.short_dept_name
+		from
+		(
+			select dept_id,
+			ifnull(avg(xptjjlv),0) AS 'xptjjlv',
+			ifnull(avg(xptcjlv),0) AS 'xptcjlv',
+			ifnull(avg(yddcjlv),0) AS 'yddcjlv'
+			from tydjcj
+			where left(ydjcj_date,7) = #{params.date}
+			group by dept_id
+		)temp
+		left join tdept d on temp.dept_id = d.dept_id
+		where 1=1
+		order by d.ydjcj
+	</select>
+
+	<select id="queryDfData" resultType="java.util.Map">
+        select
+          td.short_dept_name as deptName, d.dept_id as deptId, ifnull(sum(d.score_qzb),0) as totalScore
+        from df_detail d
+        inner join df_record r on d.record_id = r.id
+        left join tdept td on td.dept_id = d.dept_id
+        where r.df_month = #{params.dfMonth}
+        and r.rule_id = #{params.type}
+        and r.isdel = 0 and d.isdel = 0
+        group by td.short_dept_name, d.dept_id
+        order by LENGTH(d.dept_id), d.dept_id
+
+    </select>
+	<select id="queryQbxxData" resultType="java.util.Map">
+		select q.* ,d.short_dept_name
+		from df_qbxx q
+		left join tdept d on q.dept_id = d.dept_id
+		where df_month = #{params.dfMonth}
+		order by LENGTH(d.dept_id), d.dept_id
+
+	</select>
+
+	<select id="queryQbxxDataCount" resultType="java.lang.Integer">
+		select count(*)
+		from df_qbxx
+		where df_month = #{dfMonth}
+	</select>
+
+
+</mapper>

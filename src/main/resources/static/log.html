@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-登录日志</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-header .layui-table-cell {
+			height: auto;
+			line-height: 28px;
+			padding: 0 15px;
+			position: relative;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: normal;
+			box-sizing: border-box;
+		}
+		/* .layui-table-view .layui-table {
+		            height: 100%;
+		        } */
+	</style>
+</head>
+<body>
+	
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+    <div class="zhibantable" style="margin-bottom: 150px;">
+		  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+            <legend>登录日志</legend>
+          </fieldset>
+			<div class="layui-container">
+				<div class="layui-row">
+					<div class="layui-col-lg12">
+						<div class="demoTable layui-form">
+						    日期：
+						    <div class="layui-inline">
+						      <input class="layui-input"  autocomplete="off" id="newTime">
+						    </div>
+							派出所：
+							<div class="layui-inline">
+							  <select name="city" lay-filter="pid" id="xzdw">
+							    <option value="">请选择</option>
+							    <option value="D0059">邗上派出所</option>
+							    <option value="D0068">汊河派出所</option>
+							    <option value="D0078">瓜洲派出所</option>
+							    <option value="D0086">蒋王派出所</option>
+							    <option value="D0245">甘泉派出所</option>
+							    <option value="D0095">杨庙派出所</option>
+							    <option value="D00003">新盛派出所</option>
+							    <option value="D0181">四季园派出所</option>
+							    <option value="D0102">槐泗派出所</option>
+							    <option value="D0112">方巷派出所</option>
+							    <option value="D0122">公道派出所</option>
+							    <option value="D0173">杨寿派出所</option>
+							    <option value="D0191">念四桥派出所</option>
+							    <option value="D0209">竹西派出所</option>
+							    <option value="D0220">西湖派出所</option>
+							    <option value="D0238">江阳派出所</option>
+								<option value="D0032">交警大队</option>
+							  </select>  
+							</div>
+						    <button class="layui-btn" id="chaxun">查询</button>
+						  </div>
+						<table class="layui-hide" id="log" lay-filter="log"></table>
+						
+					</div>
+				</div>
+				
+			</div>
+		  
+		  
+    </div>
+	
+	
+   
+	
+	
+
+    <div id="footer"></div>
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="xiugai">修改</a>
+	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="del">删除</a>
+	<!-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy">复制地址</a> -->
+</script>
+<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	
+	
+	
+	$("#footer").load("public/footer.html");
+	
+	var upload = layui.upload;
+	var laydate = layui.laydate;
+	var table = layui.table;
+	
+	 laydate.render({
+	    elem: '#newTime',
+		range: true
+	  });
+	  $("#chaxun").click(function(){
+		  var checkTime = $("#newTime").val();
+		  var startDate = checkTime.slice(0,10);
+		  var endDate = checkTime.slice(13);
+		  getTabledata(baseUrl+"/sys/loginlog/list?beginTime="+startDate+"&endTime="+endDate+"&deptId="+$("#xzdw").val());
+	  })
+	
+	function getTabledata(url){
+		table.render({
+		  elem: '#log'
+		  ,url: url
+		  ,page:true
+		  ,cols: [[
+		     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			,{field:'username', title: '单位',  align:"center",}
+			,{field:'ip', title: '登录ip',  align:"center",}
+		    ,{field:'createTime', title: '登录日期',  align:"center",}
+			,{field:'status', title: '登录状态',  align:"center",
+				templet:function(d)
+					{
+						if(d.status==1)
+						   {return "登录失败"}
+						else{
+							return "登录正常"
+						}
+					}
+			}
+		  ]]
+		  ,id:"testReload"
+		});
+	}
+	getTabledata(baseUrl+"/sys/loginlog/list?beginTime=&endTime=&deptId=");
+	
+	
+	
+</script>
+
+</body>
+</html>

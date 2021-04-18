@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>综合指挥质效平台-</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList"><a :href="k.url">{{k.modelName}}</a></dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 40px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>开始打分</legend>
+	      </fieldset>
+
+		<div class="layui-form">
+		  <div class="layui-inline">
+		        <label class="layui-form-label" style="width: auto;">请选打分日期</label>
+		        <div class="layui-input-inline">
+					<input type="text" class="layui-input" id="month" autocomplete="off">
+		        </div>
+		  </div>
+		  <div class="layui-inline">
+		        <label class="layui-form-label">打分标题</label>
+		        <div class="layui-input-inline">
+		  			<input type="text" class="layui-input" id="dfbt" autocomplete="off">
+		        </div>
+		  </div>
+		</div>
+		
+		<form id="dfForm" class="layui-form">
+			<table lay-filter="parse-table-demo" id="tb"></table>
+		</form>
+		
+		<div class="layui-btn-group demoTable" style="margin-bottom: 10px;">
+			<button class="layui-btn" data-type="submit" id="btnSubmit">提交</button>
+		</div>
+
+	</div>
+
+
+<div id="footer">
+	
+</div>
+    
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+
+	var table = layui.table;
+	var laydate = layui.laydate;
+	var dfRecord;
+	//年月范围选择
+	laydate.render({ 
+	  elem: '#month'
+	  ,type: 'month'
+	});
+	
+	
+	
+	$.ajax({
+		url:baseUrl + "/df/queryDfDetailByRecordId?recordId=7",
+		type:"GET",
+		cache:false,
+		dataType : 'JSON',
+		success:function(d) {
+			if(d.code==0){
+				//console.log(d);
+				dfRecord = d.data;
+
+				//拼接字符串
+				var tableStr = "";
+
+				//thead
+				tableStr = '<thead>'
+							+'<tr><th lay-data="{field:\'dw\', width:200 ,fixed:\'left\'}">单位</th>';
+				console.log(d.data.dfTheadList);
+				var dfTheadList = d.data.dfTheadList;
+				for (i = 0; i < dfTheadList.length; i++) {
+					console.log(dfTheadList[i]);
+					tableStr += '<th lay-data="{field:\''+dfTheadList[i].configId+'\'}">'+dfTheadList[i].configName+'</th>';
+				}
+
+				tableStr+= '</tr>'+ '</thead>';
+
+				//拼接tbody
+				tableStr+= '<tbody>';
+				var dfDetailList = d.data.dfDetailList;
+
+				var currentDeptId = "";
+				for (i = 0; i < dfDetailList.length; i++) {
+					console.log(dfDetailList[i]);
+					tableStr += '<tr>';
+					for(var key  in dfDetailList[i]){
+						if (key.indexOf("deptName") != -1) {
+							tableStr += '<td>' + dfDetailList[i][key] +'</td>';
+						}
+						if (key.indexOf("deptId") != -1) {
+							tableStr += '<input type="hidden" name="dept_'+ dfDetailList[i][key] +'" value="'+ dfDetailList[i][key] +'">';
+							currentDeptId = dfDetailList[i][key];
+						}
+
+					}
+					for(var key  in dfDetailList[i]){
+						console.log(key);
+						if (key.indexOf("dfx_") != -1) {
+							tableStr += '<td><input class="layui-input"  type="text" name="'+key+'_'+currentDeptId+'" value="'+ dfDetailList[i][key] +'"></td>';
+						}
+					}
+					tableStr += '</tr>';
+				}
+
+				tableStr+= '</tbody>';
+
+				//console.log(tableStr);
+				$("#tb").html(tableStr);
+				table.init('parse-table-demo', { //转化静态表格
+					//height: 'full-500'
+				});
+				$("#tb").html("");
+
+			}else {
+				layer.msg(d.msg);
+			}
+		},
+		error : function (res) {
+			layer.msg('获取数据异常');
+		}
+	})
+
+
+	$("#btnSubmit").click(function () {
+		//加遮罩
+
+		//console.log($("#dfForm").serializeArray());
+		//拼接json 格式[{"recordId":xxx , "deptId":xxx , "configId":xxx},{...} ]
+		var dataArr = $("#dfForm").serializeArray();
+
+		var paramsArr = new Array();
+
+		for (i = 0; i < dataArr.length; i++) {
+			//console.log(dataArr[i]);
+
+			if (dataArr[i].name.indexOf("dfx_") != -1) {
+				var obj = {};
+
+				obj.recordId = dfRecord.id;
+				obj.configId = dataArr[i].name.split("_")[1];
+				obj.deptId = dataArr[i].name.split("_")[2];
+				obj.score = dataArr[i].value;
+
+				paramsArr.push(obj);
+			}
+
+		}
+
+		console.log(paramsArr);
+
+		$.ajax({
+			url:baseUrl + "/df/saveDfDetail?recordId=7&dfMonth=2020-05&state=0",
+			data:JSON.stringify(paramsArr),
+			type:"POST",
+			cache:false,
+			dataType : 'JSON',
+			contentType: "application/json",
+			beforeSend: function (XMLHttpRequest) {
+				XMLHttpRequest.setRequestHeader("token", token);
+			},
+			success:function(data) {
+				//取消遮罩
+
+				if(data.code==0){
+					layer.msg(data.msg);
+				}else {
+					layer.msg(data.msg);
+				}
+			},
+			error : function (res) {
+			}
+		})
+
+	});
+
+</script>
+	
+</body>
+</html>

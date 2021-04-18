@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.dm.dao.ZhiBanDao">
+
+    <select id="queryZhiBanDataByDate" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        temp.dutyId, dept.deptId , dept.deptCode, dept.deptSName as deptName,
+        p.policeName as police , p.policeId , p.policeCode , p.shortPhone,
+        isnull((select top 1 devNo from tV_DJJ where BZs2 != '' and DJJLX='01' and BZs2 = p.policeId order by BZs3 desc),'') as djj,
+         1 as isLeader
+        from
+        tPolice p
+        inner join
+        (select * from tDuty where CONVERT(varchar(100), DutyDate, 23) =#{date}) temp
+        on CHARINDEX(p.PoliceId,temp.Leader) > 0
+        left join tDept dept on temp.DeptId=dept.DeptId
+        where temp.Leader !='' and p.BZB1=0
+        and dept.deptId=#{deptId}
+
+        Union all
+        select
+        temp.dutyId, dept.deptId , dept.deptCode, dept.deptSName as deptName,
+            p.policeName  as police , p.policeId , p.policeCode ,p.shortPhone,
+            isnull((select top 1 devNo from tV_DJJ where BZs2 != '' and DJJLX='01' and BZs2 = p.policeId order by BZs3 desc),'')  as djj,
+            0 as isLeader
+        from
+        tPolice p
+        inner join (select * from tDuty where CONVERT(varchar(100), DutyDate, 23) =#{date}) temp
+        on CHARINDEX(p.PoliceId,temp.Polices) > 0
+        left join tDept dept on temp.DeptId=dept.DeptId
+        where dept.deptId=#{deptId} and p.BZB1=0
+
+        <!-- 派出所要查出住所领导 通过Bzs1 -->
+        <if test="pcs == 1">
+            Union all
+            select
+            temp.dutyId, dept.deptId , dept.deptCode, dept.deptSName as deptName,
+            p.policeName  as police , p.policeId , p.policeCode , p.shortPhone,
+            isnull((select top 1 devNo from tV_DJJ where BZs2 != '' and DJJLX='01' and BZs2 = p.policeId order by BZs3 desc),'')  as djj,
+            2 as isLeader
+            from
+            (select * from tDuty where CONVERT(varchar(100), DutyDate, 23) =#{date}) temp
+            left join tDept dept on temp.DeptId=dept.DeptId
+            inner join tPolice p on temp.Bzs1 = p.PoliceId
+            where temp.Bzs1 !='' and p.BZB1=0
+            and dept.deptId=#{deptId}
+        </if>
+
+    </select>
+
+    <select id="getLastTwoDayDianMingData" parameterType="java.lang.String" resultType="java.util.Map">
+        select date_format( dm_time, '%Y-%m-%d' ) as dmDate,yd
+        from tzbmrdm
+        where police_code = #{policeCode} and yd > 0
+        order by dm_time desc
+        limit 2
+    </select>
+
+    <update id="updateDianMingBatch" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+        update tzbmrdm
+        set  yd = #{item.yd}, bz=#{item.bz}
+        <if test="item.dmTime != null">
+            ,dm_time = #{item.dmTime}
+        </if>
+        <if test="item.dmPolice != null and item.dmPolice !=''">
+           ,dm_police = #{item.dmPolice}
+        </if>
+        <if test="item.ip != null and item.ip !=''">
+            ,ip = #{item.ip}
+        </if>
+        where id=#{item.id}
+        </foreach>
+
+    </update>
+
+    <select id="queryDmDataByCondition" parameterType="java.util.Map" resultType="io.renren.modules.dm.entity.DianMingEntity">
+        select t.* from tzbmrdm t
+        left join tDept d on d.dept_id = t.dept_id
+        where 1=1
+        <if test="chouquDate != null and chouquDate !=''">
+            and date_format( t.chouqu_time, '%Y-%m-%d' ) = #{chouquDate} and t.yd = 0
+        </if>
+        <if test="dmTime != null and dmTime !=''">
+            and t.dm_time = #{dmTime}
+        </if>
+        order by d.id, t.report_point_id, t.is_leader desc
+    </select>
+
+    <select id="queryZhiBanAllByDate" parameterType="java.util.Map" resultType="java.util.Map">
+         select d.deptSName as deptName,d.deptId,t.* from
+         (
+             select * from  tDept d where d.deptId in (
+             'D0059','D0068','D0078','D0086','D0245','D0095','D00003','D0181','D0102','D0112',
+             'D0122','D0173','D0191','D0209','D0220','D0238','D0044','D0038','D0037','D0039',
+             'D0040','D0055','D0048','D0050','D0018','D0011','D0032','D0057','D0047' )
+        )d
+         left join
+         (
+            select
+            temp.dutyId, dept.deptId , dept.deptCode, dept.deptSName as deptName,
+            p.policeName  as police , p.policeId , p.policeCode , p.shortPhone, p.mobile, p.BZs3,
+            isnull((select top 1 devNo from tV_DJJ where BZs2 != '' and DJJLX='01' and BZs2 = p.policeId order by BZs3 desc),'') as djj,
+            1 as isLeader
+            from
+            tPolice p
+            inner join
+            (select * from tDuty where CONVERT(varchar(100), DutyDate, 23)=#{date}) temp
+            on CHARINDEX(p.PoliceId,temp.Leader) > 0
+            left join tDept dept on temp.DeptId=dept.DeptId
+            where temp.Leader !='' and p.BZB1=0
+
+            Union all
+            select
+            temp.dutyId, dept.deptId , dept.deptCode, dept.deptSName as deptName,
+                p.policeName  as police , p.policeId , p.policeCode ,p.shortPhone,p.mobile, p.BZs3,
+                isnull((select top 1 devNo from tV_DJJ where BZs2 != '' and DJJLX='01' and BZs2 = p.policeId order by BZs3 desc),'') as djj,
+                0 as isLeader
+            from
+            tPolice p
+            inner join (select * from tDuty where CONVERT(varchar(100), DutyDate, 23)=#{date}) temp
+            on CHARINDEX(p.PoliceId,temp.Polices) > 0
+            left join tDept dept on temp.DeptId=dept.DeptId
+            where 1=1 and p.BZB1=0
+
+            Union all
+            select
+            temp.dutyId, dept.deptId , dept.deptCode, dept.deptSName as deptName,
+            p.policeName  as police , p.policeId , p.policeCode , p.shortPhone,p.mobile, p.BZs3,
+            isnull((select top 1 devNo from tV_DJJ where BZs2 != '' and DJJLX='01' and BZs2 = p.policeId order by BZs3 desc),'') as djj,
+            2 as isLeader
+            from
+            (select * from tDuty where CONVERT(varchar(100), DutyDate, 23)=#{date}) temp
+            left join tDept dept on temp.DeptId=dept.DeptId
+            inner join tPolice p on temp.Bzs1 = p.PoliceId
+            where temp.Bzs1 !='' and p.BZB1=0
+        )t on d.deptId = t.deptId
+        order by LEN(d.deptId),d.deptId,isLeader desc
+    </select>
+
+    <select id="queryDMPage"  resultType="java.util.Map">
+        SELECT
+            dm_time,COUNT(*) AS 'total',
+            SUM(CASE yd WHEN 1 THEN 1 ELSE 0 END) AS 'yd1Total',
+            SUM(CASE yd WHEN 2 THEN 1 ELSE 0 END) AS 'yd2Total',
+            SUM(CASE yd WHEN 3 THEN 1 ELSE 0 END) AS 'yd3Total'
+        FROM tzbmrdm
+        where 1=1
+        GROUP BY dm_time
+        ORDER BY dm_time DESC
+    </select>
+
+    <select id="queryDMByDatePage" resultType="java.util.Map">
+
+        select d.dept_name as deptName,d.short_dept_name as shortDeptName,d.dept_id as deptId,
+        ifnull(temp.total,0) as total,
+        ifnull(temp.yd1Total,0) as yd1Total,
+        ifnull(temp.yd2Total,0) as yd2Total,
+        ifnull(temp.yd3Total,0) as yd3Total
+        from
+        (
+            select * from  tDept d where d.dept_id in (
+            'D0059','D0068','D0078','D0086','D0245','D0095','D00003','D0181','D0102','D0112',
+            'D0122','D0173','D0191','D0209','D0220','D0238','D0044','D0038','D0037','D0039',
+            'D0040','D0050' )
+        ) d
+        left join
+        (
+        SELECT
+        dept_id ,COUNT(*) AS 'total',
+        SUM(CASE yd WHEN 1 THEN 1 ELSE 0 END) AS 'yd1Total',
+        SUM(CASE yd WHEN 2 THEN 1 ELSE 0 END) AS 'yd2Total',
+        SUM(CASE yd WHEN 3 THEN 1 ELSE 0 END) AS 'yd3Total'
+        FROM tzbmrdm
+        WHERE 1=1
+            <if test="startDate != null and startDate != ''">
+                and date_format( dm_time, '%Y-%m-%d' ) &gt;= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and date_format( dm_time, '%Y-%m-%d' ) &lt;= #{endDate}
+            </if>
+            GROUP BY dept_id
+            )temp on temp.dept_id = d.dept_id
+        ORDER BY  LENGTH(d.dept_id),d.dept_id
+    </select>
+
+    <select id="queryZhiBanLeaderByDate" resultType="java.util.Map">
+        select top 1 p.PoliceName as police, 1 as isLeader
+         from
+        tPolice p
+        inner join
+        (select * from tDuty where CONVERT(varchar(100), DutyDate, 23)=#{date} and deptId='D0001') temp
+        on temp.Leader = p.PoliceId
+
+        union all
+
+        select top 1 p.PoliceName as police, 2 as isLeader
+         from
+        tPolice p
+        inner join
+        (select * from tDuty where CONVERT(varchar(100), DutyDate, 23)=#{date} and deptId='D0001') temp
+        on temp.Polices = p.PoliceId
+
+        union all
+
+        select  BZs1 as police, 3 as isLeader
+        from tDuty where CONVERT(varchar(100), DutyDate, 23)=#{date} and deptId='D0001'
+
+        union all
+
+        select  BZs2 as police, 4 as isLeader
+        from tDuty where CONVERT(varchar(100), DutyDate, 23)=#{date} and deptId='D0001'
+    </select>
+
+    <select id="queryDMStatisticsDetailByDatePage" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        police ,COUNT(*) AS 'total',
+        SUM(CASE yd WHEN 1 THEN 1 ELSE 0 END) AS 'yd1Total',
+        SUM(CASE yd WHEN 2 THEN 1 ELSE 0 END) AS 'yd2Total',
+        SUM(CASE yd WHEN 3 THEN 1 ELSE 0 END) AS 'yd3Total'
+        FROM tzbmrdm
+        WHERE dept_id=#{deptId}
+        <if test="startDate != null and startDate != ''">
+            and date_format( dm_time, '%Y-%m-%d' ) &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and date_format( dm_time, '%Y-%m-%d' ) &lt;= #{endDate}
+        </if>
+        GROUP BY police
+        ORDER BY  is_leader desc
+
+    </select>
+
+    <select id="queryPickXtj3ZhiBanDataByDate" resultType="java.util.Map">
+        select
+        temp.reportId as dutyId, dept.deptId , dept.deptCode, dept.deptSName as deptName,
+            p.policeName  as police , p.policeId , p.policeCode ,p.shortPhone,
+            isnull((select top 1 devNo from tV_DJJ where BZs2 != '' and DJJLX='01' and BZs2 = p.policeId order by BZs3 desc),'')  as djj,
+            0 as isLeader
+        from
+        tPolice p
+        inner join (select * from tReport where CONVERT(varchar(100), ReportTime, 23) =#{params.date}) temp
+        on CHARINDEX(p.PoliceId,temp.BZs1) > 0
+        left join tDept dept on temp.DeptId=dept.DeptId
+        where dept.deptId=#{params.deptId} and p.BZB1=0 and temp.ReportPoints=#{params.reportPointId}
+    </select>
+
+    <select id="queryZhiBanZhangByDate" resultType="java.util.Map">
+        select top 1 temp2.*,
+          isnull((select top 1 devNo from tV_DJJ where BZs2 != '' and DJJLX='01' and BZs2 = temp2.policeId order by BZs3 desc),'')  as djj
+        from
+        (
+            select top 1
+            temp.dutyId,dept.deptId , dept.deptCode, dept.deptSName as deptName,
+            p.policeName  as police , p.policeId , p.policeCode ,p.shortPhone, 1 as isLeader
+            from
+        (select * from tDuty where CONVERT(varchar(100), DutyDate, 23)=#{date} and deptId='D0001') temp
+        inner join tPolice p on p.PoliceName = temp.BZs1 and p.BZB1=0
+        left join tDept dept on temp.DeptId=dept.DeptId
+        ) temp2
+    </select>
+
+    <select id="getDmTimeByTbrq" resultType="java.lang.String">
+        select ifnull(dm_time,'') from tzbmrdm
+        where date_format( dm_time, '%Y-%m-%d' ) = #{tbrqParam}
+        order by dm_time desc
+        limit 1
+    </select>
+
+</mapper>

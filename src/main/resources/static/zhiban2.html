@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-在岗点名</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style>
+		.layui-table-view{
+			margin: 0;
+		}
+		.layui-table-tool{
+			z-index: 1;
+		}
+	</style>
+</head>
+<body>
+	
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	
+  <!-- 导航栏 -->
+  <div class="wrap" id="app">
+      <ul class="layui-nav cbox padd">
+  		<li class="layui-nav-item"><a href="index.html">首页</a></li>
+          <li class="layui-nav-item" v-for="item in list">
+            <a href="javascript:;">{{item.modelName}}</a>
+  		  <dl class="layui-nav-child">
+  		        <dd v-for="k in item.subModelList">
+  		        	<a :href="k.url" v-html="k.modelName"></a>
+  		        </dd>
+  		    </dl>
+          </li>
+        </ul>
+  </div>
+  <!-- 导航栏 -->
+
+    <div class="zhibantable">
+		<div class="layui-container" style="margin-top: 15px;">
+			<div class="layui-row">
+				<div class="layui-col-md12">
+					<h2>抽取每日对讲机点名</h2>
+					<hr class="layui-bg-blue" style="border: 2px solid;">
+				</div>
+			</div>
+		<div class="layui-row">
+		    <div class="layui-col-md2" style="line-height: 36px;height: 36px;">
+				<span style="font-size: 18px;">请选择单位</span>
+		    </div>
+		    <div class="layui-col-md10">
+				<div class="layui-form">
+					<div class="layui-input-block" style="margin-left: 0;">
+						<select name="city" lay-filter="pid">
+						  <option value="D00001">请选择</option>
+						  <option value="D0059">邗上派出所</option>
+						  <option value="D0068">汊河派出所</option>
+						  <option value="D0078">瓜洲派出所</option>
+						  <option value="D0086">蒋王派出所</option>
+						  <option value="D0245">甘泉派出所</option>
+						  <option value="D0095">杨庙派出所</option>
+						  <option value="D00003">新盛派出所</option>
+						  <option value="D0181">四季园派出所</option>
+						  <option value="D0102">槐泗派出所</option>
+						  <option value="D0112">方巷派出所</option>
+						  <option value="D0122">公道派出所</option>
+						  <option value="D0173">杨寿派出所</option>
+						  <option value="D0191">念四桥派出所</option>
+						  <option value="D0209">竹西派出所</option>
+						  <option value="D0220">西湖派出所</option>
+						  <option value="D0238">江阳派出所</option>
+						  <option value="D0044">交大汊河中队</option>
+						  <option value="D0038">交大公道中队</option>
+						  <option value="D0037">交大瓜洲中队</option>
+						  <option value="D0039">交大甘泉中队</option>
+						  <option value="D0040">交大方巷中队</option>
+						  <option value="D0050-R60058">巡特警邗巡1号</option>
+						  <option value="D0050-R60059">巡特警邗巡2号</option>
+						  <option value="D0050-R60060">巡特警邗巡3号</option>
+						  <option value="D0050-R60061">巡特警骑警队</option>
+						  <option value="D0001">值班长</option>
+						  <option value="D0055">办公室</option>
+						  <option value="D0048">指挥中心</option>
+						  <!-- <option value="D0050">巡特警大队</option> -->
+						  <option value="D0018">刑警大队</option>
+						  <option value="D0011">治安大队</option>
+						  <option value="D0032">交警大队</option>
+						  <option value="D0057">督察大队</option>
+						  <option value="D0047">法制大队</option>
+						</select>  
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row" style="margin-top: 20px;">
+			<div class="layui-col-md2">
+				<span style="font-size: 18px;">今日值班人员</span>
+			</div>
+			<div class="layui-col-md10">
+				<div class="layui-form">
+				  <table class="layui-table" style='margin: 0;'>
+				    <colgroup>
+				      <col width="128">
+				      <col width="">
+				      <col>
+				    </colgroup>
+				    <tbody>
+				      <tr>
+				        <td>值班领导</td>
+				        <td id="leader"></td>
+				      </tr>
+					  <tr>
+					    <td>值班民警</td>
+					    <td id="mingjing"></td>
+					  </tr>
+					  <!-- <tr>
+					    <td>驻所领导</td>
+					    <td id="zhusuo"></td>
+					  </tr> -->
+					 <tr>
+					    <td>社区民警</td>
+					    <td id="shequ"></td>
+					  </tr>
+				    </tbody>
+				  </table>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="layui-row" style="margin-top: 20px;">
+			<div class="layui-col-md2">
+				<span style="font-size: 18px;">随机抽取</span>
+			</div>
+			<div class="layui-col-md10">
+				<div class="layui-form">
+				  <div class="layui-inline">
+				        <label class="layui-form-label" style="width: auto;">值班领导人数</label>
+				        <div class="layui-input-inline">
+				          <input type="number" name="leaderCount"  autocomplete="off" class="layui-input" lay-verify="required" style="width: 60px;" value="1"  max="1" min="0">
+				        </div>
+				      </div>
+				      <div class="layui-inline">
+				        <label class="layui-form-label" style="width: auto;">值班民警人数</label>
+				        <div class="layui-input-inline">
+				          <input type="number" name="policeCount"  autocomplete="off" class="layui-input" lay-verify="required" style="width: 60px;" value="1"  max="1" min="0">
+				        </div>
+				      </div>
+					  <div class="layui-inline">
+					    <label class="layui-form-label" style="width: auto;">社区民警人数</label>
+					    <div class="layui-input-inline">
+					      <input type="number" name="sqPoliceCount"  autocomplete="off" class="layui-input" lay-verify="required" style="width: 60px;" value="0" max="1" min="0">
+					    </div>
+					  </div>
+					  <div class="layui-inline">
+						  <button class="layui-btn" style="margin-left: 10px;" id="suiji" lay-filter="suiji" lay-submit>开始抽取</button>
+						  <a href="zhibanwbb.html" class="layui-btn" style="margin-left: 10px;display: none;" id="wbb">查看未报备单位</a>
+					  </div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="layui-row" style="margin-top: 20px;">
+			<div class="layui-col-md2">
+				<span style="font-size: 18px;">拟被点名人员</span>
+			</div>
+			<div class="layui-col-md10">
+				<table class="layui-hide" id="nidianming" lay-filter="nidianming" style='margin: 0;'></table>
+			</div>
+		</div>
+		
+		
+		<div class="layui-row" style="margin-top: 20px;">
+			<div class="layui-col-md12">
+				<div id="toolbarDemo" style="display: none;">
+				  <div class="layui-btn-container">
+				    <button class="layui-btn layui-btn-sm" lay-event="getCheckData">确定提交</button>
+				  </div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="layui-row" style="margin: 20px 0 50px 0;">
+			<div class="layui-col-md2">
+				<span style="font-size: 18px;">已抽取点名人员</span>
+			</div>
+			<div class="layui-col-md10">
+				<table class="layui-hide" id="yidianming" lay-filter="yidianming" style='margin: 0;'></table>
+			</div>
+		</div>
+		<div class="layui-row" style="margin-bottom: 150px;">
+			<div class="layui-col-md12">
+				<button type="button" class="layui-btn layui-btn-fluid" id="tiaozhuan">开始点名</button>
+			</div>
+		</div>
+		
+		
+		<div class="layui-row" style="margin-top: 20px;">
+			<div class="layui-col-md12">
+				<div id="toolbarDemo1" style="display: none;">
+				  <div class="layui-btn-container">
+				    <button class="layui-btn layui-btn-sm" lay-event="delall">删除选中</button>
+				  </div>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		</div>
+	</div>
+	
+  <div id="footer"></div>
+    
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>	
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	
+	var deptId ="D00001";
+	var urlhead ='/dm/queryZhiBanDataByDate?date='
+	var urlmid  ='&deptId='
+	var url = baseUrl+urlhead+nowdate+urlmid+deptId;
+	var table = layui.table;
+	var form =  layui.form;
+	var token = instorage.token;
+	rander(url); //渲染默认数据
+	// 默认取值
+	function getMoren(url){
+		//layer.msg("启动调用")
+		$.get(url, function(result){
+			var jincha = "";
+			var leader = "";
+			var shequ = ""
+			$.each(result.data, function(index, value) {
+				if(value.isLeader== 1){
+					leader += value.police + "  ";
+					$("#leader").html(leader);
+				}else if(value.isLeader== 0){
+					jincha += value.police + "  ";
+					$("#mingjing").html(jincha);
+				}else if(value.isLeader== -1){
+					shequ += value.police + "  ";
+					$("#shequ").html(shequ);
+				}
+			});
+		 });
+	};
+	
+	// 渲染表格拟点名
+	function rander(url){
+		table.render({
+		  elem: '#nidianming'
+		  ,url:url
+		  ,toolbar: '#toolbarDemo'
+		  ,defaultToolbar: []
+		  ,height: 325
+		  ,cols: [[
+		     {type:'checkbox'}
+			 ,{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'police', width:100, title: '姓名',align:"center"}
+		    ,{field:'policeCode', width:100, title: '警号', align:"center"}
+		    ,{field:'djj', width:100, title: '对讲机号',align:"center"}
+			,{field:'isLeader', width:100,align:"center",title:'值班岗位', templet:function(d){ if(d.isLeader==1){return "值班领导"}else if(d.isLeader==0){return "值班民警"}else if(d.isLeader== -1){return "社区民警"}}}
+		    ,{field:'info', title: '最近被点名情况',align:"center"}
+		  ]]
+		});
+	}
+	
+	
+	
+	
+	//工具栏事件
+	  table.on('toolbar(nidianming)', function(obj){
+	    var checkStatus = table.checkStatus(obj.config.id);
+	    switch(obj.event){
+	      case 'getCheckData':
+	        var data = checkStatus.data;
+			$.ajax({
+			    url:baseUrl + "/dm/addDMBatch",
+			    data:JSON.stringify(data),
+			    type:"POST",
+			    cache:false,
+			    dataType : 'JSON',
+			    contentType: "application/json",
+				beforeSend: function (XMLHttpRequest) {
+				   XMLHttpRequest.setRequestHeader("token", token);
+				},
+			    success:function(data) {
+			        if(data.code==0){
+			            layer.msg("添加成功");
+			        }else {
+			            layer.msg(data.msg);
+			        }
+					table.reload('yidianming', {
+					  url: baseUrl+'/dm/queryDmDataByCondition?chouquDate='+nowdate,
+					});
+			    },
+			    error : function (res) {
+			        layer.msg('发送失败');
+			    }
+			})
+			
+			
+	      break;
+	      
+	    };
+	  });
+	
+	// 选择派出所
+	form.on('select(pid)',function(data){
+		var pCode= data.value;
+		$("#leader").html("");
+		$("#mingjing").html("");
+		$("#shequ").html("");
+		deptId=pCode;
+		url = baseUrl+urlhead+nowdate+urlmid+deptId;
+		rander(url);
+		getMoren(url);
+	});
+	
+	// 已抽取名人
+	table.render({
+	  elem: '#yidianming'
+	  ,url:baseUrl+'/dm/queryDmDataByCondition?chouquDate='+nowdate
+	  ,toolbar: '#toolbarDemo1'
+	  ,defaultToolbar: []
+	  ,cols: [[
+		 {type:'checkbox'}
+		,{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+	    ,{field:'deptName',  title: '单位',align:"center"}
+	    ,{field:'police', width:100, title: '被点人员',align:"center" }
+	    ,{field:'policeCode', width:100, title: '警号',align:"center"}
+	    ,{field:'djj', title: '对讲机号',align:"center"}
+		,{field:'isLeader', title:'值班岗位', templet:function(d){ if(d.isLeader==1){return "值班领导"}else if(d.isLeader==0){return "值班民警"}else if(d.isLeader== -1){return "社区民警"}}}
+		,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150,align:"center"}
+	  ]]
+	});
+	
+	table.on('tool(yidianming)', function(obj){
+	    var data = obj.data;
+	    if(obj.event === 'del'){
+			var delid= obj.data.id;
+	      layer.confirm('是否删除已抽取人员？', function(index){
+	        obj.del();
+			$.ajax({
+			    url:baseUrl + "/dm/deleteDM?id=" + delid,
+			    type:"get",
+			    cache:false,
+				
+				beforeSend: function (XMLHttpRequest) {
+				   XMLHttpRequest.setRequestHeader("token", token);
+				},
+			    success:function(data) {
+					if(data.code==0){
+					    layer.msg("删除成功");
+						table.reload('yidianming', {
+						  url: baseUrl+'/dm/queryDmDataByCondition?chouquDate='+nowdate,
+						});
+					}else {
+					    layer.msg(data.msg);
+					}
+			    },
+			    error : function (res) {
+			        layer.msg('删除失败');
+			    }
+			})
+	        layer.close(index);
+	      });
+	    } 
+	  });
+	
+	
+	//工具栏删除事件
+	  table.on('toolbar(yidianming)', function(obj){
+	    var checkStatus = table.checkStatus(obj.config.id);
+	    switch(obj.event){
+	      case 'delall':
+	        var data = checkStatus.data;
+			//添加id
+			console.log(data);
+			// /dm/deleteDMBatch
+			
+			$.ajax({
+			    url:baseUrl + "/dm/deleteDMBatch",
+			    type:"POST",
+			    cache:false,
+				dataType : 'JSON',
+				data:JSON.stringify(data),
+				contentType: "application/json",
+				beforeSend: function (XMLHttpRequest) {
+				   XMLHttpRequest.setRequestHeader("token", token);
+				},
+			    success:function(data) {
+					if(data.code==0){
+					    layer.msg("删除成功");
+						table.reload('yidianming', {
+						  url: baseUrl+'/dm/queryDmDataByCondition?chouquDate='+nowdate,
+						});
+					}else {
+					    layer.msg(data.msg);
+					}
+			    },
+			    error : function (res) {
+			        layer.msg('删除失败');
+			    }
+			})
+			
+			
+	      break;
+	      
+	    };
+	  });
+	
+	
+	
+	
+	
+	
+	
+	$("#tiaozhuan").click(function(){
+		var checklength = baseUrl+'/dm/queryDmDataByCondition?chouquDate='+nowdate;
+		$.get(checklength, function(result){
+				if(result.data.length==0){
+					layer.msg("您还没抽取点名人员")
+					return false;
+				}else{
+					window.location="zhiban3.html"
+				}
+		  });
+		
+	})
+	
+	  form.on('submit(suiji)', function(data){
+		var load1 = layer.load(1);  
+		var leaderCount = data.field.leaderCount;
+		var policeCount = data.field.policeCount;
+		var sqPoliceCount  = data.field.sqPoliceCount;
+		$.ajax({
+		    url:baseUrl+"/dm/randomDm?leaderCount="+leaderCount+'&policeCount='+policeCount+'&sqPoliceCount='+sqPoliceCount+'&date='+nowdate,
+		    type:"get",
+		    cache:false,
+			beforeSend: function (XMLHttpRequest) {
+			   XMLHttpRequest.setRequestHeader("token", token);
+			},
+		    success:function(data) {
+				layer.close(load1);
+				if(data.code==0){
+					layer.msg('抽取成功');
+					table.reload('yidianming', {
+					  url: baseUrl+'/dm/queryDmDataByCondition?chouquDate='+nowdate,
+					});
+				}else {
+				    layer.msg(data.msg);
+				}
+		    },
+		    error : function (res) {
+				layer.close(load1);
+		        layer.msg('抽取失败');
+		    }
+		})
+		
+	   
+	    return false;
+	  });
+	
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.video.dao.VideoDao">
+    <update id="updateVideoBz">
+        update tXDJ_TWJK_MRXJ
+        set 备注 = #{params.bz}
+        where id = #{params.id}
+
+    </update>
+
+
+    <select id="queryVideoDataByTypeAndDate" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+            所属单位 ,isnull(count(*),0) as total,
+            isnull(SUM(CASE WHEN 状态= '成功' THEN 1 ELSE 0 END),0) AS 'zxs',
+            isnull(SUM(CASE WHEN 状态!='成功' THEN 1 ELSE 0 END),0) AS 'lxs'
+            from tXDJ_TWJK_MRXJ
+        where 1=1
+        <if test="params.type == 0">
+            and (所属单位 like '天网%' or 所属单位 like '高清项目%' or 所属单位 like '人脸%')
+        </if>
+        <if test="params.type == 1">
+            and (所属单位 like '%自建%')
+        </if>
+        <if test="params.type == 2">
+            and (所属单位 ='交警大队')
+        </if>
+
+
+        and left(检测开始时间, 10)=#{params.date}
+        group by 所属单位
+        order by 所属单位
+    </select>
+
+    <select id="queryVideoDataDetailPage" resultType="java.util.Map">
+        select
+        t.*
+        <!--
+        (select top 1 检测开始时间 from tXDJ_TWJK_MRXJ where t.监控点SN = 监控点SN and 状态 = '成功' order by 检测开始时间 desc) as zjsxsj
+        -->
+        from tXDJ_TWJK_MRXJ t
+        where  1=1
+        and left(t.检测开始时间, 10)=#{params.date}
+
+        <if test="params.kind == 1">
+            and t.状态 != '成功'
+        </if>
+        <if test="params.pointName != null and params.pointName != ''">
+            and 监控点名称 like '%'+#{params.pointName}+'%'
+        </if>
+        and t.所属单位 LIKE '%'+#{params.dept}+'%'
+        order by t.监控点名称
+    </select>
+
+    <select id="queryVideoStatisticsByTypeAndDate" resultType="java.util.Map">
+
+      select
+        isnull(count(j.id),0) as total,
+        isnull(SUM(CASE WHEN j.状态= '成功' THEN 1 ELSE 0 END),0) AS 'zxs',
+        x.V_XMID as xmid
+      from tXDJ_TWJK_MRXJ j
+        inner join tV_SB s on j.监控点sn = s.bzs1
+        left join tV_DW d on s.DWId = d.V_DWID
+        left join tV_XM x on d.XMId = x.V_XMID
+
+        where x.V_XMID in (${params.xmIds})
+
+        <if test="params.startDate != null and params.startDate != ''">
+            and left( j.检测开始时间, 10 ) &gt;= #{params.startDate}
+        </if>
+        <if test="params.endDate != null and params.endDate != ''">
+            and left( j.检测开始时间, 10 ) &lt;= #{params.endDate}
+        </if>
+        group by x.V_XMID
+        order by x.V_XMID
+
+    </select>
+
+    <select id="queryVideoStatisticsByTypeAndDateOld" resultType="java.util.Map">
+
+        select
+        所属单位 ,isnull(count(*),0) as total,
+        isnull(SUM(CASE WHEN 状态= '成功' THEN 1 ELSE 0 END),0) AS 'zxs'
+        from tXDJ_TWJK_MRXJ
+        where 1=1
+        <if test="params.startDate != null and params.startDate != ''">
+            and left( 检测开始时间, 10 ) &gt;= #{params.startDate}
+        </if>
+        <if test="params.endDate != null and params.endDate != ''">
+            and left( 检测开始时间, 10 ) &lt;= #{params.endDate}
+        </if>
+        <if test="params.type == 1">
+            and (所属单位 like '%自建%')
+        </if>
+        <if test="params.type == 2">
+            and (所属单位 ='交警大队')
+        </if>
+        group by 所属单位
+        order by 所属单位
+
+    </select>
+
+    <select id="queryVideoXJCSByDateAndDept" resultType="java.lang.Integer">
+        select top 1 isnull(temp.xjcs,0) as xjcs
+        from
+        (
+            select count(j.id) as xjcs,j.监控点SN
+            from tXDJ_TWJK_MRXJ j
+            inner join tV_SB s on j.监控点sn = s.bzs1
+            left join tV_DW d on s.DWId = d.V_DWID
+            left join tV_XM x on d.XMId = x.V_XMID
+
+            where x.V_XMID in (${params.xmIds})
+            <if test="params.startDate != null and params.startDate != ''">
+                and left( j.检测开始时间, 10 ) &gt;= #{params.startDate}
+            </if>
+            <if test="params.endDate != null and params.endDate != ''">
+                and left( j.检测开始时间, 10 ) &lt;= #{params.endDate}
+            </if>
+            group by j.监控点SN
+        )temp
+    </select>
+
+    <select id="queryVideoXJCSByDateAndDeptOld" resultType="java.lang.Integer">
+        select top 1 isnull(temp.xjcs,0) as xjcs
+        from
+        (
+        select count(id) as xjcs,监控点SN
+        from tXDJ_TWJK_MRXJ
+        where 所属单位 LIKE #{params.dept}+'%'
+        <if test="params.startDate != null and params.startDate != ''">
+            and left( 检测开始时间, 10 ) &gt;= #{params.startDate}
+        </if>
+        <if test="params.endDate != null and params.endDate != ''">
+            and left( 检测开始时间, 10 ) &lt;= #{params.endDate}
+        </if>
+        group by 监控点SN
+        )temp
+    </select>
+
+    <select id="queryLastVideoDateByType" resultType="java.lang.String">
+        select left(检测开始时间,10)
+        from tXDJ_TWJK_MRXJ
+        where 1=1
+        <if test="params.type == 0">
+            and (所属单位 like '天网%' or 所属单位 like '高清项目%' or 所属单位 like '人脸%')
+        </if>
+        <if test="params.type == 1">
+            and (所属单位 like '%自建%')
+        </if>
+        <if test="params.type == 2">
+            and (所属单位 ='交警大队')
+        </if>
+        group by left(检测开始时间,10)
+        order by left(检测开始时间,10) desc;
+
+    </select>
+
+    <select id="getZjsxBySn" resultType="java.lang.String">
+        select top 1 isnull(检测开始时间,'') as zjsxsj
+        from tXDJ_TWJK_MRXJ where 监控点SN = #{params.sn}
+        and left(检测开始时间,10) &lt;= #{params.lastCheckTime}
+        and  状态= '成功'
+        order by 检测开始时间 desc
+
+    </select>
+
+    <select id="queryVideoBzDataPage" resultType="io.renren.modules.video.entity.DwbzEntity">
+        select * from tdwbz where bh = #{params.bh} order by create_time desc
+    </select>
+
+    <select id="getPoliceNameByPoliceCode" resultType="java.lang.String">
+        select top 1 policeName from tPolice where PoliceCode = #{userId}
+    </select>
+
+    <select id="queryVideoDataDetailByDate" resultType="java.util.Map">
+        select *
+        from tXDJ_TWJK_MRXJ
+        where 1=1
+        <if test="params.type == 0">
+            and (所属单位 like '天网%' or 所属单位 like '高清项目%' or 所属单位 like '人脸%')
+        </if>
+        <if test="params.type == 1">
+            and (所属单位 like '%自建%')
+        </if>
+        <if test="params.type == 2">
+            and (所属单位 ='交警大队')
+        </if>
+        and left(检测开始时间, 10)=#{params.date}
+        order by 所属单位,监控点名称
+    </select>
+
+    <select id="queryVideoDataDetailByDateNew" resultType="java.util.Map">
+        select j.*, isnull(x.V_XMID,'') as xmid, isnull(d.V_DWID,'') as dwid
+        from tXDJ_TWJK_MRXJ j
+        inner join tV_SB s on j.监控点sn = s.bzs1
+        left join tV_DW d on s.DWId = d.V_DWID
+        left join tV_XM x on d.XMId = x.V_XMID
+
+        where x.V_XMID in (${params.xmIds})
+
+        and left(j.检测开始时间, 10)=#{params.date}
+        order by j.所属单位,j.监控点名称
+    </select>
+
+    <select id="queryCompareDataBySnPage" resultType="java.util.Map">
+        select
+            temp.id,temp.监控点名称,temp.监控点sn,temp.所属单位,
+            isnull(s.DevName,'') as devName,isnull(s.bzs1,'') as bzs1,'' as bz
+            from
+            (select *
+            from tXDJ_TWJK_MRXJ
+            where left(检测开始时间,10)=(select top 1 max(left(检测开始时间,10)) from tXDJ_TWJK_MRXJ)
+            )temp
+            left join tV_SB s on s.bzs1 = temp.监控点sn
+            where 1=1
+
+            order by temp.所属单位,temp.监控点名称
+    </select>
+
+    <select id="queryCompareDataByNamePage" resultType="java.util.Map">
+        select
+            temp.id,temp.监控点名称,temp.监控点sn,temp.所属单位,
+            isnull(s.DevName,'') as devName,isnull(s.bzs1,'') as bzs1,'' as bz
+            from
+            (select *
+            from tXDJ_TWJK_MRXJ
+            where left(检测开始时间,10)=(select top 1 max(left(检测开始时间,10)) from tXDJ_TWJK_MRXJ)
+            )temp
+            left join tV_SB s on s.DevName = temp.监控点名称
+            where 1=1
+            and temp.所属单位 not like '%内部%'
+            and temp.所属单位 not like '%自建%'
+            and temp.所属单位 not like '交警%'
+            order by temp.所属单位,temp.监控点名称
+    </select>
+
+    <select id="queryNormalVideoDataDetailByConfigIdPage" resultType="java.util.Map">
+        select
+        j.*, isnull(x.V_XMID,'') as xmid, isnull(d.V_DWID,'') as dwid
+        from tXDJ_TWJK_MRXJ j
+        left join tV_SB s on j.监控点sn = s.bzs1
+        left join tV_DW d on s.DWId = d.V_DWID
+        left join tV_XM x on d.XMId = x.V_XMID
+        where x.V_XMID in (${params.xmIds})
+        and left(j.检测开始时间, 10)=#{params.date}
+        <if test="params.pointName != null and params.pointName != ''">
+            and s.DevName like '%'+#{params.pointName}+'%'
+        </if>
+        order by j.监控点名称
+
+    </select>
+    <select id="queryErrorVideoDataDetailByConfigId" resultType="java.util.Map">
+        select temp.*, dd.pointName as dwmc
+        from
+        (
+            select t2.* from
+            (
+                select
+                d.V_DWID as dwid,
+                isnull(count (j.id),0) as jkzs,
+                isnull(SUM(CASE j.状态 WHEN '成功' THEN 0 ELSE 1 END),0) AS gzjks
+                from tXDJ_TWJK_MRXJ j
+                inner join tV_SB s on j.监控点sn = s.bzs1
+                inner join tV_DW d on s.DWId = d.V_DWID
+                inner join tV_XM x on d.XMId = x.V_XMID
+                where x.V_XMID in (${params.xmIds})
+                and left(j.检测开始时间, 10)=#{params.date}
+                <if test="params.pointName != null and params.pointName != ''">
+                    and d.pointName like '%'+#{params.pointName}+'%'
+                </if>
+                group by d.V_DWID
+            )t2 where t2.gzjks > 0
+        ) temp
+        inner join tV_DW dd on temp.dwid = dd.V_DWID
+        order by dd.pointName
+    </select>
+
+    <select id="getZjsxByDwid" resultType="java.lang.String">
+        select top 1 isnull(j.检测开始时间,'') as sj
+        from tXDJ_TWJK_MRXJ j
+        inner join tV_SB s on j.监控点sn = s.bzs1
+        inner join tV_DW d on s.DWId = d.V_DWID
+        where d.V_DWID = #{params.dwid}
+        and left(j.检测开始时间,10) &lt;= #{params.date}
+        <if test="params.jsZjsx == 1">
+            and  j.状态= '成功'
+        </if>
+        order by j.检测开始时间 desc
+    </select>
+
+    <select id="getScjcsjByDwid" resultType="java.lang.String">
+        select top 1 isnull(j.检测开始时间,'') as sj
+        from tXDJ_TWJK_MRXJ j
+        inner join tV_SB s on j.监控点sn = s.bzs1
+        inner join tV_DW d on s.DWId = d.V_DWID
+        where d.V_DWID = #{params.dwid}
+        order by j.检测开始时间
+    </select>
+
+    <select id="getDwByXmids" resultType="java.lang.Integer">
+        select count(*) from tV_DW where XMId in (${xmIds})
+    </select>
+
+    <select id="queryHtVideoDataDetailByConfigIdPage" resultType="java.util.Map">
+        select * from tV_DW
+        where XMId in (${params.xmIds})
+        <if test="params.pointName !=null and params.pointName !=''">
+            and pointName like '%'+#{params.pointName}+'%'
+        </if>
+        order by PointName
+    </select>
+
+    <select id="getAnyOneErrorXjData" resultType="java.lang.Integer">
+        select
+            top 1 j.id
+        from tXDJ_TWJK_MRXJ j
+        inner join tV_SB s on j.监控点sn = s.bzs1
+        inner join tV_DW d on s.DWId = d.V_DWID
+        where d.V_DWId = #{params.dwid}
+        and left(j.检测开始时间, 10)=#{params.date}
+        and  j.状态 != '成功'
+    </select>
+
+    <select id="queryHistoryDataPage" resultType="java.util.Map">
+        select
+          left(j.检测开始时间,10) as date,
+          isnull(count (j.id),0) as jkzs,
+          isnull(SUM(CASE j.状态 WHEN '成功' THEN 0 ELSE 1 END),0) AS gzjks
+        from tXDJ_TWJK_MRXJ j
+        inner join tV_SB s on j.监控点sn = s.bzs1
+        inner join tV_DW d on s.DWId = d.V_DWID
+        where d.V_DWId = #{params.dwid}
+        group by left(j.检测开始时间,10)
+    </select>
+
+    <select id="queryDwDetailByDwidAndDate" resultType="java.util.Map">
+        select j.*
+        from tV_SB s
+        inner join tV_DW d on s.DWId = d.V_DWID
+        left join tXDJ_TWJK_MRXJ j on j.监控点sn = s.bzs1
+        where d.V_DWId = #{params.dwid}
+        and left(j.检测开始时间, 10)=#{params.date}
+        order by j.监控点名称
+    </select>
+
+    <select id="queryTwLxData" resultType="java.util.Map">
+      select
+        left(j.检测开始时间,10) as date,left(j.监控点名称,4) as dwbh,
+        isnull(count (j.id),0) as jkzs,
+        isnull(SUM(CASE j.状态 WHEN '成功' THEN 0 ELSE 1 END),0) AS gzjks
+        from tXDJ_TWJK_MRXJ j
+        where j.所属单位 like '%天网%'
+        and left(j.检测开始时间, 10) &gt;= #{params.startDate}
+        and left(j.检测开始时间, 10) &lt;= #{params.endDate}
+        group by left(j.检测开始时间,10),left(j.监控点名称,4)
+        order by left(j.监控点名称,4),left(j.检测开始时间,10)
+    </select>
+
+    <select id="queryVideoBzDataByXMIDPage" resultType="java.util.Map">
+        select * from tXDJ_TWJK_XYJK
+        where XMID = #{params.xmid}
+        and ltrim(rtrim(BZ)) is not null
+        and ltrim(rtrim(BZ)) != ''
+        order by datetime1 desc
+    </select>
+
+    <select id="queryRLVideoDataByDate" resultType="java.util.Map">
+      select isnull(count(*),0) as total,
+            isnull(SUM(CASE WHEN 状态= '成功' THEN 1 ELSE 0 END),0) AS 'zxs',
+            isnull(SUM(CASE WHEN 状态!='成功' THEN 1 ELSE 0 END),0) AS 'lxs'
+      from tXDJ_TWJK_MRXJ j
+      inner join tV_SB s on j.监控点sn = s.bzs1 and s.SBLX = '04'
+      where left(j.检测开始时间, 10)=#{params.date}
+    </select>
+
+    <select id="queryLastRLVideoDate" resultType="java.lang.String">
+        select left(检测开始时间,10)
+        from tXDJ_TWJK_MRXJ
+        where 1=1
+        and (监控点名称 like '%人脸%' )
+        group by left(检测开始时间,10)
+        order by left(检测开始时间,10) desc
+    </select>
+
+    <select id="queryRLVideoDataDetailPage" resultType="java.util.Map">
+        select
+        j.*
+        from tXDJ_TWJK_MRXJ j
+        left join tV_SB s on j.监控点sn = s.bzs1 and s.SBLX = '04'
+        where  1=1
+        and left(j.检测开始时间, 10)=#{params.date}
+        <if test="params.pointName !=null and params.pointName !=''">
+            and j.监控点名称 like '%'+#{params.pointName}+'%'
+        </if>
+        <if test="params.kind == 1">
+            and j.状态 != '成功'
+        </if>
+        order by j.监控点名称
+    </select>
+
+    <select id="getScjcsjBySn" resultType="java.lang.String">
+        select top 1 isnull(j.检测开始时间,'') as sj
+        from tXDJ_TWJK_MRXJ j
+        where j.监控点sn = #{params.sn}
+        order by j.检测开始时间
+    </select>
+
+    <select id="getZjjcsjBySn" resultType="java.lang.String">
+        select top 1 isnull(j.检测开始时间,'') as sj
+        from tXDJ_TWJK_MRXJ j
+        where j.监控点sn = #{params.sn}
+        order by j.检测开始时间 DESC
+    </select>
+
+    <select id="getZjsxAndJkzsByDwid" resultType="java.lang.String">
+        select top 1 left(j.检测开始时间,13)
+        from tXDJ_TWJK_MRXJ j
+        inner join tV_SB s on j.监控点sn = s.bzs1
+        inner join tV_DW d on s.DWId = d.V_DWID
+        where d.V_DWID = #{params.dwid}
+        and left(j.检测开始时间,10) &lt;= #{params.date}
+        and  j.状态= '成功'
+        group by left(j.检测开始时间,13)
+        having count(j.id) = #{params.jkzs}
+        order by left(j.检测开始时间,13) desc
+    </select>
+
+    <select id="queryBxDataPage" resultType="io.renren.modules.video.entity.DwbzEntity">
+        select t.*
+        from tdwbz t
+        inner join (select max(id) as id from tdwbz GROUP BY bh) temp on temp.id  = t.id
+        where 1=1
+        and t.state = 0
+        <if test="params.kind==1">
+            and t.dwortd = 0
+        </if>
+        <if test="params.kind==0">
+            and t.dwortd = 1
+        </if>
+        order by create_time desc
+
+    </select>
+
+    <!--<select id="queryBxDataPage" resultType="io.renren.modules.video.entity.DwbzEntity">-->
+        <!--select * from tdwbz-->
+        <!--where id in (-->
+
+          <!--select max(id) from tdwbz-->
+            <!--where state = 0-->
+            <!--<if test="params.kind==1">-->
+                <!--and length(bh) = 13-->
+                <!--and bh like 'V%'-->
+            <!--</if>-->
+            <!--<if test="params.kind==0">-->
+                <!--and length(bh) != 13-->
+                <!--and bh not like 'V%'-->
+            <!--</if>-->
+            <!--group by bh-->
+
+        <!--)-->
+
+
+        <!--union all-->
+
+        <!--select * from tdwbz-->
+        <!--where state = 1-->
+        <!--<if test="params.kind==1">-->
+            <!--and length(bh) = 13-->
+            <!--and bh like 'V%'-->
+        <!--</if>-->
+        <!--<if test="params.kind==0">-->
+            <!--and length(bh) != 13-->
+            <!--and bh not like 'V%'-->
+        <!--</if>-->
+
+        <!--order by create_time desc-->
+
+    <!--</select>-->
+
+    <select id="queryGZDWLastUpData" resultType="java.lang.String">
+        select  top 1 isnull(left(j.检测开始时间,10),'')
+        from tXDJ_TWJK_MRXJ j
+        inner join tV_SB s on j.监控点sn = s.bzs1
+        inner join tV_DW d on s.DWId = d.V_DWID
+        where d.V_DWID = #{params.dwid}
+        and  j.状态= '成功'
+
+        <if test="params.islast == 0">
+            and left(j.检测开始时间,10) &lt;= #{params.bzsj}
+        </if>
+        <if test="params.islast == 1">
+            and left(j.检测开始时间,10) &gt;= #{params.bzsj}
+        </if>
+        group by left(j.检测开始时间,10)
+        having count(j.状态) = (select count(V_SBId) from tV_SB where DWId = #{params.dwid} and SBLX != '09')
+        order by left(j.检测开始时间,10) desc
+    </select>
+
+    <select id="queryGZDWData" resultType="java.util.Map">
+      select d.pointName, x.projectName, d.V_DWId
+      from tV_DW d
+      left join tV_XM x on d.XMId = x.V_XMID
+      where d.V_DWID in (${params.bhs})
+    </select>
+
+    <select id="queryGZTDData" resultType="java.util.Map">
+        select s.devName, x.projectName ,s.BZs1, s.V_SBId as bh
+          from tV_SB s
+          left join tV_DW d on s.DWId = d.V_DWID
+          left join tV_XM x on d.XMId = x.V_XMID
+          where s.BZs1 in (${params.bhs})
+    </select>
+
+    <select id="queryGZTDastUpData" resultType="java.lang.String">
+        select  top 1 isnull(left(j.检测开始时间,10),'')
+        from tXDJ_TWJK_MRXJ j
+        where j.监控点sn = #{params.sn}
+        <if test="params.islast == 0">
+            and left(j.检测开始时间,10) &lt;= #{params.bzsj}
+        </if>
+        <if test="params.islast == 1">
+            and left(j.检测开始时间,10) &gt;= #{params.bzsj}
+        </if>
+        and  j.状态= '成功'
+	    order by left(j.检测开始时间,10) desc
+    </select>
+    <select id="getNameBySn" resultType="java.lang.String">
+        select top 1 监控点名称 from tXDJ_TWJK_MRXJ where 监控点SN =#{sn} order by 检测开始时间 desc
+    </select>
+
+    <select id="queryDwOrTd" resultType="java.util.Map">
+        <!-- 通道故障 -->
+        <if test="params.kind ==0 ">
+
+            select m.监控点名称 as name,m.所属单位 as projectName,
+                    m.监控点SN as bh, s.BZs1 as sn, t.DeptSName as deptName
+            from tXDJ_TWJK_MRXJ m
+            left join tV_SB s on m.监控点SN = s.BZs1 left join tV_DW d on s.DWId = d.V_DWId
+--             left join tV_XM x on d.XMId = x.V_XMId
+            left join tDept t on d.DeptId+'0000' = t.DeptCode
+            where 1=1
+            and left(m.检测开始时间,10) = #{params.xjsj} and m.监控点名称 is not null and m.监控点名称 != ''
+            <if test="params.name != null and params.name !=''">
+                and m.监控点名称 like '%'+#{params.name}+'%'
+            </if>
+            order by m.监控点名称
+        </if>
+
+    </select>
+
+    <select id="getLastXjsj" resultType="java.lang.String">
+
+      SELECT top 1 left(检测开始时间,10) from tXDJ_TWJK_MRXJ order by datetime1 desc
+
+    </select>
+
+    <select id="queryAllCompareXm" resultType="java.util.Map">
+        select 所属单位 from   tXDJ_TWJK_MRXJ
+        where left(检测开始时间,10)=(select top 1 max(left(检测开始时间,10)) from tXDJ_TWJK_MRXJ)
+        order by 编号
+    </select>
+
+    <select id="queryDwVideoDataDetailByConfigId" resultType="java.util.Map">
+        select temp.*, dd.pointName as dwmc
+        from
+        (
+        select t2.* from
+        (
+        select
+        d.V_DWID as dwid,
+        isnull(count (j.id),0) as jkzs,
+        isnull(SUM(CASE j.状态 WHEN '成功' THEN 1 ELSE 0 END),0) AS zcjks
+        from tXDJ_TWJK_MRXJ j
+        inner join tV_SB s on j.监控点sn = s.bzs1
+        inner join tV_DW d on s.DWId = d.V_DWID
+        inner join tV_XM x on d.XMId = x.V_XMID
+        where x.V_XMID in (${params.xmIds})
+        and left(j.检测开始时间, 10)=#{params.date}
+        <if test="params.pointName != null and params.pointName != ''">
+            and d.pointName like '%'+#{params.pointName}+'%'
+        </if>
+        group by d.V_DWID
+        )t2 where 1=1
+        ) temp
+        inner join tV_DW dd on temp.dwid = dd.V_DWID
+        order by dd.pointName
+    </select>
+
+</mapper>

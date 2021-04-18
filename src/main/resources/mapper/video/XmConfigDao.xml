@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.video.dao.XmConfigDao">
+
+
+    <select id="queryAllXmConfig" resultType="java.util.Map">
+        select * from tV_XM
+        order by projectName desc
+    </select>
+
+    <select id="getXmNameByIds" resultType="java.lang.String">
+      select projectName from tV_XM where V_XMId in (${ids}) order by V_XMId
+    </select>
+
+    <select id="queryXmIdsByType" resultType="java.lang.String">
+        select xmid from txmconfig where dw = #{type} and isdel = 0 order by sort
+    </select>
+</mapper>

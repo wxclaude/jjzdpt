@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.xlgl.dao.TdkDao">
+
+
+    <select id="queryDkByPage" resultType="io.renren.modules.xlgl.entity.TdkEntity">
+        select dk.sb_id, count(dk.id) as dks
+        from tV_RWDK dk
+        where dk.isdel = 0
+        <!-- and dk.sb_id in (${params.sbIds}) -->
+        <if test="params.sbbh != null and params.sbbh != ''">
+            and dk.sb_id LIKE '%'+#{params.sbbh}+'%'
+        </if>
+        group by dk.sb_id
+    </select>
+    <select id="queryBksBySbId" resultType="java.util.Map">
+        select dk.sb_id, dk.bkh, count(dk.bkh) as bks
+        from tV_RWDK dk
+        where dk.isdel = 0
+        and dk.sb_id = #{sbId}
+        group by dk.sb_id, dk.bkh
+    </select>
+
+
+    <select id="queryDkDetailBySbIdPage" resultType="io.renren.modules.xlgl.entity.TdkEntity">
+        select dk.*, isnull(xl1.xlbh,'') as xlbh1, isnull(xl2.xlbh,'') as xlbh2, a2.DictionaryText as 'wllx'
+        from tV_RWDK dk
+        left join tV_RWXL xl1 on dk.id = xl1.sl_dk_id and xl1.isdel = 0
+        left join tV_RWXL xl2 on dk.id = xl2.xl_dk_id and xl2.isdel = 0
+        left join tV_RWSB sb on sb.V_RWSBId = dk.sb_id
+        left join tDictionary AS a2 ON sb.DWId = a2.Dictionary AND (a2.DictionaryName = 'D_WLLX')
+        where dk.isdel = 0
+        and dk.sb_id = #{params.sbId}
+        <if test="params.bkh != null and params.bkh != ''">
+            and dk.bkh = #{params.bkh}
+        </if>
+    </select>
+
+    <select id="querySbSearchCondition" resultType="java.util.Map">
+        select
+            distinct dk.bkh as value
+        from tV_RWDK dk
+        where dk.sb_id =#{params.sbId}
+        order by dk.bkh
+    </select>
+
+</mapper>

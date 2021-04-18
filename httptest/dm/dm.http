@@ -1,0 +1,160 @@
+POST http://localhost:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+#退出登录
+POST http://localhost:8080/sys/logout
+Accept: */*
+Cache-Control: no-cache
+token:5103c6d111ce066a3fde6a23928222aa
+
+<> 2020-03-16T110533.200.json
+###
+
+# 批量新增点名
+POST http://localhost:8080/dm/addDMBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:5f60398a0285e1525f104256e5d1cdaf
+
+[
+  {"dutyId":"DUTY000070638","police":"卜春华","djj":"2222","policeCode": "100356","deptName":"扬州市公安局邗江分局新盛派出所","deptId":"D00003","shortPhone": "2222","isLeader":1},
+  {"dutyId":"DUTY000070638","police":"卜春华","djj":"2222","policeCode": "100356","deptName":"扬州市公安局邗江分局新盛派出所","deptId":"D00003","shortPhone": "2222","isLeader":1}
+]
+<> 2020-03-16T110533.200.json
+
+###
+#根据日期和单位id获取每日排班数据
+GET http://localhost:8080/dm/queryZhiBanDataByDate?date=2020-04-10&deptId=D0001
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+#点名批量更新
+POST http://localhost:8080/dm/updateDMBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:28e4075c19e373b5ac15c4216df2dd72
+
+[
+  {"id":"5","yd":"1","bz":""},
+  {"id":"6","yd":"3","bz":"666"}
+]
+<> 2020-03-16T110533.200.json
+###
+
+###
+#根据日期和单位id获取每日排班数据
+GET http://localhost:8080/dm/queryDmDataByCondition?dmTime=2020-03-18%2010:17:32
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+
+#根据id删除
+GET http://localhost:8080/dm/deleteDM?id=3
+Accept: */*
+Cache-Control: no-cache
+token:99c50653129075c19f01dcd8aa96c51d
+
+<> 2020-03-16T110533.200.json
+###
+
+#根据id批量删除
+POST http://localhost:8080/dm/deleteDMBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[
+  {"id":"630"},
+  {"id":"631"}
+]
+###
+
+###
+#查看每日点名详情
+GET http://localhost:8080/dm/queryDMPage?page=1&limit=2
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+###
+#根据点名时间导出点名详情
+GET http://localhost:8080/dm/exportDMByDate?dmTime=2020-03-18%2009:39:24
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+###token:b538b0f5b12a7f1b7162ee5c090e5d43
+#按照配出所统计点名
+GET http://localhost:8080/dm/queryDMStatisticsByDatePage?startDate=2020-03-18&endDate=2020-03-18&page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+###
+#按照配出所统计点名导出
+GET http://localhost:8080/dm/exportDMStatisticsByDate?startDate=2020-03-18&endDate=2020-03-18&token=c238eeb5a5d104b58a3cbd5ee4cfa614
+Accept: */*
+Cache-Control: no-cache
+token:f114bde308c7c0efdc3645565f3e0ea4
+
+<> 2020-03-16T110533.200.json
+###
+
+###
+#按照配出所统计点名导出
+GET http://localhost:8080/dm/randomDm?leaderCount=1&policeCount=1&sqPoliceCount=1&date=2020-03-26
+Accept: */*
+Cache-Control: no-cache
+token:5f60398a0285e1525f104256e5d1cdaf
+
+<> 2020-03-16T110533.200.json
+###
+
+
+
+#值班点名报表接口
+GET http://localhost:8080/dm/queryDMReportDate
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+#按照派出所统计点名详情
+GET http://localhost:8080/dm/queryDMStatisticsDetailByDate?startDate=2020-03-18&endDate=2020-03-30&deptId=D0238
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+
+#查询当日值班长
+GET {{baseUrl}}/dm/queryZhiBanZhangByDate?date=2020-04-10
+Accept: */*
+Cache-Control: no-cache
+
+###
+

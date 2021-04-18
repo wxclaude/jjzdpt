@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-下发指令</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-tool{
+			z-index: 1;
+		}
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 100px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>下发指令</legend>
+	      </fieldset>  
+		
+		<div class="layui-tab">
+		  <ul class="layui-tab-title">
+		    <li class="layui-this">污染防治</li>
+		    <li>城管问题</li>
+		  </ul>
+		  <div class="layui-tab-content">
+		    <div class="layui-tab-item layui-show">
+				
+				<div class="demoTable">
+				  <div class="layui-form">
+					   日期范围：
+					   <div class="layui-input-inline">
+						 <input type="text" class="layui-input" id="chooseTime" placeholder="请选择" autocomplete="off">
+					   </div>
+					   单位：
+					   <div class="layui-input-inline">
+					   		<select id="cxdw" lay-search="">
+								 <option value="">请选择</option>
+								 <option value="D0059">邗上派出所</option>
+								 <option value="D0068">汊河派出所</option>
+								 <option value="D0078">瓜洲派出所</option>
+								 <option value="D0086">蒋王派出所</option>
+								 <option value="D0245">甘泉派出所</option>
+								 <option value="D0095">杨庙派出所</option>
+								 <option value="D00003">新盛派出所</option>
+								 <option value="D0181">四季园派出所</option>
+								 <option value="D0102">槐泗派出所</option>
+								 <option value="D0112">方巷派出所</option>
+								 <option value="D0122">公道派出所</option>
+								 <option value="D0173">杨寿派出所</option>
+								 <option value="D0191">念四桥派出所</option>
+								 <option value="D0209">竹西派出所</option>
+								 <option value="D0220">西湖派出所</option>
+								 <option value="D0238">江阳派出所</option>
+								 <option value="D0032">交警大队</option>
+					   		</select> 
+					   </div>
+					   签收状态：
+					   <div class="layui-input-inline">
+						   <select id="wrczzt" >
+						   	 <option value="">请选择</option>
+						   	 <option value="0">未签收</option>
+							  <option value="2">已签收</option>
+						   	 <option value="1">已处理</option>
+						   	 <option value="3">已完结</option>
+						   </select>
+					   </div>
+					   
+					   <button class="layui-btn" id="search" type="button">查询</button>
+					   <a href="xfzltj.html" class="layui-btn">查看统计</a>
+					</div>
+				 </div>
+				
+				<table class="layui-hide" id="wuran" lay-filter="wuran"></table>
+				
+				
+			</div>
+		    <div class="layui-tab-item">
+				<div class="demoTable">
+				  <div class="layui-form">
+					   日期范围：
+					   <div class="layui-input-inline">
+						 <input type="text" class="layui-input" id="cgchooseTime" placeholder="请选择" autocomplete="off">
+					   </div>
+					   单位：
+					   <div class="layui-input-inline">
+					   		<select id="cgcxdw" lay-search="">
+								 <option value="">请选择</option>
+								 <option value="D0059">邗上派出所</option>
+								 <option value="D0068">汊河派出所</option>
+								 <option value="D0078">瓜洲派出所</option>
+								 <option value="D0086">蒋王派出所</option>
+								 <option value="D0245">甘泉派出所</option>
+								 <option value="D0095">杨庙派出所</option>
+								 <option value="D00003">新盛派出所</option>
+								 <option value="D0181">四季园派出所</option>
+								 <option value="D0102">槐泗派出所</option>
+								 <option value="D0112">方巷派出所</option>
+								 <option value="D0122">公道派出所</option>
+								 <option value="D0173">杨寿派出所</option>
+								 <option value="D0191">念四桥派出所</option>
+								 <option value="D0209">竹西派出所</option>
+								 <option value="D0220">西湖派出所</option>
+								 <option value="D0238">江阳派出所</option>
+								  <option value="D0032">交警大队</option>
+					   		</select> 
+					   </div>
+					   签收状态：
+					   <div class="layui-input-inline">
+						   <select id="cgczzt" >
+							 <option value="">请选择</option>
+							 <option value="0">未签收</option>
+							  <option value="2">已签收</option>
+							 <option value="1">已处理</option>
+							 <option value="3">已完结</option>
+						   </select>
+					   </div>
+					   <button class="layui-btn" id="cgsearch" type="button">查询</button>
+					   <a href="xfzltj.html" class="layui-btn">查看统计</a>
+					</div>
+				 </div>
+				
+				<table class="layui-hide" id="chenguan" lay-filter="chenguan"></table>
+				
+				
+			</div>
+		  </div>
+		</div>  
+		  
+		  
+	</div>
+	
+	
+	<div class="layui-form" style="display: none;padding: 10px;" id="addWrbox">
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">事件/地点：</label>
+		    <div class="layui-input-block">
+		      <input id="wrsjhdd" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">线索内容：</label>
+		    <div class="layui-input-block">
+		      <textarea id="xsnr" placeholder="请输入内容" class="layui-textarea" ></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">处置所队：</label>
+		    <div class="layui-input-block">
+		      <select lay-filter="pid" id="czsd" lay-search="">
+				 <option value="">请选择</option>
+				 <option value="D0059">邗上派出所</option>
+				 <option value="D0068">汊河派出所</option>
+				 <option value="D0078">瓜洲派出所</option>
+				 <option value="D0086">蒋王派出所</option>
+				 <option value="D0245">甘泉派出所</option>
+				 <option value="D0095">杨庙派出所</option>
+				 <option value="D00003">新盛派出所</option>
+				 <option value="D0181">四季园派出所</option>
+				 <option value="D0102">槐泗派出所</option>
+				 <option value="D0112">方巷派出所</option>
+				 <option value="D0122">公道派出所</option>
+				 <option value="D0173">杨寿派出所</option>
+				 <option value="D0191">念四桥派出所</option>
+				 <option value="D0209">竹西派出所</option>
+				 <option value="D0220">西湖派出所</option>
+				 <option value="D0238">江阳派出所</option>
+				 <option value="D0032">交警大队</option>
+		      </select> 
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">服务对象：</label>
+		    <div class="layui-input-block">
+		      <input id="fwdx" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">联系电话：</label>
+		    <div class="layui-input-block">
+		      <input id="lxdh" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">完成时间：</label>
+		    <div class="layui-input-block">
+		      <input id="wcsj" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">
+				<button type="button" class="layui-btn layui-btn-primary" id="test4">
+					<i class="layui-icon"></i>
+					上传压缩文件
+				</button>
+			</label>
+		</div>
+		
+		<input type="text" hidden="" id="fileId">
+		
+	</div>
+	
+	<!-- 污染修改 -->
+	<div class="layui-form" style="display: none;padding: 10px;" id="xgWrbox">
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">事件/地点：</label>
+		    <div class="layui-input-block">
+		      <input id="xgwrsjhdd" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">线索内容：</label>
+		    <div class="layui-input-block">
+		      <textarea id="xgxsnr" placeholder="请输入内容" class="layui-textarea" ></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">处置所队：</label>
+		    <div class="layui-input-block">
+		      <select lay-filter="pid" id="xgczsd" lay-search="">
+				 <option value="">请选择</option>
+				 <option value="D0059">邗上派出所</option>
+				 <option value="D0068">汊河派出所</option>
+				 <option value="D0078">瓜洲派出所</option>
+				 <option value="D0086">蒋王派出所</option>
+				 <option value="D0245">甘泉派出所</option>
+				 <option value="D0095">杨庙派出所</option>
+				 <option value="D00003">新盛派出所</option>
+				 <option value="D0181">四季园派出所</option>
+				 <option value="D0102">槐泗派出所</option>
+				 <option value="D0112">方巷派出所</option>
+				 <option value="D0122">公道派出所</option>
+				 <option value="D0173">杨寿派出所</option>
+				 <option value="D0191">念四桥派出所</option>
+				 <option value="D0209">竹西派出所</option>
+				 <option value="D0220">西湖派出所</option>
+				 <option value="D0238">江阳派出所</option>
+				  <option value="D0032">交警大队</option>
+		      </select> 
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">服务对象：</label>
+		    <div class="layui-input-block">
+		      <input id="xgfwdx" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">联系电话：</label>
+		    <div class="layui-input-block">
+		      <input id="xglxdh" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">完成时间：</label>
+		    <div class="layui-input-block">
+		      <input id="xgwcsj" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">
+				<button type="button" class="layui-btn layui-btn-primary" id="xgtest4">
+					<i class="layui-icon"></i>
+					上传压缩文件
+				</button>
+			</label>
+		</div>
+		
+		<input type="text" hidden="" id="xgfileId">
+		
+	</div>
+	
+	<!-- 新增城管 -->
+	<div class="layui-form" style="display: none;padding: 10px;" id="addCgbox">
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">事件/地点：</label>
+		    <div class="layui-input-block">
+		      <input id="cgsjhdd" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">处置所队：</label>
+		    <div class="layui-input-block">
+		      <select id="cgczsd" lay-search="">
+				 <option value="">请选择</option>
+				 <option value="D0059">邗上派出所</option>
+				 <option value="D0068">汊河派出所</option>
+				 <option value="D0078">瓜洲派出所</option>
+				 <option value="D0086">蒋王派出所</option>
+				 <option value="D0245">甘泉派出所</option>
+				 <option value="D0095">杨庙派出所</option>
+				 <option value="D00003">新盛派出所</option>
+				 <option value="D0181">四季园派出所</option>
+				 <option value="D0102">槐泗派出所</option>
+				 <option value="D0112">方巷派出所</option>
+				 <option value="D0122">公道派出所</option>
+				 <option value="D0173">杨寿派出所</option>
+				 <option value="D0191">念四桥派出所</option>
+				 <option value="D0209">竹西派出所</option>
+				 <option value="D0220">西湖派出所</option>
+				 <option value="D0238">江阳派出所</option>
+				  <option value="D0032">交警大队</option>
+		      </select> 
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">服务对象：</label>
+		    <div class="layui-input-block">
+		      <input id="cgfwdx" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">联系电话：</label>
+		    <div class="layui-input-block">
+		      <input id="cglxdh" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">完成时间：</label>
+		    <div class="layui-input-block">
+		      <input id="cgwcsj" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">
+				<button type="button" class="layui-btn layui-btn-primary" id="cgtest4">
+					<i class="layui-icon"></i>
+					上传压缩文件
+				</button>
+			</label>
+		</div>
+		
+		<input type="text" hidden="" id="cgfileId">
+		
+	</div>
+	
+<!-- 修改城管 -->
+
+	<div class="layui-form" style="display: none;padding: 10px;" id="xgCgbox">
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">事件/地点：</label>
+		    <div class="layui-input-block">
+		      <input id="xgcgsjhdd" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">处置所队：</label>
+		    <div class="layui-input-block">
+		      <select id="xgcgczsd" lay-search="">
+				 <option value="">请选择</option>
+				 <option value="D0059">邗上派出所</option>
+				 <option value="D0068">汊河派出所</option>
+				 <option value="D0078">瓜洲派出所</option>
+				 <option value="D0086">蒋王派出所</option>
+				 <option value="D0245">甘泉派出所</option>
+				 <option value="D0095">杨庙派出所</option>
+				 <option value="D00003">新盛派出所</option>
+				 <option value="D0181">四季园派出所</option>
+				 <option value="D0102">槐泗派出所</option>
+				 <option value="D0112">方巷派出所</option>
+				 <option value="D0122">公道派出所</option>
+				 <option value="D0173">杨寿派出所</option>
+				 <option value="D0191">念四桥派出所</option>
+				 <option value="D0209">竹西派出所</option>
+				 <option value="D0220">西湖派出所</option>
+				 <option value="D0238">江阳派出所</option>
+				  <option value="D0032">交警大队</option>
+		      </select> 
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">服务对象：</label>
+		    <div class="layui-input-block">
+		      <input id="xgcgfwdx" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">联系电话：</label>
+		    <div class="layui-input-block">
+		      <input id="xgcglxdh" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">完成时间：</label>
+		    <div class="layui-input-block">
+		      <input id="xgcgwcsj" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">
+				<button type="button" class="layui-btn layui-btn-primary" id="xgcgtest4">
+					<i class="layui-icon"></i>
+					上传压缩文件
+				</button>
+			</label>
+		</div>
+		
+		<input type="text" hidden="" id="xgcgfileId">
+		
+	</div>
+
+	
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/multiDownload.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<!-- <script src="js/jquery.media.js" type="text/javascript" charset="utf-8"></script> -->
+<script type="text/html" id="barWr">
+  
+  {{#  if(d.czzt==0){ }}
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">详情</a>
+	<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="changewr">修改</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delwr">删除</a>
+  {{# } else if(d.czzt==1) { }}
+	<a class="layui-btn layui-btn-xs" lay-event="wrqs">签收</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">详情</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delwr">删除</a>
+  {{# } else if(d.czzt ==2) { }}
+  	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">详情</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delwr">删除</a>
+  {{# } else if(d.czzt ==3) { }}
+	  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">详情</a>
+	  <a class="layui-btn layui-btn-xs" lay-event="packDown">下载</a>
+	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delwr">删除</a>
+  {{# } }}
+  
+  
+</script>
+<script type="text/html" id="toolbarWr">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="xfzl">下发指令</button>
+  </div>
+</script>
+
+<script type="text/html" id="barCg">
+  {{#  if(d.czzt==0){ }}
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="cgcheckDetal">详情</a>
+	<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="changecg">修改</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delcg">删除</a>
+  {{# } else if(d.czzt==1) { }}
+	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="cgqs">签收</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="cgcheckDetal">详情</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delcg">删除</a>
+  {{# } else if(d.czzt ==2) { }}
+  	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="cgcheckDetal">详情</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delcg">删除</a>
+  {{# } else if(d.czzt ==3) { }}
+  	  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="cgcheckDetal">详情</a>
+  	  <a class="layui-btn layui-btn-xs" lay-event="cgpackDown">下载</a>
+  	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delcg">删除</a>
+  {{# } }}
+  
+</script>
+<script type="text/html" id="toolbarCg">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="cgxfzl">下发指令</button>
+  </div>
+</script>
+
+
+
+<script type="text/javascript">
+	
+	// $('a.media').media({width:800, height:600});  
+	
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	var laydate = layui.laydate;
+	var upload = layui.upload;
+	var form = layui.form;
+	var xgwrfj = [];
+	var xgcgfj = [];
+	
+	//日期范围
+	  laydate.render({
+	    elem: '#chooseTime'
+	    ,range: true
+	  });
+	  laydate.render({
+	    elem: '#cgchooseTime'
+	    ,range: true
+	  });
+	  
+	 laydate.render({
+	    elem: '#wcsj'
+	    ,type: 'datetime'
+	  }); 
+	  
+	  laydate.render({
+	     elem: '#xgwcsj'
+	     ,type: 'datetime'
+	   }); 
+	  
+	  laydate.render({
+	     elem: '#cgwcsj'
+	     ,type: 'datetime'
+	   });
+	
+	// 获取污染数据
+	function getWuran(url){
+		table.render({
+		  elem: '#wuran'
+		  ,toolbar: '#toolbarWr'
+		  ,url:url
+		  ,defaultToolbar: []
+		  ,page:true
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			 ,{field:'deptName',  title: '处置所队',align:"center",}
+			 ,{field:'sjhdd',  title: '事件/地点',align:"center",}
+			 ,{field:'xfsj',  title: '下发时间',align:"center",width:150}
+			 ,{field:'qssj',  title: '所队签收时间',align:"center",width:150}
+			 ,{field:'czsj',  title: '反馈时限',align:"center",width:150}
+			  ,{field:'fksj',  title: '所队反馈时间',align:"center",width:150}
+			  ,{field:'sfcs',  title: '是否超时',align:"center",
+				templet:function(d)
+					{
+						if(d.sfcs==0)
+						   {return "否"}
+						else if(d.sfcs==1)
+						   {return "是"}
+						
+					}
+			  }
+			,{field:'czzt', title: '状态',align:"center",
+				templet:function(d)
+					{
+						if(d.czzt==0)
+						   {return "未签收"}
+						else if(d.czzt==1)
+						   {return "已处理"}
+						else if(d.czzt==2)
+							{return "已签收"}
+						else if(d.czzt==3)
+							{return "已完结"}
+					}
+			}
+			 ,{title:'操作', toolbar: '#barWr',align:"left",width:160}
+		  ]]
+		  ,id: 'testReload'
+		  ,done: function (res, curr, count) {
+			
+		    $('th:eq(4)').css({"color":"#009688"});
+				$('th:eq(6)').css({"color":"#009688"});
+			}
+		});
+	}
+	
+	getWuran(baseUrl+"/xscz/queryZhXsczPage?deptId=&type=0");
+	
+	
+	 //头工具栏事件
+	  table.on('toolbar(wuran)', function(obj){
+	    var checkStatus = table.checkStatus(obj.config.id);
+		if(obj.event=="xfzl"){
+			$("#wrsjhdd").val("");
+			$("#xsnr").val("");
+			$("#czsd").val("");
+			$("#fwdx").val("");
+			$("#lxdh").val("");
+			$("#wcsj").val("");
+			$("#fileId").val("");
+			form.render('select');
+			layer.open({
+			 type:1,
+			 area:['800px','550px'],
+			  title: '下发指令',
+			  content: $("#addWrbox"),
+			  shade: 0,
+			  btn: ['提交', '取消']
+			  ,btn1: function(index, layero){
+					if($("#xsnr").val()==""){
+						layer.msg("线索内容还未填写！")
+						return
+					}
+					if($("#czsd").val()==""){
+						layer.msg("处置所队还未选择！")
+						return
+					}
+					if($("#fwdx").val()==""){
+						layer.msg("服务对象还未填写！")
+						return
+					}
+					if($("#lxdh").val()==""){
+						layer.msg("服务对象联系电话还未填写！")
+						return
+					}
+					if($("#wcsj").val()==""){
+						layer.msg("完成时间还未填写！")
+						return
+					}
+					var zhXsczFjList="";
+					if($("#fileId").val()==""){
+						zhXsczFjList=null;
+					}else{
+						zhXsczFjList=[{"id":$("#fileId").val()}]
+					}
+					var load1 = layer.load(1);  
+					$.ajax({
+					    url:baseUrl + "/xscz/addZhXscz",
+					    type:"post",
+					    cache:false,
+						data:JSON.stringify({
+							"sjhdd":$("#wrsjhdd").val(),
+							"xsnr":$("#xsnr").val(),
+							"deptId":$("#czsd").val(),
+							"fwdx":$("#fwdx").val(),
+							"fwdxdh":$("#lxdh").val(),
+							"czsj":$("#wcsj").val(),
+							"zhXsczFjList":zhXsczFjList,
+							"type":0
+						}),
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+						   XMLHttpRequest.setRequestHeader("token", token);
+						},
+					    success:function(data) {
+							if(data.code==0){
+								layer.close(load1);
+							    layer.msg("下发成功");
+								table.reload("testReload");
+							}else {
+								layer.close(load1);
+							    layer.msg(data.msg);
+							}
+					    },
+					    error : function (res) {
+							layer.close(load1);
+					        layer.msg('下发失败');
+					    }
+					})
+					layer.closeAll();
+					 $("#addWrbox").hide();
+			  },
+				  btn2: function(index, layero){
+						$("#addWrbox").hide();
+						layer.closeAll();
+				  },
+				cancel: function(layero,index){ 
+					 $("#addWrbox").hide();
+						layer.closeAll();
+				  }
+			});
+			//
+		}
+	  });
+	
+	
+	// 127.0.0.1:8080/xscz/uploadZhXsczFj 上传线索处置附件
+	
+	upload.render({ //允许上传的文件后缀
+	    elem: '#test4'
+	    ,url: baseUrl + '/xscz/uploadZhXsczFj?token='+token+"&type=0" //改成您自己的上传接口
+	    ,accept: 'file' //普通文件
+	    ,exts: 'zip|rar|7z' //只允许上传压缩文件
+		 
+	    ,done: function(res){
+			console.log(res);
+		  $("#fileId").val(res.data.fjId);
+		  layer.msg('上传成功');
+	    }
+	  });
+	  
+	  upload.render({ //允许上传的文件后缀
+		  elem: '#xgtest4'
+		  ,url: baseUrl + '/xscz/uploadZhXsczFj?token='+token+"&type=0" //改成您自己的上传接口
+		  ,accept: 'file' //普通文件
+		  ,exts: 'zip|rar|7z' //只允许上传压缩文件
+		  ,done: function(res){
+			layer.msg('上传成功');
+		  $("#xgfileId").val(res.data.fjId);
+		  
+		  xgwrfj.push({id:$("#xgfileId").val()})
+		  // console.log($("#xgfileId").val());
+		  }
+		});
+	
+	$("#search").click(function(){
+		var checkTime = $("#chooseTime").val();
+		var startDate = checkTime.slice(0,10);
+		var endDate = checkTime.slice(13);
+		var cxdw = $("#cxdw").val();
+		var wrczzt = $("#wrczzt").val();
+		getWuran(baseUrl+"/xscz/queryZhXsczPage?deptId="+cxdw+"&type=0&startDate="+startDate+"&endDate="+endDate+"&czzt="+wrczzt);
+	})
+	
+	
+	
+	table.on('tool(wuran)', function(obj){
+		  var data = obj.data;
+		  console.log(data)
+		  if(obj.event=="checkDetal"){
+			layer.open({
+			  type: 1,
+			  // skin: 'layui-layer-rim', //加上边框
+			  area: ['80%', '80%'], //宽高
+			  content:`
+			  <div style="margin:10px">
+				<table class="layui-table" >
+				<colgroup>
+				  <col width="150">
+				  <col width="">
+				  <col width="150">
+				  <col width="">
+				</colgroup>
+				  <tbody>
+					 <tr>
+						<td>
+							事件或地点
+						</td>
+						<td id="tbsjhdd" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>
+					 		线索内容
+					 	</td>
+						<td id="tbxsln" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>服务对象</td>
+					 	<td id="tbfwdx"></td>
+						<td>服务对象电话</td>
+						<td id="fwdxdh"></td>
+					 </tr>
+					 <tr>
+					 	<td>处置时间</td>
+					 	<td id="tbczsj" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>处置所队</td>
+					 	<td id="tbczsd"></td>
+						<td>检查民警</td>
+						<td id="tbjcmj"></td>
+					 </tr>
+					 <tr>
+					 	<td>检查时间</td>
+					 	<td id="tbjcsj"></td>
+						<td>检查地址</td>
+						<td id="tbjcdz"></td>
+					 </tr>
+					 <tr>
+					 	<td>被检查对象</td>
+					 	<td id="tbjcdx"></td>
+						<td>是否发现涉嫌环境违法行为</td>
+						<td id="tbwfxw"></td>
+					 </tr>
+					 <tr>
+					 	<td>现场负责人</td>
+					 	<td id="tbxcfzr"></td>
+						<td>现场负责人电话</td>
+						<td id="tbxcfzrdh"></td>
+					 </tr>
+					 <tr>
+					 	<td>是否移动执法</td>
+					 	<td id="tbydzf"></td>
+						<td>是否使用执法记录仪</td>
+						<td id="tbzfy"></td>
+					 </tr>
+					 <tr>
+					 	<td>现场检查内容</td>
+					 	<td id="tbjcnr" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>检查结论</td>
+					 	<td id="tbjcjl" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>检查结果</td>
+					 	<td id="tbjcjg" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>与服务对象联系时间</td>
+					 	<td id="tblxsj"></td>
+						<td>服务对象是否满意</td>
+						<td id="tbsfmy"></td>
+					 </tr>
+					 <tr>
+					 	<td>与服务对象沟通详细情况</td>
+					 	<td id="tbxxqk" colspan="3"></td>
+					 </tr>
+				  </tbody>
+				</table>
+			   </div>
+			  `
+			});
+			$("#fwdxdh").text(data.fwdxdh);
+			$("#tbsjhdd").text(data.sjhdd);
+			$("#tbfwdx").text(data.fwdx);
+			$("#tbczsj").text(data.czsj);
+			$("#tbxsln").text(data.xsnr);
+			$("#tbczsd").text(data.czsd);
+			$("#tbjcmj").text(data.jcmj);
+			$("#tbjcsj").text(data.jcsj);
+			$("#tbjcdz").text(data.jcdz)
+			$("#tbjcdx").text(data.bjcdx);
+			if(data.sffxsxhjwfxw==null){
+				$("#tbwfxw").text("");
+			}else if(data.sffxsxhjwfxw==0){
+				$("#tbwfxw").text("否");
+			}else if(data.sffxsxhjwfxw==1){
+				$("#tbwfxw").text("是");
+			}
+			$("#tbxcfzr").text(data.xcfzr);
+			$("#tbxcfzrdh").text(data.xcfzrdh);
+			if(data.sfydzf==null){
+				$("#tbydzf").text("");
+			}else if(data.sfydzf==0){
+				$("#tbydzf").text("否");
+			}else if(data.sfydzf==1){
+				$("#tbydzf").text("是");
+			}
+			if(data.sfsyzfjyl==null){
+				$("#tbzfy").text("");
+			}else if(data.sfsyzfjyl==0){
+				$("#tbzfy").text("否");
+			}else if(data.sfsyzfjyl==1){
+				$("#tbzfy").text("是");
+			}
+			$("#tbjcnr").text(data.xcjcnr);
+			$("#tbjcjl").text(data.jcjl);
+			if(data.jcjg==null){
+				$("#tbjcjg").text("");
+			}else if(data.jcjg==1){
+				$("#tbjcjg").text("已解决");
+			}else if(data.jcjg==2){
+				$("#tbjcjg").text("受理行政案件");
+			}else if(data.jcjg==0){
+				$("#tbjcjg").text("不属实");
+			}
+			$("#tblxsj").text(data.lxsj);
+			if(data.fwdxsfmy==null){
+				$("#tbsfmy").text();
+			}else if(data.fwdxsfmy==0){
+				$("#tbsfmy").text("不满意");
+			}else if(data.fwdxsfmy==1){
+				$("#tbsfmy").text("满意");
+			}else if(data.fwdxsfmy==2){
+				$("#tbsfmy").text("一般");
+			}else if(data.fwdxsfmy==3){
+				$("#tbsfmy").text("未接通");
+			}
+			$("#tbxxqk").text(data.fwdxgtxxqk);
+		  }else if(obj.event=="packDown"){
+			  var url1 = baseUrl+"/xscz/exportWord?id="+data.id+"&token="+token;
+			  var url2 = baseUrl+"/xscz/exportZhXscz?id="+data.fkFjList[0].id+"&token="+token;
+			  var downloadUrl=[url1,url2];
+			  $(downloadUrl).multiDownload();
+		  }else if(obj.event=="delwr"){
+			  layer.confirm('是否确认删除？', function(index){
+			  	$.ajax({
+			  	    url:baseUrl + "/xscz/deleteZhXscz?id="+data.id,
+			  	    type:"GET",
+			  	    cache:false,
+			  	    dataType : 'JSON',
+			  	    contentType: "application/json",
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+			  	    success:function(data) {
+			  	        if(data.code==0){
+			  	            layer.msg("删除成功");
+			  				table.reload("testReload");
+			  	        }else {
+			  	            layer.msg(data.msg);
+			  	        }
+			  	    },
+			  	    error : function (res) {
+			  	        layer.msg('删除失败');
+			  	    }
+			  	})
+			  	layer.close(index);
+			    });
+		  }else if(obj.event=="changewr"){
+			  $("#xgwrsjhdd").val(data.sjhdd);
+			  $("#xgxsnr").val(data.xsnr);
+			  $("#xgczsd").val(data.deptId);
+			  $("#xgfwdx").val(data.fwdx);
+			  $("#xglxdh").val(data.fwdxdh);
+			  $("#xgwcsj").val(data.czsj);
+			  xgwrfj=[];
+			  // if(data.zhXsczFjList.length==0){
+				 //  $("#xgfileId").val("");
+			  // }else{
+				 //  $("#xgfileId").val(data.zhXsczFjList[0].id);
+			  // }
+			  
+			  
+			  form.render('select');
+			  layer.open({
+			   type:1,
+			   area:['800px','550px'],
+			    title: '修改指令',
+			    content: $("#xgWrbox"),
+			    shade: 0,
+			    btn: ['提交', '取消']
+			    ,btn1: function(index, layero){
+			  		if($("#xgxsnr").val()==""){
+			  			layer.msg("线索内容还未填写！")
+			  			return
+			  		}
+			  		if($("#xgczsd").val()==""){
+			  			layer.msg("处置所队还未选择！")
+			  			return
+			  		}
+			  		if($("#xgfwdx").val()==""){
+			  			layer.msg("服务对象还未填写！")
+			  			return
+			  		}
+			  		if($("#xglxdh").val()==""){
+			  			layer.msg("服务对象联系电话还未填写！")
+			  			return
+			  		}
+			  		if($("#xgwcsj").val()==""){
+			  			layer.msg("完成时间还未填写！")
+			  			return
+			  		}
+					
+					// function getXglist(item){
+					// 	var zhXsczFjList="";
+					// 	if(item == ""){
+					// 		zhXsczFjList=null;
+					// 		return zhXsczFjList;
+					// 	}else{
+					// 		zhXsczFjList=[{"id":$("#xgfileId").val()}];
+					// 		return zhXsczFjList;
+					// 	}
+					// }
+					
+			  		// var abc = getXglist($("#xgfileId").val());
+					
+			  		var load1 = layer.load(1);  
+			  		$.ajax({
+			  		    url:baseUrl + "/xscz/modifyZhXscz",
+			  		    type:"post",
+			  		    cache:false,
+			  			data:JSON.stringify({
+							"id":data.id,
+			  				"sjhdd":$("#xgwrsjhdd").val(),
+			  				"xsnr":$("#xgxsnr").val(),
+			  				"deptId":$("#xgczsd").val(),
+			  				"fwdx":$("#xgfwdx").val(),
+			  				"fwdxdh":$("#xglxdh").val(),
+			  				"czsj":$("#xgwcsj").val(),
+			  				"zhXsczFjList":xgwrfj,
+			  				"type":0
+			  			}),
+			  			dataType : 'JSON',
+			  			contentType: "application/json",
+			  			beforeSend: function (XMLHttpRequest) {
+			  			   XMLHttpRequest.setRequestHeader("token", token);
+			  			},
+			  		    success:function(data) {
+			  				if(data.code==0){
+			  					layer.close(load1);
+			  				    layer.msg("修改成功");
+			  					table.reload("testReload");
+			  				}else {
+			  					layer.close(load1);
+			  				    layer.msg(data.msg);
+			  				}
+			  		    },
+			  		    error : function (res) {
+			  				layer.close(load1);
+			  		        layer.msg('修改失败');
+			  		    }
+			  		})
+			  		layer.closeAll();
+			  		 $("#xgWrbox").hide();
+			    },
+			  	  btn2: function(index, layero){
+			  			$("#xgWrbox").hide();
+			  			layer.closeAll();
+			  	  },
+			  	cancel: function(layero,index){ 
+			  		 $("#xgWrbox").hide();
+			  			layer.closeAll();
+			  	  }
+			  });
+		  }else if(obj.event=="wrqs"){
+			  var load1 = layer.load(1);
+			  $.ajax({
+			      url:baseUrl + "/xscz/qsZhXscz",
+			      type:"post",
+			      cache:false,
+			  	data:JSON.stringify({
+			  		"id":data.id,
+			  		"type":0, 
+			  		"czzt":3
+			  	}),
+			  	dataType : 'JSON',
+			  	contentType: "application/json",
+			  	beforeSend: function (XMLHttpRequest) {
+			  	   XMLHttpRequest.setRequestHeader("token", token);
+			  	},
+			      success:function(data) {
+			  		if(data.code==0){
+			  			layer.close(load1);
+			  		    layer.msg("签收成功");
+			  			table.reload("testReload");
+			  		}else {
+			  			layer.close(load1);
+			  		    layer.msg(data.msg);
+			  		}
+			      },
+			      error : function (res) {
+			  		layer.close(load1);
+			          layer.msg('签收失败');
+			      }
+			  });
+		  }
+	
+	})
+	
+	
+	// 城管
+	function getCg(url){
+		table.render({
+		  elem: '#chenguan'
+		  ,toolbar: '#toolbarCg'
+		  ,url:url
+		  ,defaultToolbar: []
+		  ,page:true
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			 ,{field:'deptName',  title: '处置所队',align:"center",}
+			 ,{field:'sjhdd',  title: '事件/地点',align:"center"}
+			 ,{field:'xfsj',  title: '下发时间',align:"center",width:150}
+			 ,{field:'qssj',  title: '所队签收时间',align:"center",width:150,}
+			  ,{field:'czsj',  title: '反馈时限',align:"center",width:150}
+			   ,{field:'fksj',  title: '所队反馈时间',align:"center",width:150}
+			  ,{field:'sfcs',  title: '是否超时',align:"center",
+				templet:function(d)
+					{
+						if(d.sfcs==0)
+						   {return "否"}
+						else if(d.sfcs==1)
+						   {return "是"}
+						
+					}
+			  }
+			,{field:'czzt', title: '状态',align:"center",width:90,
+				templet:function(d)
+					{
+						if(d.czzt==0)
+						   {return "未签收"}
+						else if(d.czzt==1)
+						   {return "已处理"}
+						else if(d.czzt==2)
+							{return "已签收"}
+						else if(d.czzt==3)
+							{return "已完结"}
+					}
+			}
+			,{title:'操作', toolbar: '#barCg',align:"left",width:160}
+		  ]]
+		  ,id: 'cgtestReload'
+		  ,done: function (res, curr, count) {
+			   $('thead th:eq(4)').css({"color":"#009688"});
+			   $('thead th:eq(6)').css({"color":"#009688"});
+		  }
+		});
+	}
+	
+	getCg(baseUrl+"/xscz/queryZhXsczPage?deptId=&type=1");
+	
+	//头工具栏事件
+	 table.on('toolbar(chenguan)', function(obj){
+	   var checkStatus = table.checkStatus(obj.config.id);
+			if(obj.event=="cgxfzl"){
+				$("#cgsjhdd").val("");
+				$("#cgczsd").val("");
+				$("#cgfwdx").val("");
+				$("#cglxdh").val("");
+				$("#cgwcsj").val("");
+				$("#cgfileId").val("");
+				form.render('select');
+				layer.open({
+				 type:1,
+				 area:['800px','550px'],
+				  title: '下发指令',
+				  content: $("#addCgbox"),
+				  shade: 0,
+				  btn: ['提交', '取消']
+				  ,btn1: function(index, layero){
+						if($("#cgczsd").val()==""){
+							layer.msg("处置所队还未填写！")
+							return
+						}
+						if($("#cgfwdx").val()==""){
+							layer.msg("服务对象还未填写！")
+							return
+						}
+						if($("#cglxdh").val()==""){
+							layer.msg("服务对象联系电话还未填写！")
+							return
+						}
+						if($("#cgwcsj").val()==""){
+							layer.msg("完成时间还未填写！")
+							return
+						}
+						if($("#cgfileId").val()==""){
+							layer.msg("附件还未上传！")
+							return
+						}
+						var load1 = layer.load(1);  
+						$.ajax({
+						    url:baseUrl + "/xscz/addZhXscz",
+						    type:"post",
+						    cache:false,
+							data:JSON.stringify({
+								"sjhdd":$("#cgsjhdd").val(),
+								"deptId":$("#cgczsd").val(),
+								"fwdx":$("#cgfwdx").val(),
+								"fwdxdh":$("#cglxdh").val(),
+								"czsj":$("#cgwcsj").val(),
+								"zhXsczFjList":[{
+									"id":$("#cgfileId").val()
+								}],
+								"type":1
+							}),
+							dataType : 'JSON',
+							contentType: "application/json",
+							beforeSend: function (XMLHttpRequest) {
+							   XMLHttpRequest.setRequestHeader("token", token);
+							},
+						    success:function(data) {
+								if(data.code==0){
+									layer.close(load1);
+								    layer.msg("下发成功");
+									table.reload("cgtestReload");
+								}else {
+									layer.close(load1);
+								    layer.msg(data.msg);
+								}
+						    },
+						    error : function (res) {
+								layer.close(load1);
+						        layer.msg('备注失败');
+						    }
+						})
+						layer.closeAll();
+						 $("#addCgbox").hide();
+				  },
+					  btn2: function(index, layero){
+							$("#addCgbox").hide();
+							layer.closeAll();
+					  },
+					cancel: function(layero,index){ 
+						 $("#addCgbox").hide();
+							layer.closeAll();
+					  }
+				});
+				
+			}
+	 });
+	
+	upload.render({ //允许上传的文件后缀
+	    elem: '#cgtest4'
+	    ,url: baseUrl + '/xscz/uploadZhXsczFj?token='+token+"&type=0" //改成您自己的上传接口
+	    ,accept: 'file' //普通文件
+	    ,exts: 'zip|rar|7z' //只允许上传压缩文件
+	    ,done: function(res){
+	      layer.msg('上传成功');
+		  $("#cgfileId").val(res.data.fjId);
+	    }
+	  });
+	
+	upload.render({ //允许上传的文件后缀
+	    elem: '#xgcgtest4'
+	    ,url: baseUrl + '/xscz/uploadZhXsczFj?token='+token+"&type=0" //改成您自己的上传接口
+	    ,accept: 'file' //普通文件
+	    ,exts: 'zip|rar|7z' //只允许上传压缩文件
+	    ,done: function(res){
+	      layer.msg('上传成功');
+		  $("#xgcgfileId").val(res.data.fjId);
+		  xgcgfj.push({id:$("#xgcgfileId").val()})
+	    }
+	  });
+	
+	table.on('tool(chenguan)', function(obj){
+		  var data = obj.data;
+		  console.log(data)
+		  if(obj.event=="cgcheckDetal"){
+			layer.open({
+			  type: 1,
+			  // skin: 'layui-layer-rim', //加上边框
+			  area: ['80%', '80%'], //宽高
+			  content:`
+			  <div style="margin:10px">
+				<table class="layui-table" >
+				<colgroup>
+				  <col width="150">
+				  <col width="">
+				  <col width="150">
+				  <col width="">
+				</colgroup>
+				  <tbody>
+					  <tr>
+						<td>服务对象</td>
+						<td id="cgtbfwdx"></td>
+						<td>联系电话</td>
+						<td id="cgtblxdh"></td>
+					  </tr>
+					 <tr>
+					 	<td>处置所队</td>
+						<td id="cgtbczsd"></td>
+						<td>检查民警</td>
+						<td id="cgtbjcmj"></td>
+					 </tr>
+					 <tr>
+						 <td>处置时间</td>
+						 <td id="cgtbczsj" colspan="3"></td>
+					 </tr>
+					 <tr>
+						 <td>检查结论</td>
+						 <td id="cgtbjcjl" colspan="3"></td>
+					 </tr>
+				  </tbody>
+				</table>
+			   </div>
+			  `
+			});
+			$("#cgtbfwdx").text(data.fwdx);
+			$("#cgtblxdh").text(data.fwdxdh);
+			$("#cgtbczsd").text(data.czsd);
+			$("#cgtbjcmj").text(data.jcmj);
+			$("#cgtbczsj").text(data.czsj);
+			$("#cgtbjcjl").text(data.jcjl);
+			$("#cgtblxsj").text(data.lxsj);
+			
+		  }else if(obj.event=="cgpackDown"){
+			  var url1 = baseUrl+"/xscz/exportWord?id="+data.id+"&token="+token;
+			  var url2 = baseUrl+"/xscz/exportZhXscz?id="+data.fkFjList[0].id+"&token="+token;
+			  var downloadUrl=[url1,url2];
+			  $(downloadUrl).multiDownload();
+		  }else if(obj.event=="changecg"){
+			  $("#xgcgsjhdd").val(data.sjhdd);
+			  $("#xgcgczsd").val(data.deptId);
+			  $("#xgcgfwdx").val(data.fwdx);
+			  $("#xgcglxdh").val(data.fwdxdh);
+			  $("#xgcgwcsj").val(data.czsj);
+			  xgcgfj=[];
+			  // $("#xgcgfileId").val(data.zhXsczFjList[0].id);
+			  form.render('select');
+			  layer.open({
+			   type:1,
+			   area:['800px','550px'],
+			    title: '下发指令',
+			    content: $("#xgCgbox"),
+			    shade: 0,
+			    btn: ['提交', '取消']
+			    ,btn1: function(index, layero){
+			  		if($("#xgcgczsd").val()==""){
+			  			layer.msg("处置所队还未填写！")
+			  			return
+			  		}
+			  		if($("#xgcgfwdx").val()==""){
+			  			layer.msg("服务对象还未填写！")
+			  			return
+			  		}
+			  		if($("#xgcglxdh").val()==""){
+			  			layer.msg("服务对象联系电话还未填写！")
+			  			return
+			  		}
+			  		if($("#xgcgwcsj").val()==""){
+			  			layer.msg("完成时间还未填写！")
+			  			return
+			  		}
+			  		var load1 = layer.load(1);  
+			  		$.ajax({
+			  		    url:baseUrl + "/xscz/modifyZhXscz",
+			  		    type:"post",
+			  		    cache:false,
+			  			data:JSON.stringify({
+							"id":data.id,
+			  				"sjhdd":$("#xgcgsjhdd").val(),
+			  				"deptId":$("#xgcgczsd").val(),
+			  				"fwdx":$("#xgcgfwdx").val(),
+			  				"fwdxdh":$("#xgcglxdh").val(),
+			  				"czsj":$("#xgcgwcsj").val(),
+			  				"zhXsczFjList":xgcgfj,
+			  				"type":1
+			  			}),
+			  			dataType : 'JSON',
+			  			contentType: "application/json",
+			  			beforeSend: function (XMLHttpRequest) {
+			  			   XMLHttpRequest.setRequestHeader("token", token);
+			  			},
+			  		    success:function(data) {
+			  				if(data.code==0){
+			  					layer.close(load1);
+			  				    layer.msg("修改成功");
+			  					table.reload("cgtestReload");
+			  				}else {
+			  					layer.close(load1);
+			  				    layer.msg(data.msg);
+			  				}
+			  		    },
+			  		    error : function (res) {
+			  				layer.close(load1);
+			  		        layer.msg('修改失败');
+			  		    }
+			  		})
+			  		layer.closeAll();
+			  		 $("#xgCgbox").hide();
+			    },
+			  	  btn2: function(index, layero){
+			  			$("#xgCgbox").hide();
+			  			layer.closeAll();
+			  	  },
+			  	cancel: function(layero,index){ 
+			  		 $("#xgCgbox").hide();
+			  			layer.closeAll();
+			  	  }
+			  });
+			  
+		  }else if(obj.event=="delcg"){
+			  layer.confirm('是否确认删除？', function(index){
+			  	$.ajax({
+			  	    url:baseUrl + "/xscz/deleteZhXscz?id="+data.id,
+			  	    type:"GET",
+			  	    cache:false,
+			  	    dataType : 'JSON',
+			  	    contentType: "application/json",
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+			  	    success:function(data) {
+			  	        if(data.code==0){
+			  	            layer.msg("删除成功");
+			  				table.reload("cgtestReload");
+			  	        }else {
+			  	            layer.msg(data.msg);
+			  	        }
+			  	    },
+			  	    error : function (res) {
+			  	        layer.msg('删除失败');
+			  	    }
+			  	})
+			  	layer.close(index);
+			    });
+		  }else if(obj.event=="cgqs"){
+			  var load1 = layer.load(1);
+			  $.ajax({
+			      url:baseUrl + "/xscz/qsZhXscz",
+			      type:"post",
+			      cache:false,
+			  	data:JSON.stringify({
+			  		"id":data.id,
+			  		"type":1, 
+			  		"czzt":3
+			  	}),
+			  	dataType : 'JSON',
+			  	contentType: "application/json",
+			  	beforeSend: function (XMLHttpRequest) {
+			  	   XMLHttpRequest.setRequestHeader("token", token);
+			  	},
+			      success:function(data) {
+			  		if(data.code==0){
+			  			layer.close(load1);
+			  		    layer.msg("签收成功");
+			  			table.reload("cgtestReload");
+			  		}else {
+			  			layer.close(load1);
+			  		    layer.msg(data.msg);
+			  		}
+			      },
+			      error : function (res) {
+			  		layer.close(load1);
+			          layer.msg('签收失败');
+			      }
+			  });
+		  }
+	})
+	
+	$("#cgsearch").click(function(){
+		var cgcheckTime = $("#cgchooseTime").val();
+		var cgstartDate = cgcheckTime.slice(0,10);
+		var cgendDate = cgcheckTime.slice(13);
+		var cgcxdw = $("#cgcxdw").val();
+		var cgczzt = $("#cgczzt").val();
+		getCg(baseUrl+"/xscz/queryZhXsczPage?deptId="+cgcxdw+"&type=1&startDate="+cgstartDate+"&endDate="+cgendDate+"&czzt="+cgczzt);
+	})
+	
+</script>
+	
+
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+/* html,body{
+    height: 100%;
+    width: 100%;
+} */
+body{
+    background:url(../images/choose.png)  no-repeat center center;
+    background-size:cover;
+    background-attachment:fixed;
+    background-color:#CCCCCC;
+ }
+.main{
+    background: url(../images/choose.png);
+    height: 100%;
+    width: 100%;
+    min-width: 1140px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+.btnBox{
+    margin-top: 780px;
+}
+.aBox{
+    margin: 0 auto;
+    width: 1140px;
+}
+.btnB{
+    display: inline-block;
+    color: white;
+    background-color: #083485;
+    width: 300px;
+    height: 50px;
+    font-size: 20px;
+    line-height: 50px;
+    text-align: center;
+}
+.btnB:hover{
+    background-color: #072e75;
+    color:#CCCCCC;
+}
+.inBox{
+    width: 620px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+}

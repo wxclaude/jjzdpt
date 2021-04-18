@@ -1,0 +1,28 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+
+###
+
+#移动接出警查询
+GET http://localhost:8080/ydjcj/queryByDate?startDate=2020-04-02&endDate=2020-04-12
+Accept: */*
+Cache-Control: no-cache
+###
+
+#上传移动接出警数据
+POST http://localhost:8080/ydjcj/upload?date=2020-04-20
+Accept: */*
+Cache-Control: no-cache
+token:f345224ce7dcf38b73e640ce544f011f
+###
+
+#根据日期查询未上传移动接出警数据的所有日期
+GET http://localhost:8080/ydjcj/queryNotUploadDateByDate?startDate=2020-05-01&endDate=2020-05-25
+Accept: */*
+Cache-Control: no-cache
+###
+

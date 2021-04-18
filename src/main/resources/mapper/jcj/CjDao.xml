@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.jcj.dao.CjDao">
+
+
+    <select id="queryCjList" resultType="io.renren.modules.jcj.entity.JcjCjxx">
+        select j.bjxs,j.bjlx,j.jjrqsj,j.bjr,j.bjrxb,j.sfdd,c.*,d.deptSname
+        from jcj_cjxx c
+        left join jcj_jjxx j on c.jjbh = j.jjbh
+		left join tdept d on left(c.djdw,8)+'0000' = d.deptcode
+        where 1=1
+		<if test="params.beforeDate != null and params.beforeDate != '' and params.beforeDate != 'null' and params.afterDate != null and params.afterDate != '' and params.afterDate != 'null'">
+			and substring(j.jjrqsj,1,8) >= #{params.beforeDate}
+			and substring(j.jjrqsj,1,8) &lt;= #{params.afterDate}
+		</if>
+		<if test="params.dw != null and params.dw != '' and params.dw != 'null'">
+			and left(c.djdw,8) = #{params.dw}
+		</if>
+		<if test="params.jjbh != null and params.jjbh != '' and params.jjbh != 'null'">
+			and c.jjbh = #{params.jjbh}
+		</if>
+        <if test="params.condition == '24HourNoApproval'">
+		and
+			substring (c.djsj, 1, 8) > convert (
+				varchar,
+				dateadd(day ,-3, getdate()),
+				112
+			)
+		and c.djsj!=''
+		and c.spsj is null
+		and datediff(
+				hour,
+				convert (
+					datetime,
+					substring (c.djsj, 1, 4) + '-' + substring (c.djsj, 5, 2) + '-' + substring (c.djsj, 7, 2) + ' ' + substring (c.djsj, 9, 2) + ':' + substring (c.djsj, 11, 2) + ':' + substring (c.djsj, 13, 2)
+				),
+				getdate()
+			) >24
+        </if>
+        <if test="params.condition == 'upOrLowLimitIsEmpty'">
+            and
+            substring (c.djsj, 1, 8) > convert (
+            varchar,
+            dateadd(day ,- 3, getdate()),
+            112
+            )
+            and (
+            c.sfsjsx is null or c.sfsjsx =''
+            or c.sfsjxx is null or c.sfsjxx =''
+            )
+        </if>
+        <if test="params.condition == 'weatherConditionIsEmptyWhileTraffic'">
+            and
+            substring (c.djsj, 1, 8) > convert (
+            varchar,
+            dateadd(day ,- 3, getdate()),
+            112
+            )
+            and cjlb like '03____'
+            and (tqqk is null or tqqk='')
+        </if>
+        <if test="params.condition == 'addressIsEmpty'">
+            and
+            substring (c.djsj, 1, 8) > convert (
+            varchar,
+            dateadd(day ,- 3, getdate()),
+            112
+            )
+			and (sfcs is null or sfcs='' or sfcs='990')
+        </if>
+		<if test="params.condition == 'countOfLdcj8Djsj'">
+			and
+			substring (c.djsj, 1, 8) > convert (
+			varchar,
+			dateadd(day ,-3, getdate()),
+			112
+			)
+			and c.djsj!=''
+			and cast(ISNULL(c.ldclsj, 0) as bigint) - cast(ISNULL(c.djsj, 0) as bigint) > 28800
+
+		</if>
+        order by j.jjrqsj desc
+    </select>
+
+	<select id="queryCjxx" resultType="io.renren.modules.jcj.entity.JcjCjxx">
+		select * from JCJ_CJXX
+		<if test="jjbh != null and jjbh != ''">
+			where jjbh = #{jjbh}
+		</if>
+	</select>
+
+    <select id="queryCjListIn3days" resultType="io.renren.modules.jcj.entity.JcjCjxx">
+		select j.bjxs,j.bjlx,j.jjrqsj,j.bjr,j.bjrxb,j.sfdd,c.* ,d.deptSname
+		from jcj_cjxx c
+		left join jcj_jjxx j on c.jjbh = j.jjbh
+		left join tdept d on left(c.djdw,8)+'0000' = d.deptcode
+		where c.djsj like '202%'
+		<if test="beforeDate != null and beforeDate != '' and afterDate != null and afterDate != ''">
+			and substring(j.jjrqsj,1,8) >= #{beforeDate}
+			and substring(j.jjrqsj,1,8) &lt;= #{afterDate}
+		</if>
+		<if test="dw != null and dw != ''">
+			and left(c.djdw,8) = #{dw}
+		</if>
+		<if test="jjbh != null and jjbh != ''">
+			and c.jjbh = #{jjbh}
+		</if>
+		<if test="cjbhs != null and cjbhs != ''">
+			and c.cjbh in (${cjbhs})
+		</if>
+		order by j.jjrqsj desc
+-- 		and datediff(
+-- 					day,
+-- 					convert (
+-- 						datetime,
+-- 						substring (c.djsj, 1, 4) + '-' + substring (c.djsj, 5, 2) + '-' + substring (c.djsj, 7, 2) + ' ' + substring (c.djsj, 9, 2) + ':' + substring (c.djsj, 11, 2) + ':' + substring (c.djsj, 13, 2)
+-- 					),
+-- 					getdate()
+-- 				) &lt;=1
+    </select>
+
+	<select id="countOf8HourNoPoliceDeal" resultType="java.util.Map">
+        select count(*) as countOf8HourNoPoliceDeal
+		from
+			jcj_jjxx j
+		left join jcj_cjxx c on j.jjbh =c.jjbh
+		left join tdept d on left(j.djdw,8)+'0000' = d.deptcode
+		where
+			substring (j.jjrqsj, 1, 8) > convert (
+				varchar,
+				dateadd(day ,-3, getdate()),
+				112
+			)
+		and j.jjdbh != ''
+		and j.jjrqsj!= ''
+		and c.djsj is null
+		and datediff(
+				hour,
+				convert (
+					datetime,
+					substring (j.jjrqsj, 1, 4) + '-' + substring (j.jjrqsj, 5, 2) + '-' + substring (j.jjrqsj, 7, 2) + ' ' + substring (j.jjrqsj, 9, 2) + ':' + substring (j.jjrqsj, 11, 2) + ':' + substring (j.jjrqsj, 13, 2)
+				),
+				getdate()
+			) >8
+		and j.cjbs ='1'
+    </select>
+
+	<select id="countOf24HourNoApproval" resultType="java.util.Map">
+        select count(*) as countOf24HourNoApproval
+		from
+		jcj_cjxx c
+		left join tdept d on left(c.djdw,8)+'0000' = d.deptcode
+		where
+			substring (c.djsj, 1, 8) > convert (
+				varchar,
+				dateadd(day ,-3, getdate()),
+				112
+			)
+		and c.djsj!=''
+		and c.spsj is null
+		and datediff(
+				hour,
+				convert (
+					datetime,
+					substring (c.djsj, 1, 4) + '-' + substring (c.djsj, 5, 2) + '-' + substring (c.djsj, 7, 2) + ' ' + substring (c.djsj, 9, 2) + ':' + substring (c.djsj, 11, 2) + ':' + substring (c.djsj, 13, 2)
+				),
+				getdate()
+			) >24
+    </select>
+
+	<select id="countOfUpOrLowLimitIsEmpty" resultType="java.util.Map">
+        select
+			count (*) as countOfUpOrLowLimitIsEmpty
+		from
+			jcj_cjxx c
+		left join tdept d on left (c.djdw, 8) + '0000' = d.deptcode
+		where
+			substring (c.djsj, 1, 8) > convert (
+				varchar,
+				dateadd(day ,- 3, getdate()),
+				112
+			)
+		and (
+			c.sfsjsx is null or c.sfsjsx =''
+			or c.sfsjxx is null or c.sfsjxx =''
+		)
+    </select>
+
+	<select id="countOfWeatherConditionIsEmptyWhileTraffic" resultType="java.util.Map">
+        select
+			count (*) as countOfWeatherConditionIsEmptyWhileTraffic
+		from
+			jcj_cjxx c
+		left join tdept d on left (c.djdw, 8) + '0000' = d.deptcode
+		where
+			substring (c.djsj, 1, 8) > convert (
+				varchar,
+				dateadd(day ,- 3, getdate()),
+				112
+			)
+		and cjlb like '03____'
+		and (tqqk is null or tqqk='')
+    </select>
+
+	<select id="countOfAddressIsEmpty" resultType="java.util.Map">
+        select
+			count (*) as countOfAddressIsEmpty
+		from
+			jcj_cjxx c
+		left join tdept d on left (c.djdw, 10) + '0000' = d.deptcode
+		where
+			substring (c.djsj, 1, 8) > convert (
+				varchar,
+				dateadd(day ,- 3, getdate()),
+				112
+			)
+		and (sfcs is null or sfcs='' or sfcs='990')
+    </select>
+
+    <select id="countOfMonthlyJj" resultType="java.util.Map">
+        select
+            count(1) as countOfMonthlyJj
+        from
+            jcj_jjxx j
+        where
+            substring (j.jjrqsj, 1, 6) = substring (convert(varchar, getdate(), 112),1,6)
+    </select>
+
+    <select id="countOfDailyJj" resultType="java.util.Map">
+        SELECT
+            COUNT (*) AS countOfDailyJj
+        FROM
+            jcj_jjxx j
+        WHERE
+            SUBSTRING (j.jjrqsj, 1, 8) = SUBSTRING (
+                CONVERT (VARCHAR, getdate(), 112),
+                1,
+                8
+            )
+    </select>
+
+    <select id="countOfMonthlyCj" resultType="java.util.Map">
+        SELECT
+            COUNT (*) AS countOfMonthlyCj
+        FROM
+            jcj_cjxx c
+        WHERE
+            SUBSTRING (c.djsj, 1, 6) = SUBSTRING (
+                CONVERT (VARCHAR, getdate(), 112),
+                1,
+                6
+            )
+    </select>
+
+    <select id="countOfDailyCj" resultType="java.util.Map">
+        SELECT
+            COUNT (*) AS countOfDailyCj
+        FROM
+            jcj_cjxx c
+        WHERE
+            SUBSTRING (c.djsj, 1, 8) = SUBSTRING (
+                CONVERT (VARCHAR, getdate(), 112),
+                1,
+                8
+            )
+    </select>
+
+	<select id="countOfEverydayJj" resultType="java.util.Map">
+        SELECT
+            COUNT (*) AS countOfEverydayJj
+        FROM
+            jcj_jjxx j
+		<if test="jjrqsj != null and jjrqsj != ''">
+		WHERE SUBSTRING (j.jjrqsj, 1, 8) = #{jjrqsj}
+		</if>
+    </select>
+
+	<select id="countOfMonthlyCjlbAnalysis" resultType="java.util.Map">
+		SELECT
+			COUNT (*) as a1,
+			SUBSTRING (c.CJLB, 1, 2) as a2
+		FROM
+			JCJ_CJXX c
+		WHERE
+			substring (c.djsj, 1, 6) = CONVERT(varchar(6),GETDATE(),112)
+		GROUP BY
+			SUBSTRING (c.CJLB, 1, 2)
+	</select>
+
+
+    <select id="queryYesterdayXSJQ" resultType="io.renren.modules.jcj.entity.JcjCjxx">
+        select j.JJRQSJ,d.DEPTSNAME,c.CJLB,c.CLJGNR,c.djdw,c.jjbh,c.cjbh
+        from jcj_cjxx c
+        left join jcj_jjxx j on c.jjbh = j.jjbh
+        left join tdept d on left(c.djdw,8)+'0000' = d.deptcode
+        where c.CJLB like '01%'
+        <if test="beforeDate != null and beforeDate != '' and date != null and date != ''">
+            and substring (j.jjrqsj, 1, 10) >= #{beforeDate}
+            and substring (j.jjrqsj, 1, 10) &lt; #{date}
+        </if>
+        order by c.djsj desc
+    </select>
+
+    <select id="queryYesterdaySHSE" resultType="io.renren.modules.jcj.entity.JcjCjxx">
+        select d.DeptSName ,c.JJBH,j.BJNR ,c.CLJGNR,c.BCCLJG,'涉黑恶' as JQSX,c.CJRHZXS,c.ZBLDXM,c.djdw
+        from JCJ_CJXX c
+        left join jcj_jjxx j on c.jjbh = j.jjbh
+        left join tdept d on left(c.djdw,8)+'0000' = d.deptcode
+        where substring (c.JQSX,1,1) = 1
+        <if test="beforeDate != null and beforeDate != '' and date != null and date != ''">
+            and substring (j.jjrqsj, 1, 10) >= #{beforeDate}
+            and substring (j.jjrqsj, 1, 10) &lt; #{date}
+        </if>
+        order by c.djsj desc
+    </select>
+	<select id="countOfLdcj8Djsj" resultType="java.lang.Integer">
+		select count(*)
+		from
+			jcj_cjxx c
+		where
+				substring (c.djsj, 1, 8) > convert (
+					varchar,
+					dateadd(day ,-3, getdate()),
+					112
+				)
+		  and c.djsj != ''
+		  and cast(ISNULL(c.ldclsj, 0) as bigint) - cast(ISNULL(c.djsj, 0) as bigint) > 28800
+	</select>
+
+</mapper>

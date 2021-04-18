@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-接处警</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 40px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>接警信息</legend>
+	      </fieldset>  
+		<table class="layui-hide" id="djjdetail" lay-filter="demo"></table>
+	
+	</div>
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+			<legend id="singTime"></legend>
+	      </fieldset>  
+		<table class="layui-hide" id="singldetail"></table>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">查看详情</a>
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="daochu">导出详情</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="xiugai">修改</a>
+</script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	
+	
+	var table = layui.table;
+	
+	
+	// 获取头部数据
+	table.render({
+	  elem: '#djjdetail'
+	  ,url:baseUrl+"/jj/queryJjList"
+	  ,defaultToolbar: []
+	  ,page:true
+	  ,cols: [[
+		 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+	    ,{field:'jjbh',  title: '接警编号',align:"center"}
+		,{field:'bjr', width:85, title: '报警人',align:"center"}
+		,{field:'bjnr',  title: '报警内容',align:"center"}
+		,{field:'djsj',  title: '登记时间',align:"center"}
+		,{field:'djdwmc',  title: '登记单位名称',align:"center"}
+		// ,{fixed: 'right', title:'操作', toolbar: '#barDemo',align:"center"  }
+	  ]]
+	});
+	
+	
+
+	
+	
+	
+	
+	table.on('tool(demo)', function(obj){
+	    var data = obj.data;
+		var dmTime = data.dm_time;
+		
+	    if(obj.event === 'checkDetal'){
+		  $("#singTime").html(dmTime);
+		  single(baseUrl + "/dm/queryDmDataByCondition?dmTime="+dmTime);
+	    } else if(obj.event === "daochu"){
+			window.location.href = baseUrl+"/dm/exportDMByDate?dmTime="+dmTime+"&token="+token;
+		} else if(obj.event ==="xiugai"){
+			window.location="xiugaidianming.html?"+dmTime;
+		}
+	  });
+	
+	
+	function single(url){
+		table.render({
+		  elem: '#singldetail'
+		  ,url:url
+		  ,toolbar:"#toolbarDemo"
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			,{field:'deptName', title: '单位',align:"center"}
+			,{field:'police',  title: '被点人员', align:"center" }
+			,{field:'isLeader', title:'值班岗位', templet:function(d){ if(d.isLeader==1){return "值班领导"}else if(d.isLeader==0){return "值班民警"}else if(d.isLeader== -1){return "社区民警"}}}
+			,{field:'djj',  title: '对讲机',align:"center"}
+			,{field:'yd',  title: '应答情况',align:"center",templet:function(d){ if(d.yd==1){return "正常应答"}else if(d.yd==2){return "无人应答"}else{ return "非本人应答" }}},
+			
+		  ]]
+		});
+	}
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-设备管理</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-tool{
+			z-index: 1;
+		}
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+	<div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item mainPage"><a href="pcsindex.html">首页</a></li>
+	        <li class="layui-nav-item">
+	          <a href="pcsxl.html">设备管理</a>
+	        </li>
+			<li class="layui-nav-item">
+			  <a href="javascript:;">接处警模块</a>
+			  <dl class="layui-nav-child">
+			        <dd>
+						<a href="pcscjlist.html">处警信息</a>
+					</dd>
+			    </dl>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsmrtz.html">每日台帐报备</a>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsjszl.html">接收指令</a>
+			</li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<form class="layui-form">
+	<div class="zhibantable" style="margin-bottom: 140px;" lay-filter="selectTest">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>查看本单位设备</legend>
+	      </fieldset>  
+		  
+		  <div class="demoTable" style="margin-bottom: 15px;">
+			  <h3>
+				设备总数：<span id="sbzx"></span> &nbsp;&nbsp;&nbsp;
+				正常设备：  <span id="zyzs"></span>   &nbsp;&nbsp;&nbsp;
+				报废设备：  <span  id="bfzs"></span>   &nbsp;&nbsp;&nbsp;
+			  </h3>
+		  </div>
+		  
+		  <div class="demoTable">
+		    设备编号/IP/责任人：
+		    <div class="layui-inline">
+		      <input class="layui-input"  autocomplete="off" id="searchId">
+		    </div>
+			<!-- 单位：
+			<div class="layui-inline" style="width:150px;">
+			  <select id="searchDw" lay-filter="searchDw" lay-search></select>
+			</div> -->
+			设备类型：
+			<div class="layui-inline" style="width:150px;">
+			  <select id="searchSblx" lay-filter="searchSblx" lay-search></select>
+			</div>
+			网络类型：
+			<div class="layui-inline" style="width:150px;">
+			  <select id="searchWllx" lay-filter="searchWllx" lay-search></select>
+			</div>
+		    <button class="layui-btn" id="search" type="button">搜索</button>
+			 <button class="layui-btn" id="daochu" type="button">导出</button>
+		  </div>
+		<table class="layui-hide" id="shebei" lay-filter="showList"></table>
+	</div>
+	
+	
+</form>
+	<!-- 添加设备 -->
+	
+	
+
+	
+	<form class="layui-form" id="addnew" style="display:none;width: 800px;padding: 10px;" lay-filter="newSelect">
+	  <div class="layui-form-item" style="margin-top: 20px;" id="searchBox" >
+	    <label class="layui-form-label" style="width: auto;">设备编号</label>
+	    <div class="layui-input-inline" style="width: 500px;">
+	      <select name="id" id="sbbh" lay-filter="sbbh" lay-search></select>
+	    </div>
+		<div class="layui-input-inline">
+		  <button type="button" class="layui-btn" id="addDk">+</button>
+		</div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;" >
+	    <label class="layui-form-label" style="width: auto;display: none;" id="nameBox">
+			品牌类型: <span id="name0"></span>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			所在位置: <span id="name1"></span>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			网络类型: <span id="name2"></span>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			设备类型: <span id="name3"></span>
+			<!-- &nbsp;&nbsp;&nbsp;&nbsp;
+			所属单位: <span id="name4"></span> -->
+		</label>
+	  </div>
+	  <div class="layui-form-item">
+		  <table id="duankoushu"></table>
+	  </div>
+	  
+	  <div class="layui-form-item" id="labelWidth">
+		<label class="layui-form-label" style="width: auto;">端口类型</label>
+		<div class="layui-input-inline" style="width: auto;">
+		  <input type="text" name="dklx_0" class="layui-input" style="width: 90px;">
+		</div>
+		<label class="layui-form-label" style="width: auto;">板卡号</label>
+		<div class="layui-input-inline" style="width: auto;">
+		  <input type="text" name="bkh_0" class="layui-input" style="width: 90px;">
+		</div>
+		<label class="layui-form-label" style="width: auto;">端口数</label>
+		<div class="layui-input-inline" style="width: auto;">
+		  <input type="text" name="dkh_0" class="layui-input" style="width: 90px;">
+		</div>
+		<label class="layui-form-label" style="width: auto;">起始号</label>
+		<div class="layui-input-inline" style="width: auto;">
+		  <input type="number" name="qsh_0" class="layui-input" style="width: 90px" value="0"  min="0">
+		</div>
+		<div class="layui-input-inline" style="width: auto;">
+		  <button type="button" class="layui-btn" onclick="remove(this)" id="removeBtn">删除</button>
+		</div>
+	  </div>
+	</form>
+	
+	
+	<form class="layui-form" id="addnewxian" style="display:none;width: 700px;padding: 10px;" lay-filter="newSelect1">
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">上联设备</label>
+		    <div class="layui-input-inline" style="width: 360px;">
+		      <select id="slsb" lay-filter="slsb" lay-search></select>
+		    </div>
+			<div class="layui-input-inline" >
+			      <select name="sldk"  id="sldk" lay-filter="sldk" lay-search>
+					  <option value="">请选择上联端口</option>
+				  </select>
+			    </div>
+		  </div>
+		  
+		  <div class="layui-form-item" style="margin-top: 20px;padding-left: 24px;" >
+		    <label class="layui-form-label" style="width: auto;display: none;" id="nameBox2">
+		  			品牌类型: <span id="name9"></span>
+		  			&nbsp;&nbsp;&nbsp;&nbsp;
+		  			所在位置: <span id="name10"></span>
+		  			&nbsp;&nbsp;&nbsp;&nbsp;
+		  			网络类型: <span id="name11"></span>
+		  			&nbsp;&nbsp;&nbsp;&nbsp;
+		  			设备类型: <span id="name12"></span>
+		  		</label>
+		  </div>
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">下联设备</label>
+		    <div class="layui-input-inline" style="width: 360px;">
+		      <select id="xlsb" lay-filter="xlsb" lay-search></select>
+		    </div>
+				<div class="layui-input-inline">
+				  <select name="xialian"  id="xialian" lay-filter="xialian" lay-search>
+					  <option value="">请选择下联端口</option>
+				  </select>
+				</div>
+		  </div>
+		  
+		  <div class="layui-form-item" style="margin-top: 20px;padding-left: 24px;" >
+		    <label class="layui-form-label" style="width: auto;display: none;" id="nameBox1">
+		  			品牌类型: <span id="name5"></span>
+		  			&nbsp;&nbsp;&nbsp;&nbsp;
+		  			所在位置: <span id="name6"></span>
+		  			&nbsp;&nbsp;&nbsp;&nbsp;
+		  			网络类型: <span id="name7"></span>
+		  			&nbsp;&nbsp;&nbsp;&nbsp;
+		  			设备类型: <span id="name8"></span>
+		  		</label>
+		  </div>
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">链接类型</label>
+		    <div class="layui-input-block">
+		      <select id="ljlx">
+					<option value="">请选择链接类型</option>
+		      		<option value="Trunk">Trunk</option>
+					<option value="Access">Access</option>
+		      </select>
+		    </div>
+		  </div>
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">Vlan号</label>
+		    <div class="layui-input-block">
+		      <input type="text" id="vlan" class="layui-input">
+		    </div>
+		  </div>
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">备注</label>
+		    <div class="layui-input-block">
+		      <input type="text" id="bz" class="layui-input">
+		    </div>
+		  </div>
+		  <div class="layui-form-item">
+		  		  <table id="tablexianlu" lay-filter="xianlutips"></table>
+		  </div>
+	</form>
+	
+	
+<div id="footer"></div>
+    
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+
+
+<script type="text/javascript">
+
+	$("#footer").load("public/footer.html");
+	//var lohref = window.location.href;
+	//var dmTime = lohref.substr(lohref.indexOf("=")+1);
+	var table = layui.table;
+	$.get(baseUrl+"/xlgl/querySbCount?deptId="+deptId,function(res){
+		//console.log(res);
+		$("#sbzx").text(res.data.total);
+		$("#zyzs").text(res.data.total1);
+		$("#bfzs").text(res.data.total2);
+	})
+	
+	
+	
+	// 获取头部数据
+	function getMoren(url){
+		table.render({
+		  elem: '#shebei'
+		  ,url:url
+		  ,defaultToolbar: ['filter']
+		   ,toolbar: '#toolbarDemo'
+		  ,page:true
+		  ,cols: [[
+			{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'设备编号',title: '设备编号',align:"center",}
+			 ,{field:'品牌型号',title: '品牌型号', align:"center"}
+			,{field:'设备类型',title: '设备类型',align:"center"}
+		    ,{field:'网络类型',title: '网络类型', align:"center"}
+		    ,{field:'管理单位',title: '所属单位',align:"center"}
+			,{field:'所在位置',title: '所在位置',align:"center"}
+			,{field:'使用人', title: '责任人',align:"center",}
+			,{field: 'IP地址', title:'IP地址',align:"center" }
+			,{field: '设备状态', title:'设备状态',align:"center" ,}
+			// ,{field: '线路数', title:'线路数',align:"center" ,}
+			,{field: '录入时间', title:'录入时间',align:"center"  }
+			
+		  ]]
+		  ,id:"testReload"
+		});
+	}
+	getMoren(baseUrl+"/xlgl/querySbByPageST?gldw=&wllx=&sbbh=&ip=&deptId="+deptId);
+	
+	
+	
+	
+	// 查询判断权限
+	function getUrl(){
+		var sbbh = $("#searchId").val();
+		if(checkRole(roles,Role0027)){
+			return baseUrl+"/xlgl/querySbByPageNew?sbbh="+sbbh+"&deptId="+deptId;
+		}else{
+			return baseUrl+"/xlgl/querySbByPageNew?sbbh="+sbbh;
+		}
+	}
+	
+	
+	// #查询设备 视图
+	// #查询条件 管理单位:gldw  设备类型:sblx 网络类型:wllx 设备编号:sbbh IP地址:ip
+	// GET {{baseUrl}}/xlgl/querySbByPageST?page=1&limit=10&deptId=
+	//baseUrl+"/xlgl/querySbByPageNew?sbbh="+sbbh+"&deptId="+deptId;
+	// 查询
+	$("#search").click(function(){
+		var sbbh = $("#searchId").val();
+		var searchDw = $("#searchDw").val();
+		var searchWllx = $("#searchWllx").val();
+		//console.log(searchWllx);
+		var searchSblx = $("#searchSblx").val();
+		getMoren(baseUrl+"/xlgl/querySbByPageST?&wllx="+searchWllx+"&sbbh="+sbbh+"&sblx="+searchSblx+"&deptId="+deptId);
+	})
+	$("#daochu").click(function(){
+		//layer.msg("222");
+		var sbbh = $("#searchId").val();
+		var searchDw = $("#searchDw").val();
+		var searchWllx = $("#searchWllx").val();
+		//console.log(searchWllx);
+		var searchSblx = $("#searchSblx").val();
+		//console.log(deptId);
+		window.location=baseUrl + "/xlgl/exportSbST?&wllx="+searchWllx+"&sbbh="+sbbh+"&sblx="+searchSblx+"&deptId="+deptId +"&token="+token;
+	})
+	
+	
+		// 动态添加select下拉,带搜索
+		function layuiSelect66(selectID,url,value){
+			$.get(url,function(data){
+				if(selectID.indexOf("#")!=0){
+					selectID="#"+selectID;
+				}
+				$(selectID).empty();
+				$(selectID).append("<option value='' >请选择</option>");
+				for(var k of data.data){
+					// console.log(k)
+					$(selectID).append("<option value='"+k.V_RWSBId+"'>"+k.V_RWSBId+"("+ k.Brand+"/"+ k.BZs6 +"/"+ k.jrlx +"/"+ k.BZs4 +")</option>");
+				}
+				if(value!=undefined||value!=null||value!=""){
+					$(selectID).val(value);
+				}
+				layui.form.render();
+			})
+		}
+		// 调用该方法
+		//layuiSelect("searchDw",baseUrl+"/xlgl/querySbByPageNew?page=1&limit=100000");
+		
+		//#根据设备编号分页查询设备信息 的select查询条件
+		//0单位 1设备类型  2网络类型
+		//GET {{baseUrl}}/xlgl/querySbSearchCondition?type=2
+		
+		function SelectDw(selectID,url,value){
+			$.get(url,function(data){
+				if(selectID.indexOf("#")!=0){
+					selectID="#"+selectID;
+				}
+				$(selectID).empty();
+				$(selectID).append("<option value='' >请选择</option>");
+				for(var k of data.data){
+					$(selectID).append("<option value='"+k.value+"'>"+k.value+"</option>");
+				}
+				if(value!=undefined||value!=null||value!=""){
+					$(selectID).val(value);
+				}
+				layui.form.render();
+			})
+		}
+		SelectDw("searchDw",baseUrl+"/xlgl/querySbSearchCondition?type=0");
+		
+		function SelectSblx(selectID,url,value){
+			$.get(url,function(data){
+				if(selectID.indexOf("#")!=0){
+					selectID="#"+selectID;
+				}
+				$(selectID).empty();
+				$(selectID).append("<option value='' >请选择</option>");
+				for(var k of data.data){
+					$(selectID).append("<option value='"+k.value+"'>"+k.value+"</option>");
+				}
+				if(value!=undefined||value!=null||value!=""){
+					$(selectID).val(value);
+				}
+				layui.form.render();
+			})
+		}
+		SelectSblx("searchSblx",baseUrl+"/xlgl/querySbSearchCondition?type=1");
+		
+		function SelectWllx(selectID,url,value){
+			$.get(url,function(data){
+				if(selectID.indexOf("#")!=0){
+					selectID="#"+selectID;
+				}
+				$(selectID).empty();
+				$(selectID).append("<option value='' >请选择</option>");
+				for(var k of data.data){
+					$(selectID).append("<option value='"+k.value+"'>"+k.value+"</option>");
+				}
+				if(value!=undefined||value!=null||value!=""){
+					$(selectID).val(value);
+				}
+				layui.form.render();
+			})
+		}
+		
+		SelectWllx("searchWllx",baseUrl+"/xlgl/querySbSearchCondition?type=2");
+
+
+		//#设备新增页面  根据设备编号 查询设备已经端口信息
+		//GET {{baseUrl}}/xlgl/querySbDkDetailBySbId?sbbh=V202001060001
+
+		table.on('tool(showList)', function(obj){
+			var data = obj.data;
+			if(obj.event === 'duankoushu'){
+				//$("input").val("");
+				$("#searchBox").show();
+				$("#removeBtn").show();
+				$("#nameBox").show();
+				$("input[name='dklx_0']").val("");
+				$("input[name='bkh_0']").val("");
+				$("input[name='dkh_0']").val("");
+				$("input[name='qsh_0']").val("");
+				$("#sbbh").val(data.设备编号);
+				$("#name0").html(data.品牌型号);
+				$("#name1").html(data.所在位置);
+				$("#name2").html(data.网络类型);
+				$("#name3").html(data.设备类型);
+				layui.form.render("select","newSelect");
+				table.render({
+				  elem: '#duankoushu'
+				  ,page:true
+				  ,url:baseUrl+"/xlgl/querySbDkDetailBySbId?sbbh="+data.设备编号
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'dklx', title: '端口类型',}
+					,{field:'bkh', title: '板卡号',}
+					,{field:'起始端口号',  title: '起始端口号',}
+					,{field:'端数量',  title: '端口数',}
+				  ]]
+				});	
+				
+				
+				layer.open({
+				 type:1,
+				 area:['900px','650px'],
+				  title: '添加端口'
+				  ,content: $("#addnew"),
+				  shade: 0,
+				  btn: ['提交', '取消']
+				  ,btn1: function(index, layero){
+					  var datas = $("#addnew").serializeArray();
+					  // console.log(datas);
+					  if(datas[0].value==""){
+						  layer.msg("您还没有填写设备编号!");
+						  return false;
+					  }
+					  var dataSend=[];
+					  var sbId = null;
+					  //去取id
+					  $.each(datas,function(i,k){
+						  if(datas[i].name=="id"){
+							  sbId=datas[i].value;
+						  }
+					  })
+					  var temp ={};
+					  $.each(datas,function(i,v){
+						  // console.log(v);
+						  if(v.name!="id"){
+							   var column = v.name.split("_")[0];
+							   var index = v.name.split("_")[1];
+							   if(column =='dklx'){
+								   temp.dklx = v.value;
+							   }else if(column =='bkh'){
+								   temp.bkh = v.value;
+							   }else if(column =='dkh'){
+								   temp.dks = v.value;
+							   }else if(column =='qsh'){
+								   temp.dkhqs = v.value;
+								   temp.sbId = sbId;
+								   dataSend.push(temp);
+								   temp ={};
+							   }
+						  }
+					  })
+					  // console.log(dataSend);
+					  var load1 = layer.load(1);  
+						$.ajax({
+						    url:baseUrl + "/xlgl/addDkBatch",
+						    type:"post",
+						    cache:false,
+							data:JSON.stringify(dataSend),
+							dataType : 'JSON',
+							contentType: "application/json",
+							beforeSend: function (XMLHttpRequest) {
+							   XMLHttpRequest.setRequestHeader("token", token);
+							},
+						    success:function(data) {
+								if(data.code==0){
+									layer.close(load1);
+								    layer.msg("添加成功");
+									table.reload("testReload");
+									//$("input").val("");
+									$("#nameBox").hide();
+								}else {
+									layer.close(load1);
+								    layer.msg(data.msg);
+									$("#nameBox").hide();
+								}
+						    },
+						    error : function (res) {
+								layer.close(load1);
+						        layer.msg('添加失败');
+								$("#nameBox").hide();
+						    }
+						})
+						layer.closeAll();
+						$("#addnew").hide();
+						$("#nameBox").hide();
+						layui.form.render("select")
+				  },
+				  btn2: function(index, layero){
+						layer.closeAll();
+						$("#addnew").hide();
+						$("#nameBox").hide();
+						layui.form.render("select")
+				  },
+				cancel: function(layero,index){ 
+						layui.form.render("select")
+					   layer.closeAll();
+					   $("#addnew").hide();
+					   $("#nameBox").hide();
+				  }
+				
+				}); 
+				
+			}else if(obj.event === 'xianlushu'){
+				// 线路展示
+				//$("input").val("");
+				$("#vlan").val("");
+				$("#bz").val("");
+				$("#sldk").val("");
+				$("#xialian").val("");
+				$("#slsb").val(data.设备编号);
+				$("#xlsb").val("");
+				$("#ljlx").val("");
+				getCityList(data.设备编号);
+				$("#nameBox2").show();
+				$("#name9").html(data.品牌型号);
+				$("#name10").html(data.所在位置);
+				$("#name11").html(data.网络类型);
+				$("#name12").html(data.设备类型);
+				form.render("select","newSelect1");
+				table.render({
+				  elem: '#tablexianlu'
+				  ,page:true
+				  ,url:baseUrl+"/xlgl/queryXlByPage?xlbh=&sbbh="+data.设备编号
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'xlbh',width:135,title: '线路编号',align:"center" ,}
+					,{field:'slDklx',title: '上联端口',align:"center" ,templet:function(d){ return d.slDklx+"/"+d.slBkh+"/"+d.slDkh }}
+					,{field:'slSbId',title: '上联设备编号', align:"center" ,style:'color: #083485;cursor: pointer;',event:'tipssl',}
+					,{field:'xlDklx',title: '下联端口', align:"center" ,templet:function(d){ return d.xlDklx+"/"+d.xlBkh+"/"+d.xlDkh }}
+					,{field:'xlSbId',title: '下联设备编号', align:"center",style:'color: #083485;cursor: pointer;',event:'tipsxl',}
+				  ]]
+				});	
+				
+				
+				//弹出即全屏
+				var index = layer.open({
+				 type:1,
+				 area:['800px','100%'],
+				  title: '添加线路'
+				  ,content: $("#addnewxian"),
+				  shade: 0,
+				  btn: ['提交', '取消']
+				  ,btn1: function(index, layero){
+					  if( $("#sldk").val()==""){
+						  layer.msg("上联端口不能为空！");
+						  return false;
+					  }
+					  if( $("#xialian").val()==""){
+						  layer.msg("下联端口不能为空！");
+						  return false;
+					  }
+					  if( $("#ljlx").val()==""){
+							  layer.msg("链接类型不能为空！");
+							  return false;
+					  }
+					  
+					  var dataSend = {
+						   // "xlbh":$("#xlbh").val(),
+						   "slSbId":$("#slsb").val(),
+						   "xlSbId":$("#xlsb").val(),
+						  "slDkId": $("#sldk").val(),
+						  "xlDkId":$("#xialian").val(),
+						  "ljlx":$("#ljlx").val(),
+						  "vlan":$("#vlan").val(),
+						  "bz":$("#bz").val()
+					  }
+					  var load1 = layer.load(1);  
+						$.ajax({
+						    url:baseUrl + "/xlgl/addXl",
+						    type:"post",
+						    cache:false,
+							data:JSON.stringify(dataSend),
+							dataType : 'JSON',
+							contentType: "application/json",
+							beforeSend: function (XMLHttpRequest) {
+							   XMLHttpRequest.setRequestHeader("token", token);
+							},
+						    success:function(data) {
+								if(data.code==0){
+									layer.close(load1);
+								    layer.msg("添加成功");
+									table.reload("testReload");
+									//$("input").val("");
+									layer.closeAll();
+									$("#addnewxian").hide();
+								}else {
+									layer.close(load1);
+								    layer.msg(data.msg);
+								}
+						    },
+						    error : function (res) {
+								// layer.close(load1);
+						        layer.msg('添加失败');
+								$("#addnewxian").hide();
+						    }
+						})
+						$("#nameBox1").hide();
+						$("#nameBox2").hide(); 
+				  },
+				  btn2: function(index, layero){
+						layer.closeAll();
+						$("#addnewxian").hide();
+						layui.form.render("select","newSelect1");
+						$("#nameBox1").hide();
+						$("#nameBox2").hide(); 
+				  },
+				cancel: function(layero,index){ 
+						layui.form.render("select","newSelect1")
+					   layer.closeAll();
+					   $("#addnewxian").hide();
+					   $("#nameBox1").hide();
+					   $("#nameBox2").hide(); 
+				  }
+				
+				}); 
+				
+				//layer.full(index);
+			}
+		})
+		
+		// 新增线路
+		// 新增
+		// 动态添加select下拉,带搜索
+		function layuiSelect1(selectID,url,value){
+			$.get(url,function(data){
+				if(selectID.indexOf("#")!=0){
+					selectID="#"+selectID;
+				}
+				$(selectID).empty();
+				$(selectID).append("<option value='' >请选择</option>");
+				
+				for(var k of data.data){
+					// console.log(k)
+					$(selectID).append("<option value='"+k.V_RWSBId+"'>"+k.V_RWSBId+"("+ k.Brand +"/"+ k.BZs6 +"/"+ k.jrlx +"/"+ k.BZs4 +")</option>");
+				}
+				if(value!=undefined||value!=null||value!=""){
+					$(selectID).val(value);
+				}
+				layui.form.render();
+				
+			})
+		}
+		// 调用该方法
+		layuiSelect1("slsb",baseUrl+"/xlgl/querySbByPageNew?page=1&limit=100000");
+		layuiSelect1("xlsb",baseUrl+"/xlgl/querySbByPageNew?page=1&limit=100000");
+		form.on('select(slsb)', function(data){	 
+			console.log(data);
+		     getCityList(data.value);
+			 	// console.log(showBm(data.value));
+			 	$.get(showBm(data.value),function(res){
+			 		$("#nameBox2").show();
+					$("#name9").html(res.data[0].Brand);
+					$("#name10").html(res.data[0].BZs6);
+					$("#name11").html(res.data[0].jrlx);
+					$("#name12").html(res.data[0].sblx);
+					// $("#name4").html(res.data[0].deptName);
+			 	})
+		  });
+		//根据设备编号获取设备端口
+		function getCityList(id) {
+		    $.get({
+		        url:baseUrl+"/xlgl/queryDkBySbId?sbId="+id,
+		        success:function(data){
+		            $("#sldk").html("<option value=''>请选择上联端口</option>");
+					for(var k of data.data){
+						$("#sldk").append("<option value='"+k.id+"'>"+k.dklx+"/"+k.bkh+"/"+k.dkh+"</option>");
+					}
+					form.render('select'); 
+		        }
+		    });
+		}
+		
+		// 下联设备
+		
+		form.on('select(xlsb)', function(data){
+		     $.get({
+		         url:baseUrl+"/xlgl/queryDkBySbId?sbId="+data.value,
+		         success:function(data){
+		             $("#xialian").html("<option value=''>请选择下联端口</option>");
+		     		for(var k of data.data){
+		     			$("#xialian").append("<option value='"+k.id+"'>"+k.dklx+"/"+k.bkh+"/"+k.dkh+"</option>");
+		     		}
+		     		form.render('select'); 
+		         }
+		     }); 
+			   $.get(showBm(data.value),function(res){
+				$("#nameBox1").show();
+				$("#name5").html(res.data[0].Brand);
+				$("#name6").html(res.data[0].BZs6);
+				$("#name7").html(res.data[0].jrlx);
+				$("#name8").html(res.data[0].sblx);
+			   })
+		});
+		
+		
+		table.on('tool(xianlutips)', function(obj){
+			
+			if(obj.event == "tipssl"){
+				//console.log(obj.data);
+				tip_index = layer.tips(
+					"<span style='color:#FFF'>品牌型号:"+obj.data.slSbMap.品牌型号+"<br/>管理单位:"+obj.data.slSbMap.管理单位+"<br/>设备类型:"+obj.data.slSbMap.设备类型+"<br/>网络类型:"+obj.data.slSbMap.网络类型+"<br/>所在位置:"+obj.data.slSbMap.所在位置+"<br/>责任人:"+obj.data.slSbMap.责任人+"</span>", 
+					this,
+					{
+						tips:[1,'#0FA6D8'],
+						time: 5000,
+					});
+				
+			}else if(obj.event == "tipsxl"){
+				tip_index = layer.tips(
+					"<span style='color:#FFF'>品牌型号:"+obj.data.xlSbMap.品牌型号+"<br/>管理单位:"+obj.data.xlSbMap.管理单位+"<br/>设备类型:"+obj.data.xlSbMap.设备类型+"<br/>网络类型:"+obj.data.xlSbMap.网络类型+"<br/>所在位置:"+obj.data.xlSbMap.所在位置+"<br/>责任人:"+obj.data.xlSbMap.责任人+"</span>", 
+					this,
+					{
+						tips:[1,'#0FA6D8'],
+						time: 5000,
+					});
+				
+			}
+		})
+		
+		
+		
+		
+		//新增线路end
+		
+		
+		
+		
+		
+		
+
+
+		// 动态添加select下拉,带搜索
+		function layuiSelect(selectID,url,value){
+			$.get(url,function(data){
+				if(selectID.indexOf("#")!=0){
+					selectID="#"+selectID;
+				}
+				$(selectID).empty();
+				$(selectID).append("<option value='' >请选择</option>");
+				
+				for(var k of data.data){
+					// console.log(k)
+					$(selectID).append("<option value='"+k.V_RWSBId+"'>"+k.V_RWSBId+"("+ k.Brand+"/"+ k.BZs6 +"/"+ k.jrlx +"/"+ k.BZs4 +")</option>");
+				}
+				if(value!=undefined||value!=null||value!=""){
+					$(selectID).val(value);
+				}
+				layui.form.render();
+				
+			})
+		}
+		// 调用该方法
+		layuiSelect("sbbh",baseUrl+"/xlgl/querySbByPageNew?page=1&limit=100000");
+
+		// 选择选设备
+		form.on('select(sbbh)',function(data){
+			// console.log(showBm(data.value));
+			$.get(showBm(data.value),function(res){
+				$("#nameBox").show();
+				$("#name0").html(res.data[0].Brand);
+				$("#name1").html(res.data[0].BZs6);
+				$("#name2").html(res.data[0].jrlx);
+				$("#name3").html(res.data[0].sblx);
+			})
+		});
+
+		// 展示部门
+		function showBm(K){
+		  if(checkRole(roles,Role0027)){
+			return baseUrl+"/xlgl/querySbByPageNew?sbbh="+K+"&deptId="+deptId+"&page=1&limit=1";
+		  }else{
+			return baseUrl+"/xlgl/querySbByPageNew?sbbh="+K+"&page=1&limit=1";
+		  }	
+		}
+
+		function remove(btn){
+			$(btn).parent().parent().remove();
+		}
+		var it=1;
+		$("#addDk").click(function(){
+			var box = `<div class="layui-form-item">
+			    <label class="layui-form-label" style="width: auto;">端口类型</label>
+			    <div class="layui-input-inline" style="width: auto;">
+			      <input type="text" name="dklx_`+it+`" class="layui-input" style="width: 90px;">
+			    </div>
+				<label class="layui-form-label" style="width: auto;">板卡号</label>
+				<div class="layui-input-inline" style="width: auto;">
+				  <input type="text" name="bkh_`+it+`" class="layui-input" style="width: 90px;">
+				</div>
+				<label class="layui-form-label" style="width: auto;">端口号</label>
+				<div class="layui-input-inline" style="width: auto;">
+				  <input type="text" name="dkh_`+it+`" class="layui-input" style="width: 90px;">
+				</div>
+					<label class="layui-form-label" style="width: auto;">起始号</label>
+					<div class="layui-input-inline" style="width: auto;">
+					  <input type="number" id="qsh" name="qsh_`+it+`" class="layui-input" style="width: 90px;" value="0"  min="0">
+					</div>
+				<div class="layui-input-inline" style="width: auto;">
+				  <button type="button" class="layui-btn" onclick="remove(this)">删除</button>
+				</div>
+			  </div>`;
+			  $("#addnew").append(box);
+			  it++;
+		})
+		
+		// layer.open({
+		//       type: 1,
+		// 	  scrollbar: false,
+		//       area: ['600px', '580px'],
+		// 	  title:"查看所有端口",
+		//       shadeClose: true, //点击遮罩关闭
+		//       content: '<table id="duankoushu"></table>',
+		// 	  success:function(layero, index){
+		// 			table.render({
+		// 			  elem: '#duankoushu'
+		// 			  ,page:true
+		// 			  ,url:baseUrl+"/xlgl/querySbDkDetailBySbId?sbbh="+data.设备编号
+		// 			  ,cols: [[
+		// 				{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		// 				,{field:'dklx', title: '端口类型',}
+		// 				,{field:'bkh', title: '板卡号',}
+		// 				,{field:'起始端口号',  title: '起始端口号',}
+		// 			    ,{field:'端数量',  title: '端口数',}
+		// 			  ]]
+		// 			});	
+						
+		// 	   }
+		//     });
+	
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+CREATE TABLE `tydjcj_his` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `dw` varchar(50) DEFAULT NULL COMMENT '单位名称',
+  `zjql` int(11) DEFAULT NULL COMMENT '总警情量',
+  `xptjjl` int(11) DEFAULT NULL COMMENT '新平台\n新平台接警量',
+  `xptjjlv` int(50) DEFAULT NULL COMMENT '新平台接警率',
+  `zcjdj` int(11) DEFAULT NULL COMMENT '总处警登记',
+  `xptzmdcjdj` int(11) DEFAULT NULL COMMENT '新平台桌面端处警登记',
+  `xptyddcjdj` int(11) DEFAULT NULL COMMENT '新平台移动端处警登记',
+  `xptcjlv` int(50) DEFAULT NULL COMMENT '新平台处警率',
+  `dept_code` varchar(50) DEFAULT NULL COMMENT '单位编号',
+  `dept_id` varchar(255) DEFAULT NULL COMMENT '单位id',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+  `user_id` varchar(255) DEFAULT NULL COMMENT '添加人',
+  `lptjjl` int(11) DEFAULT NULL COMMENT '老平台接警量',
+  `ydjcj_date` datetime DEFAULT NULL COMMENT '接处警时间',
+  `yddcjlv` int(11) DEFAULT NULL COMMENT '移动端处警率',
+  `create_by` varchar(255) DEFAULT NULL COMMENT '上传人',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=696 DEFAULT CHARSET=utf8;

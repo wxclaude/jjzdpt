@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.jcj.dao.YdjcjDao">
+
+
+    <select id="queryByDate" resultType="io.renren.modules.jcj.entity.YdjcjEntity">
+
+      select temp.*
+      from
+      (select
+        dw,
+        ifnull(sum(zjql),0) as zjql,
+        ifnull(sum(xptjjl),0) as xptjjl,
+        ifnull(avg(xptjjlv),0) as xptjjlv,
+        ifnull(sum(zcjdj),0) as zcjdj,
+        ifnull(sum(xptzmdcjdj),0) as xptzmdcjdj,
+        ifnull(sum(xptyddcjdj),0) as xptyddcjdj,
+        ifnull(avg(xptcjlv),0) as xptcjlv,
+        ifnull(avg(yddcjlv),0) as yddcjlv,
+        ifnull(sum(lptjjl),0) as lptjjl
+      from tydjcj
+      where 1=1
+        <if test="params.startDate != null and params.startDate != ''">
+            and date_format( ydjcj_date, '%Y-%m-%d' ) &gt;= #{params.startDate}
+        </if>
+        <if test="params.endDate != null and params.endDate != ''">
+            and date_format( ydjcj_date, '%Y-%m-%d' ) &lt;= #{params.endDate}
+        </if>
+      group by dw
+      order by dept_code
+      ) temp
+      left join tdept t on t.full_dept_name = temp.dw
+      where 1=1
+      order by temp.yddcjlv desc, t.ydjcj
+
+    </select>
+
+    <select id="queryTotalByDate" resultType="io.renren.modules.jcj.entity.YdjcjEntity">
+      select
+      '扬州市公安局邗江分局' as dw,
+      ifnull(sum(zjql),0) as zjql,
+      ifnull(sum(xptjjl),0) as xptjjl,
+--       ifnull(avg(xptjjlv),0) as xptjjlv,
+      ifnull(sum(xptjjl) / sum(zjql) * 100, 0 ) as xptjjlv,
+      ifnull(sum(zcjdj),0) as zcjdj,
+      ifnull(sum(xptzmdcjdj),0) as xptzmdcjdj,
+      ifnull(sum(xptyddcjdj),0) as xptyddcjdj,
+
+--       ifnull(avg(xptcjlv),0) as xptcjlv,
+      ifnull(sum(xptyddcjdj + xptzmdcjdj) / sum(zcjdj) * 100 ,0) as xptcjlv,
+--       ifnull(avg(yddcjlv),0) as yddcjlv,
+      ifnull(sum(xptyddcjdj) / sum(zcjdj) * 100 ,0) as yddcjlv,
+      ifnull(sum(lptjjl),0) as lptjjl
+      from tydjcj
+      where 1=1
+      <if test="params.startDate != null and params.startDate != ''">
+        and date_format( ydjcj_date, '%Y-%m-%d' ) &gt;= #{params.startDate}
+      </if>
+      <if test="params.endDate != null and params.endDate != ''">
+        and date_format( ydjcj_date, '%Y-%m-%d' ) &lt;= #{params.endDate}
+      </if>
+    </select>
+
+    <select id="queryUploadDateList" resultType="java.lang.String">
+      select  distinct date_format( ydjcj_date, '%Y-%m-%d' )
+      from tydjcj
+      where date_format( ydjcj_date, '%Y-%m-%d' ) &gt;= #{params.startDate}
+      and date_format( ydjcj_date, '%Y-%m-%d' ) &lt;= #{params.endDate}
+    </select>
+
+
+</mapper>

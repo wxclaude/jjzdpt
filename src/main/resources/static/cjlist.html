@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-接处警</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/mutislect.css">
+	<style type="text/css">
+		.layui-nav-child{
+				z-index: 999;
+		}
+		.layui-form-label{
+			width: 58px;
+		}
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+		
+		<div class="layui-tab">
+		  <ul class="layui-tab-title">
+		    <li class="layui-this">处警信息</li>
+			<li>派出所处警信息</li>
+		    <li>抽查处警信息</li>
+			<li>派出所上报处警信息</li>
+			<li>抽查统计</li>
+		  </ul>
+		  <div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					<!-- <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+						<legend>处警信息</legend>
+					</fieldset> -->
+					<div class="layui-form demoTable">
+					  <div class="layui-form-item">
+					    <div class="layui-inline">
+							<label class="layui-form-label">接警编号</label>
+							<div class="layui-input-inline">
+							  <input type="text" class="layui-input" id="jjbh" autocomplete="off">
+							</div>
+					      <label class="layui-form-label">查询范围</label>
+					      <div class="layui-input-inline">
+					        <input type="text" class="layui-input" id="chooseTime" placeholder="请选择" autocomplete="off">
+					      </div>
+						  <label class="layui-form-label">单位</label>
+						  <div class="layui-input-inline" >
+						    	<select name="city" lay-filter="pid" id="xzdw" >
+						    	  <option value="">请选择</option>
+						    	  <option value="32100351">邗上派出所</option>
+						    	  <option value="32100352">汊河派出所</option>
+						    	  <option value="32100353">瓜洲派出所</option>
+						    	  <option value="32100354">蒋王派出所</option>
+						    	  <option value="32100372">甘泉派出所</option>
+						    	  <option value="32100355">杨庙派出所</option>
+						    	  <option value="32100373">新盛派出所</option>
+						    	  <option value="32100365">四季园派出所</option>
+						    	  <option value="32100356">槐泗派出所</option>
+						    	  <option value="32100357">方巷派出所</option>
+						    	  <option value="32100358">公道派出所</option>
+						    	  <option value="32100364">杨寿派出所</option>
+						    	  <option value="32100366">念四桥派出所</option>
+						    	  <option value="32100368">竹西派出所</option>
+						    	  <option value="32100369">西湖派出所</option>
+						    	  <option value="32100371">江阳派出所</option>
+						    	  <option value="32100317">交警大队</option>
+						    	</select>  
+						  </div>
+						  <button class="layui-btn" data-type="reload" id="chaxun">查询</button>
+						  <button class="layui-btn" id="inputExcel">导入抽查数据</button>
+					    </div>
+					  </div>
+					</div>		
+						
+					<table class="layui-hide" id="demo" lay-filter="demo"></table>
+				</div>
+				<div class="layui-tab-item">
+					<div class="layui-form demoTable">
+					  <div class="layui-form-item">
+					    <div class="layui-inline">
+							<label class="layui-form-label">接警编号</label>
+							<div class="layui-input-inline">
+							  <input type="text" class="layui-input" id="pcsjjbh" autocomplete="off">
+							</div>
+					      <label class="layui-form-label">查询范围</label>
+					      <div class="layui-input-inline">
+					        <input type="text" class="layui-input" id="pcschooseTime" placeholder="请选择" autocomplete="off">
+					      </div>
+						  <label class="layui-form-label">单位</label>
+						  <div class="layui-input-inline">
+								<select name="pcsdw" lay-filter="pcsdw" id="pcsdw" >
+								  <option value="">请选择</option>
+								  <option value="32100351">邗上派出所</option>
+								  <option value="32100352">汊河派出所</option>
+								  <option value="32100353">瓜洲派出所</option>
+								  <option value="32100354">蒋王派出所</option>
+								  <option value="32100372">甘泉派出所</option>
+								  <option value="32100355">杨庙派出所</option>
+								  <option value="32100373">新盛派出所</option>
+								  <option value="32100365">四季园派出所</option>
+								  <option value="32100356">槐泗派出所</option>
+								  <option value="32100357">方巷派出所</option>
+								  <option value="32100358">公道派出所</option>
+								  <option value="32100364">杨寿派出所</option>
+								  <option value="32100366">念四桥派出所</option>
+								  <option value="32100368">竹西派出所</option>
+								  <option value="32100369">西湖派出所</option>
+								  <option value="32100371">江阳派出所</option>
+								  <option value="32100317">交警大队</option>
+								</select>  
+						  </div>
+						  <button class="layui-btn" data-type="reload" id="pcschaxun">查询</button>
+						  <button class="layui-btn layui-btn-danger" id="jclbtn" style="display: none;">检查率：<span id="jcl"></span></button>
+					    </div>
+					  </div>
+					</div>		
+						
+					<table class="layui-hide" id="pcsdemo" lay-filter="pcsdemo"></table>
+				</div>
+		    <div class="layui-tab-item">
+				<div class="layui-tab-item layui-show">
+					<div class="layui-form demoTable">
+					  <div class="layui-form-item">
+					    <div class="layui-inline">
+							<label class="layui-form-label">接警编号</label>
+							<div class="layui-input-inline">
+							  <input type="text" class="layui-input" id="jjbh1" autocomplete="off">
+							</div>
+					      <label class="layui-form-label">查询范围</label>
+					      <div class="layui-input-inline">
+					        <input type="text" class="layui-input" id="chooseTime1" placeholder="请选择" autocomplete="off">
+					      </div>
+						  <label class="layui-form-label">单位</label>
+						  <div class="layui-input-inline">
+								<select name="city" lay-filter="pid" id="xzdw1" >
+								  <option value="">请选择</option>
+								  <option value="32100351">邗上派出所</option>
+								  <option value="32100352">汊河派出所</option>
+								  <option value="32100353">瓜洲派出所</option>
+								  <option value="32100354">蒋王派出所</option>
+								  <option value="32100372">甘泉派出所</option>
+								  <option value="32100355">杨庙派出所</option>
+								  <option value="32100373">新盛派出所</option>
+								  <option value="32100365">四季园派出所</option>
+								  <option value="32100356">槐泗派出所</option>
+								  <option value="32100357">方巷派出所</option>
+								  <option value="32100358">公道派出所</option>
+								  <option value="32100364">杨寿派出所</option>
+								  <option value="32100366">念四桥派出所</option>
+								  <option value="32100368">竹西派出所</option>
+								  <option value="32100369">西湖派出所</option>
+								  <option value="32100371">江阳派出所</option>
+								  <option value="32100317">交警大队</option>
+								</select>  
+						  </div>
+						  <div class="layui-form-item" style="margin-top: 50px;margin-bottom: 0;">
+						  <label class="layui-form-label">异常类别</label>
+						  <div class="layui-input-inline" style="width: 850px;">
+							<select name="yclb" lay-filter="yclb" id="yclb1" multiple>
+							  <option value="">请选择</option>
+							  <option value="01">处警类型定性不准确</option>
+							  <option value="02">处警人填写不规范</option>
+							  <option value="03">处警人联系方式填写不规范</option>
+							  <option value="04">发生地点填写不规范</option>
+							  <option value="05">警情属性定性不准确</option>
+							  <option value="06">简要警情及处理结果要素填写不全</option>
+							  <option value="07">简要警情及处理结果填写存在错误</option>
+							  <option value="08">处警统计信息填写不规范</option>
+							  <option value="09">损失情况填写不规范</option>
+							  <option value="10">涉警人员填写不规范</option>
+							  <option value="11">涉警单位填写不规范</option>
+							  <option value="12">涉警物品填写不规范</option>
+							  <option value="13">移送接收单位未填</option>
+							  <option value="14">移送接收人未填</option>
+							  <option value="15">移送接收时间未填</option>
+							  <option value="16">发生原因选择不规范</option>
+							  <option value="17">事发场所选择不规范</option>
+							  <option value="18">事发时间上限下限填写错误</option>
+							  <option value="19">两抢等警情未在两小时内反馈</option>
+							  <option value="20">违规升格,降格处理警情</option>
+							  <option value="21">超24小时登记</option>
+							  <option value="22">超24小时审批</option>
+							  <option value="23">未处警</option>
+							  <option value="24">自接警情登记不规范</option>
+							  <option value="25">警情标注标签输入不规范</option>
+							  <option value="26">处警反馈时间未填</option>
+							  <option value="27">天气情况未填写</option>
+							</select>
+						  </div>
+						  <button class="layui-btn" data-type="reload" id="chaxun1">查询</button>
+						  </div>
+						  
+					    </div>
+					  </div>
+					</div>		  
+					  
+					<table class="layui-hide" id="demo1" lay-filter="demo1"></table>
+				</div>
+			</div>
+			<div class="layui-tab-item">
+				<div class="layui-tab-item layui-show">
+					<div class="layui-form demoTable">
+					  <div class="layui-form-item">
+					    <div class="layui-inline">
+							<label class="layui-form-label">接警编号</label>
+							<div class="layui-input-inline">
+							  <input type="text" class="layui-input" id="jjbh2" autocomplete="off">
+							</div>
+					      <label class="layui-form-label">查询范围</label>
+					      <div class="layui-input-inline">
+					        <input type="text" class="layui-input" id="chooseTime2" placeholder="请选择" autocomplete="off">
+					      </div>
+						  <label class="layui-form-label">单位</label>
+						  <div class="layui-input-inline">
+								<select name="city" lay-filter="pid" id="xzdw2" >
+								  <option value="">请选择</option>
+								  <option value="32100351">邗上派出所</option>
+								  <option value="32100352">汊河派出所</option>
+								  <option value="32100353">瓜洲派出所</option>
+								  <option value="32100354">蒋王派出所</option>
+								  <option value="32100372">甘泉派出所</option>
+								  <option value="32100355">杨庙派出所</option>
+								  <option value="32100373">新盛派出所</option>
+								  <option value="32100365">四季园派出所</option>
+								  <option value="32100356">槐泗派出所</option>
+								  <option value="32100357">方巷派出所</option>
+								  <option value="32100358">公道派出所</option>
+								  <option value="32100364">杨寿派出所</option>
+								  <option value="32100366">念四桥派出所</option>
+								  <option value="32100368">竹西派出所</option>
+								  <option value="32100369">西湖派出所</option>
+								  <option value="32100371">江阳派出所</option>
+								  <option value="32100317">交警大队</option>
+								</select>  
+						  </div>
+						  <div class="layui-form-item" style="margin-top: 50px;margin-bottom: 0;">
+						  <label class="layui-form-label">异常类别</label>
+						  <div class="layui-input-inline" style="width: 850px;">
+							<select name="yclb" lay-filter="yclb" id="yclb2" multiple>
+							  <option value="">请选择</option>
+							  <option value="01">处警类型定性不准确</option>
+							  <option value="02">处警人填写不规范</option>
+							  <option value="03">处警人联系方式填写不规范</option>
+							  <option value="04">发生地点填写不规范</option>
+							  <option value="05">警情属性定性不准确</option>
+							  <option value="06">简要警情及处理结果要素填写不全</option>
+							  <option value="07">简要警情及处理结果填写存在错误</option>
+							  <option value="08">处警统计信息填写不规范</option>
+							  <option value="09">损失情况填写不规范</option>
+							  <option value="10">涉警人员填写不规范</option>
+							  <option value="11">涉警单位填写不规范</option>
+							  <option value="12">涉警物品填写不规范</option>
+							  <option value="13">移送接收单位未填</option>
+							  <option value="14">移送接收人未填</option>
+							  <option value="15">移送接收时间未填</option>
+							  <option value="16">发生原因选择不规范</option>
+							  <option value="17">事发场所选择不规范</option>
+							  <option value="18">事发时间上限下限填写错误</option>
+							  <option value="19">两抢等警情未在两小时内反馈</option>
+							  <option value="20">违规升格,降格处理警情</option>
+							  <option value="21">超24小时登记</option>
+							  <option value="22">超24小时审批</option>
+							  <option value="23">未处警</option>
+							  <option value="24">自接警情登记不规范</option>
+							  <option value="25">警情标注标签输入不规范</option>
+							  <option value="26">处警反馈时间未填</option>
+							  <option value="27">天气情况未填写</option>
+							</select>
+						  </div>
+						  <button class="layui-btn" data-type="reload" id="chaxun2">查询</button>
+						  </div>
+						  
+					    </div>
+					  </div>
+					</div>		  
+					  
+					<table class="layui-hide" id="demo2" lay-filter="demo2"></table>
+			</div>
+		  </div>
+		  
+		  <div class="layui-tab-item">
+			  <div class="layui-form">
+				   <div class="layui-inline">
+					  查询范围：
+					  <div class="layui-input-inline">
+						<input type="text" class="layui-input" id="chooseTime3" placeholder="请选择" autocomplete="off">
+					  </div>
+					   <button class="layui-btn" id="chaxun3" style="margin-left: 10px;">查询</button>
+					 <!-- 选择月份：
+					   <div class="layui-input-inline">
+						 <input type="text" class="layui-input" id="chooseTime4" placeholder="请选择" autocomplete="off">
+					   </div> -->
+						<button class="layui-btn" id="chaxun4">导出扣分表</button>
+						<button class="layui-btn" id="chaxun5">导出每月警情质量通报</button>
+						<button class="layui-btn" id="chaxun6">导出警情检查率</button>
+					</div>
+			  </div>
+			  <table id="demo3" lay-filter="demo3"></table>
+		  </div>
+		</div>
+		
+		
+		
+	    
+	
+	</div>
+	<div class="layui-form" lay-filter="zdyform" style="display: none;padding: 10px;" id="newWgbox">
+		 <div class="layui-form-item">
+		    <label class="layui-form-label">异常原因</label>
+		    <div class="layui-input-block">
+		      <input type="checkbox" name="zdywt" value="01" title="处警类型定性不准确" lay-skin="primary">
+		      <input type="checkbox" name="zdywt" value="02" title="处警人填写不规范" lay-skin="primary">
+		      <input type="checkbox" name="zdywt" value="03" title="处警人联系方式填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="04" title="发生地点填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="05" title="警情属性定性不准确" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="06" title="简要警情及处理结果要素填写不全" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="07" title="简要警情及处理结果填写存在错误" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="08" title="处警统计信息填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="09" title="损失情况填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="10" title="涉警人员填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="11" title="涉警单位填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="12" title="涉警物品填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="13" title="移送接收单位未填" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="14" title="移送接收人未填" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="15" title="移送接收时间未填" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="16" title="发生原因选择不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="17" title="事发场所选择不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="18" title="事发时间上限下限填写错误" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="19" title="两抢等警情未在两小时内反馈" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="20" title="违规升格,降格处理警情" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="21" title="超24小时登记" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="22" title="超24小时审批" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="23" title="未处警" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="24" title="自接警情登记不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="25" title="警情标注标签输入不规范" lay-skin="primary">
+			  <input type="checkbox" name="zdywt" value="26" title="处警反馈时间未填" lay-skin="primary">
+			   <input type="checkbox" name="zdywt" value="27" title="天气情况未填写" lay-skin="primary">
+			  
+			  <hr style="background-color: #007DDB;">
+			  <input type="checkbox" name="zdywt" value="-1" title="无异常" lay-skin="primary">
+		    </div>
+		  </div>
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">备注</label>
+		    <div class="layui-input-block">
+		      <textarea id="remark" placeholder="请输入内容" class="layui-textarea" ></textarea>
+		    </div>
+		  </div>
+	</div>
+	
+	
+	<div class="layui-form" lay-filter="xgform" style="display: none;padding: 10px;" id="xgbox">
+		 <div class="layui-form-item">
+		    <label class="layui-form-label">异常原因</label>
+		    <div class="layui-input-block">
+		      <input type="checkbox" name="xgzdywt" value="01" title="处警类型定性不准确" lay-skin="primary">
+		      <input type="checkbox" name="xgzdywt" value="02" title="处警人填写不规范" lay-skin="primary">
+		      <input type="checkbox" name="xgzdywt" value="03" title="处警人联系方式填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="04" title="发生地点填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="05" title="警情属性定性不准确" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="06" title="简要警情及处理结果要素填写不全" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="07" title="简要警情及处理结果填写存在错误" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="08" title="处警统计信息填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="09" title="损失情况填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="10" title="涉警人员填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="11" title="涉警单位填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="12" title="涉警物品填写不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="13" title="移送接收单位未填" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="14" title="移送接收人未填" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="15" title="移送接收时间未填" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="16" title="发生原因选择不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="17" title="事发场所选择不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="18" title="事发时间上限下限填写错误" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="19" title="两抢等警情未在两小时内反馈" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="20" title="违规升格,降格处理警情" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="21" title="超24小时登记" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="22" title="超24小时审批" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="23" title="未处警" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="24" title="自接警情登记不规范" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="25" title="警情标注标签输入不规范" lay-skin="primary">
+			 <input type="checkbox" name="xgzdywt" value="26" title="处警反馈时间未填" lay-skin="primary">
+			  <input type="checkbox" name="xgzdywt" value="27" title="天气情况未填写" lay-skin="primary">
+			  <hr style="background-color: #007DDB;">
+			  <input type="checkbox" name="xgzdywt" value="-1" title="无异常" lay-skin="primary">
+		    </div>
+		  </div>
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">备注</label>
+		    <div class="layui-input-block">
+		      <textarea id="xgremark" placeholder="请输入内容" class="layui-textarea" ></textarea>
+		    </div>
+		  </div>
+	</div>
+	
+	
+	
+	</div>
+	
+	
+	<!-- 弹窗直接确认派出所状态 -->
+	<div class="layui-container" id="pcsztbox" style="padding: 10px;width: 1140px;">
+		
+		<table id="layerInfo" lay-filter="layerInfo" style="width: 100%;"></table>
+		
+	</div>
+	
+	
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="form.js" type="text/javascript" charset="utf-8"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/html" id="barDemo">
+  {{#  if(d.jqCjBhgEntity == null){ }}
+  	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">查看详情</a>
+  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="addNew">巡查情况</a>
+  {{#  } else { }}
+  	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">查看详情</a>
+	<a class="layui-btn layui-btn-xs" lay-event="">已查</a>
+  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="xgyc">修改</a>
+  {{#  } }}		
+</script>
+<!-- 老的巡查 -->
+<script type="text/html" id="barDemoxx">
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">查看详情</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="addNew">巡查情况</a>
+</script>
+<script type="text/html" id="barDemo1">
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal1">查看详情</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del1">删除</a>
+</script>
+<script type="text/html" id="barDemo2">
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal2">查看详情</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del2" style="display: none;">删除</a>
+</script>
+<script type="text/html" id="barNotice">
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="yzg">已整改</a>
+   <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="wzg">未整改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="wfzg">无法整改</a>
+</script>
+<script type="text/javascript">
+	var upload = layui.upload;
+	var uploadInst = upload.render({
+	  elem: '#inputExcel' //绑定元素
+	  ,url: baseUrl +'/cj/upload'
+	  ,accept: 'file'
+	  ,headers:{token:token}
+	  ,done: function(res){
+		  if(res.code==0){
+		  	layer.msg("上传成功");
+			history.go(0)
+		  }else{
+			  layer.msg(res.msg);
+		  }
+		  layer.closeAll('loading');
+	  }
+	  ,error: function(res){
+		  layer.closeAll('loading');
+	  }
+	});
+	
+	
+	$("#footer").load("public/footer.html");
+	
+	var laydate = layui.laydate;
+	var table = layui.table;
+	var element = layui.element;
+	var form = layui.form;
+	
+	  laydate.render({
+	    elem: '#chooseTime'
+	    ,range: true
+	  });
+	  $("#chooseTime").val( FunGetDateStr(-30) + " - " + nowdate);
+	   $("#pcschooseTime").val( FunGetDateStr(-30) + " - " + nowdate);
+	    laydate.render({
+	      elem: '#chooseTime1'
+	      ,range: true
+	    });
+		
+		  laydate.render({
+		    elem: '#chooseTime2'
+		    ,range: true
+		  });
+		  laydate.render({
+		    elem: '#chooseTime3'
+		    ,range: true
+		  });  
+	
+	function getTabledata(url){
+		table.render({
+		  elem: '#demo'
+		  ,url:url
+		  ,defaultToolbar: []
+		  ,page:true
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center",}
+			,{field:'deptsname',  title: '所属单位',align:"center",width:95,}
+			,{field:'jjrqsj',  title: '接警日期',align:"center",width:200,}
+			,{field:'jjbh',  title: '接警编号',align:"center",width:250,}
+			,{field:'type',  title: '异常原因',align:"center",width:130,
+							templet:function(d)
+								{
+									if(d.type!=undefined&&d.type!=null&&d.type!=""){
+										var typeArr = d.type.split(",");
+										var parseType = [];
+										for(i of typeArr){
+											if(i=="01"){
+												parseType.push("处警类型定性不准确");
+											}else if(i=="02"){
+												parseType.push("处警人填写不规范");
+											}else if(i=="03"){
+												parseType.push("处警人联系方式填写不规范");
+											}else if(i=="04"){
+												parseType.push("发生地点填写不规范");
+											}else if(i=="05"){
+												parseType.push("警情属性定性不准确");
+											}else if(i=="06"){
+												parseType.push("简要警情及处理结果要素填写不全");
+											}else if(i=="07"){
+												parseType.push("简要警情及处理结果填写存在错误");
+											}else if(i=="08"){
+												parseType.push("处警统计信息填写不规范");
+											}else if(i=="09"){
+												parseType.push("损失情况填写不规范");
+											}else if(i=="10"){
+												parseType.push("涉警人员填写不规范");
+											}else if(i=="11"){
+												parseType.push("涉警单位填写不规范");
+											}else if(i=="12"){
+												parseType.push("涉警物品填写不规范");
+											}else if(i=="13"){
+												parseType.push("移送接收单位未填");
+											}else if(i=="14"){
+												parseType.push("移送接收人未填");
+											}else if(i=="15"){
+												parseType.push("移送接收时间未填");
+											}else if(i=="16"){
+												parseType.push("发生原因选择不规范");
+											}else if(i=="17"){
+												parseType.push("事发场所选择不规范");
+											}else if(i=="18"){
+												parseType.push("事发时间上限下限填写错误");
+											}else if(i=="19"){
+												parseType.push("两抢等警情未在两小时内反馈");
+											}else if(i=="20"){
+												parseType.push("违规升格,降格处理警情");
+											}else if(i=="21"){
+												parseType.push("超24小时登记");
+											}else if(i=="22"){
+												parseType.push("超24小时审批");
+											}else if(i=="23"){
+												parseType.push("未处警");
+											}else if(i=="24"){
+												parseType.push("自接警情登记不规范");
+											}else if(i=="25"){
+												parseType.push("警情标注标签输入不规范");
+											}else if(i=="26"){
+												parseType.push("处警反馈时间未填");
+											}else if(i=="27"){
+												parseType.push("天气情况未填写");
+											}
+											else if(i=="-1"){
+												parseType.push("正常");
+											}
+										}
+										return parseType.join("<br/>")
+									}else{
+										return ""
+									}
+									
+								}
+			}
+			 ,{field:'cjrhzxs',  title: '处警人',align:"center",width:80,
+					templet:function(d){
+						return d.cjrhzxs.split(",")[0];
+					}
+			 }
+			 // ,{field:'jcr',  title: '巡查人',align:"center",width:80}
+			,{ title:'操作', toolbar: '#barDemo',align:"center",}
+		  ]]
+		  ,id:"demoReload",
+		 
+		});
+	}
+	getTabledata(baseUrl+"/cj/queryCjList?beforeDate="+FunGetDateStr(-30)+"&afterDate="+nowdate+"&frm=0");
+	
+	table.on('tool(demo)', function(obj){
+	    var data = obj.data;
+	    if(obj.event === 'checkDetal'){
+			layer.open({
+			  type: 1,
+			  area: ['80%', '80%'], //宽高
+			  content:`
+				<table class="layui-table" style="margin-bottom: 25px;padding:10px">
+				  <colgroup>
+				    <col width="150">
+				    <col width="">
+					<col width="150">
+					<col width="">
+				  </colgroup>
+				  <tbody>
+					  <tr>
+						  <td>接警编号</td>
+						  <td colspan="3" id="JJBH">
+						  					  
+						  </td>
+					  </tr>
+				    <tr>
+				      <td>处警类别</td>
+				      <td id="CJLB"></td>
+				      <td>处警时间</td>
+					  <td id="CJSJ"></td>
+				    </tr>
+				    <tr>
+				      <td>发生地点</td>
+				      <td id="CJXZ"></td>
+				      <td>事发场所</td>
+				      <td id="SFCS"></td>
+				    </tr>
+					<tr>
+						<td>发生原因</td>
+						<td colspan="3" id="FSYY"></td>
+					</tr>
+					<tr>
+					  <td>天气情况</td>
+					  <td id="TQQK"></td>
+					  <td>警情属性</td>
+					  <td id="JQSX"></td>
+					</tr>
+					<tr>
+					  <td>处警人</td>
+					  <td id="CJR"></td>
+					  <td>处警人联系方式</td>
+					  <td id="CJRLXFS"></td>
+					</tr>
+					<tr>
+					  <td>报警形式</td>
+					  <td id="BJXS"></td>
+					  <td>报警类型</td>
+					  <td id="BJLX"></td>
+					</tr>
+					<tr>
+					  <td>事发星期</td>
+					  <td id="SFXQ"></td>
+					  <td>事发时间上限</td>
+					  <td id="SFSJSX"></td>
+					</tr>
+					<tr>
+					  <td>事发时间下限</td>
+					  <td id="SFSJXX"></td>
+					  <td>简要警情处理结果</td>
+					  <td id="CLJGNR"></td>
+					</tr>
+					<tr>
+					  <td>处理补充结果</td>
+					  <td id="BCCLJG"></td>
+					  <td>损失情况</td>
+					  <td id="SSXXQK"></td>
+					</tr>
+					<tr>
+					  <td>处警反馈时间</td>
+					  <td id="CJFKSJ"></td>
+					  <td>审批时间</td>
+					  <td id="SPSJ"></td>
+					</tr>
+					<tr>
+					  <td>值班领导姓名</td>
+					  <td id="ZBLDXM"></td>
+					  <td>处警结果</td>
+					  <td id="CJJG"></td>
+					</tr>
+					<tr>
+					  <td>处警移送接收单位</td>
+					  <td id="CJYSJSDW"></td>
+					  <td>处警移送接收人</td>
+					  <td id="CJYSJSR"></td>
+					</tr>
+					<tr>
+					  <td>处警移送接收时间</td>
+					  <td id="CJYSJSSJ"></td>
+					  <td>登记人</td>
+					  <td id="DJR"></td>
+					</tr>
+					<tr>
+					  <td>登记时间</td>
+					  <td id="DJSJ"></td>
+					  <td>修改人</td>
+					  <td id="XGR"></td>
+					</tr>
+					<tr>
+					  <td>修改时间</td>
+					  <td id="XGSJ"></td>
+					  <td>修改单位</td>
+					  <td id="XGDW"></td>
+					</tr>
+				  </tbody>
+				</table>
+				<table class="layui-table" >
+				  <colgroup>
+				    <col width="120">
+				    <col width="">
+					<col width="120">
+					<col width="">
+					<col width="120">
+					<col width="">
+					<col width="120">
+					<col width="">
+				  </colgroup>
+				  <tbody>
+				    <tr>
+				      <td>出动警力</td>
+				      <td id="CDJL"></td>
+				      <td>出动机动车</td>
+					  <td id="CDJDC"></td>
+					  <td>出动船只</td>
+					  <td id="CDCZ"></td>
+					  <td>解救妇女数</td>
+					  <td id="JJFNS"></td>
+				    </tr>
+					<tr>
+					  <td>解救儿童数</td>
+					  <td id="JJETS"></td>
+					  <td>解救人质数</td>
+					  <td id="JJRZS"></td>
+					  <td>救助群众</td>
+					  <td id="JZQZ"></td>
+					  <td>救助伤员</td>
+					  <td id="JZSY"></td>
+					</tr>
+					<tr>
+					  <td>人员受伤数</td>
+					  <td id="RYSSS"></td>
+					  <td>人员死亡数</td>
+					  <td id="RYSWS"></td>
+					  <td>继续审查人数</td>
+					  <td id="LZSCRS"></td>
+					  <td>破获现行案件</td>
+					  <td id="PHXXAJ"></td>
+					</tr>
+					<tr>
+					  <td>逃跑人犯</td>
+					  <td id="TPRF"></td>
+					  <td>抓获作案成员</td>
+					  <td id="ZHZACY"></td>
+					  <td>直接经济损失</td>
+					  <td id="ZJJJSS"></td>
+					  <td>挽回损失</td>
+					  <td id="WHSS"></td>
+					</tr>
+				 
+				  </tbody>
+				</table>
+			  `
+			});
+		$.get(baseUrl+"/cj/queryCjxx?jjbh="+data.jjbh,function(res){
+			$("#JJBH").text(res.data.jjbh);
+			$("#CJLB").text(res.data.cjlb);
+			$("#CJSJ").text(res.data.cjsj);
+			$("#CJXZ").text(res.data.cjxz);
+			$("#SFCS").text(res.data.sfcs);
+			$("#FSYY").text(res.data.fsyy);
+			$("#TQQK").text(res.data.tqqk);
+			$("#JQSX").text(res.data.jqsx);
+			$("#CJR").text(res.data.cjrhzxs);
+			$("#CJRLXFS").text(res.data.cjrlxfs);
+			$("#BJXS").text(res.data.bjxs);
+			$("#BJLX").text(res.data.bjlx);
+			$("#SFXQ").text(res.data.sfxq);
+			$("#SFSJSX").text(res.data.sfsjsx);
+			$("#SFSJXX").text(res.data.sfsjxx);
+			$("#CLJGNR").text(res.data.cljgnr);
+			$("#BCCLJG").text(res.data.bccljg);
+			$("#SSXXQK").text(res.data.ssxxqk);
+			$("#CJFKSJ").text(res.data.cjfksj);
+			$("#SPSJ").text(res.data.spsj);
+			$("#ZBLDXM").text(res.data.zbldxm);
+			$("#CJJG").text(res.data.cjjg);
+			$("#CJYSJSDW").text(res.data.cjysjdw);
+			$("#CJYSJSR").text(res.data.cjysjsr);
+			$("#CJYSJSSJ").text(res.data.cjysjssj);
+			$("#DJR").text(res.data.djr);
+			$("#DJSJ").text(res.data.djsj);
+			$("#XGR").text(res.data.xgr);
+			$("#XGSJ").text(res.data.xgsj);
+			$("#XGDW").text(res.data.xgdw);
+			$("#CDJL").text(res.data.cdjl);
+			$("#CDJDC").text(res.data.cdjdc);
+			$("#CDCZ").text(res.data.cdcz);
+			$("#JJFNS").text(res.data.jjfns);
+			$("#JJETS").text(res.data.jjets);
+			$("#JJRZS").text(res.data.jjrzs);
+			$("#JZQZ").text(res.data.jzqz);
+			$("#JZSY").text(res.data.jzsy);
+			$("#RYSSS").text(res.data.rysss);
+			$("#RYSWS").text(res.data.rysws);
+			$("#LZSCRS").text(res.data.lzscrs);
+			$("#PHXXAJ").text(res.data.phxxaj);
+			$("#TPRF").text(res.data.tprf);
+			$("#ZHZACY").text(res.data.zhzacy);
+			$("#ZJJJSS").text(res.data.zjjjss);
+			$("#WHSS").text(res.data.whss);
+		});	
+	    }else if(obj.event=="addNew"){
+			$('input[name="zdywt"]').each(function(){
+				 $(this).prop("checked", false);
+			});
+			$("#remark").val("");
+			form.render('checkbox');
+			
+			layer.open({
+			 type:1,
+			 area:['670px','600px'],
+			  title: '备注',
+			  content: $("#newWgbox"),
+			  shade: 0,
+			  btn: ['提交', '取消']
+			  ,btn1: function(index, layero){
+					var typeList =[];
+					$('input[name="zdywt"]:checked').each(function(){
+						typeList.push($(this).val());
+					});
+					
+					var load1 = layer.load(1);  
+					$.ajax({
+					    url:baseUrl + "/cj/addJqCjBhgNew",
+					    type:"post",
+					    cache:false,
+						data:JSON.stringify({
+							"cjbh":data.cjbh,
+							 "jjbh": data.jjbh, 
+							 "jjsj":data.jjrqsj,
+							 "deptCode":data.cjdw.substr(0,8),
+							 "remark": $("#remark").val(), 
+							 "typeList":typeList,
+							 "dw":data.deptsname,
+							 "frm":0
+							 
+						}),
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+						   XMLHttpRequest.setRequestHeader("token", token);
+						},
+					    success:function(data) {
+							if(data.code==0){
+								layer.close(load1);
+							    layer.msg("添加成功");
+								table.reload("demo1Reload");
+								table.reload("demoReload");
+							}else {
+								layer.close(load1);
+							    layer.msg(data.msg);
+							}
+					    },
+					    error : function (res) {
+							layer.close(load1);
+					        layer.msg('提交失败');
+					    }
+					})
+					layer.closeAll();
+					 $("#newWgbox").hide();
+			  },
+				  btn2: function(index, layero){
+						$("#newWgbox").hide();
+						layer.closeAll();
+				  },
+				cancel: function(layero,index){ 
+					 $("#newWgbox").hide();
+						layer.closeAll();
+				  }
+			});
+		}else if(obj.event=="xgyc"){
+			// alert(data.jqCjBhgEntity.type);
+			$('input[name="xgzdywt"]').each(function(){
+				 $(this).prop("checked", false);
+			});
+			
+			var unitType = [];
+			unitType = data.jqCjBhgEntity.type.split(",");
+			for (var j = 0; j < unitType.length; j++) {
+				var unitTypeCheckbox = $("input[name='xgzdywt']");
+				for (var i = 0; i < unitTypeCheckbox.length; i++) {
+					if (unitTypeCheckbox[i].value == unitType[j]) {
+						unitTypeCheckbox[i].value = unitType[j];
+						unitTypeCheckbox[i].checked = true;
+					}
+				}
+			}
+			$("#xgremark").val(data.jqCjBhgEntity.remark);
+			form.render();
+			layer.open({
+			 type:1,
+			 area:['670px','600px'],
+			  title: '备注',
+			  content: $("#xgbox"),
+			  shade: 0,
+			  btn: ['提交', '取消']
+			  ,btn1: function(index, layero){
+					var typeList =[];
+					$('input[name="xgzdywt"]:checked').each(function(){
+						typeList.push($(this).val());
+					});
+					// return false
+					var load1 = layer.load(1);  
+					$.ajax({
+					    url:baseUrl + "/cj/addJqCjBhgNewWithUpdate",
+					    type:"post",
+					    cache:false,
+						data:JSON.stringify({
+							 "jjbh": data.jjbh, 
+							 // "jjsj":data.jjrqsj,
+							 "deptCode":data.cjdw.substr(0,8),
+							 "remark": $("#xgremark").val(), 
+							 "typeList":typeList,
+							 "dw":data.deptsname,
+							 "frm":0,
+							 "id":data.jqCjBhgEntity.id
+							 
+						}),
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+						   XMLHttpRequest.setRequestHeader("token", token);
+						},
+					    success:function(data) {
+							if(data.code==0){
+								layer.close(load1);
+							    layer.msg("修改成功");
+								table.reload("demoReload");
+								table.reload("demo1Reload");
+							}else {
+								layer.close(load1);
+							    layer.msg(data.msg);
+							}
+					    },
+					    error : function (res) {
+							layer.close(load1);
+					        layer.msg('提交失败');
+					    }
+					})
+					layer.closeAll();
+					 $("#xgbox").hide();
+			  },
+				  btn2: function(index, layero){
+						$("#xgbox").hide();
+						layer.closeAll();
+				  },
+				cancel: function(layero,index){ 
+					 $("#xgbox").hide();
+						layer.closeAll();
+				  }
+			});
+		}
+	  });
+	
+	$('#chaxun').on('click', function(){
+		 var checkTime = $("#chooseTime").val();
+		 var startDate = checkTime.slice(0,10);
+		 var endDate = checkTime.slice(13);
+		var jiekou = baseUrl+"/cj/queryCjList?beforeDate="+startDate+"&afterDate="+endDate+"&dw="+$("#xzdw").val()+"&jjbh="+$("#jjbh").val()+"&frm=0";
+		getTabledata(jiekou);
+	});
+	
+	
+	
+	function getTabledata1(url){
+		table.render({
+		  elem: '#demo1'
+		  ,url:url
+		  ,toolbar:true
+		  ,defaultToolbar: ['filter', 'exports', 'print']
+		  ,page:true
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center",}
+			,{field:'dw', title: '所属单位',align:"center",width:95}
+			,{field:'jjbh',  title: '接警编号',align:"center",width:200}
+			,{field:'createTime',  title: '下发时间',align:"center",width:120}
+			,{field:'updateTime',  title: '整改时间',align:"center",width:120}
+			 ,{field:'state',  title: '状态',align:"center",width:120,
+						templet:function(d)
+							{
+								if(d.state==0)
+								   {return "派出所未整改"}
+								else if(d.state==1)
+								   {return "派出所已整改"}
+								else if(d.state==2)
+									{return "确认整改"}
+								else if(d.state==3)
+									{return "整改不正确"}
+								else if(d.state==4)
+									{return "无法整改"}
+							}
+			 }
+			 ,{field:'type',  title: '异常原因',align:"center",
+			 				templet:function(d)
+			 					{
+			 						if(d.type!=undefined&&d.type!=null&&d.type!=""){
+			 							var typeArr = d.type.split(",");
+			 							var parseType = [];
+			 							for(i of typeArr){
+			 								if(i=="01"){
+			 									parseType.push("处警类型定性不准确");
+			 								}else if(i=="02"){
+			 									parseType.push("处警人填写不规范");
+			 								}else if(i=="03"){
+			 									parseType.push("处警人联系方式填写不规范");
+			 								}else if(i=="04"){
+			 									parseType.push("发生地点填写不规范");
+			 								}else if(i=="05"){
+			 									parseType.push("警情属性定性不准确");
+			 								}else if(i=="06"){
+			 									parseType.push("简要警情及处理结果要素填写不全");
+			 								}else if(i=="07"){
+			 									parseType.push("简要警情及处理结果填写存在错误");
+			 								}else if(i=="08"){
+			 									parseType.push("处警统计信息填写不规范");
+			 								}else if(i=="09"){
+			 									parseType.push("损失情况填写不规范");
+			 								}else if(i=="10"){
+			 									parseType.push("涉警人员填写不规范");
+			 								}else if(i=="11"){
+			 									parseType.push("涉警单位填写不规范");
+			 								}else if(i=="12"){
+			 									parseType.push("涉警物品填写不规范");
+			 								}else if(i=="13"){
+			 									parseType.push("移送接收单位未填");
+			 								}else if(i=="14"){
+			 									parseType.push("移送接收人未填");
+			 								}else if(i=="15"){
+			 									parseType.push("移送接收时间未填");
+			 								}else if(i=="16"){
+			 									parseType.push("发生原因选择不规范");
+			 								}else if(i=="17"){
+			 									parseType.push("事发场所选择不规范");
+			 								}else if(i=="18"){
+			 									parseType.push("事发时间上限下限填写错误");
+			 								}else if(i=="19"){
+			 									parseType.push("两抢等警情未在两小时内反馈");
+			 								}else if(i=="20"){
+			 									parseType.push("违规升格,降格处理警情");
+			 								}else if(i=="21"){
+			 									parseType.push("超24小时登记");
+			 								}else if(i=="22"){
+			 									parseType.push("超24小时审批");
+			 								}else if(i=="23"){
+			 									parseType.push("未处警");
+			 								}else if(i=="24"){
+			 									parseType.push("自接警情登记不规范");
+			 								}else if(i=="25"){
+			 									parseType.push("警情标注标签输入不规范");
+			 								}else if(i=="26"){
+												parseType.push("处警反馈时间未填");
+											}else if(i=="27"){
+												parseType.push("天气情况未填写");
+											}
+											else if(i=="-1"){
+			 									parseType.push("正常");
+			 								}
+			 							}
+			 							return parseType.join("<br/>")
+			 						}else{
+			 							return ""
+			 						}
+			 						
+			 					}
+			 }
+			 ,{field:'doubleCheck',  title: '重复巡查',align:"center",
+			 						templet:function(d)
+			 							{
+			 								if(d.doubleCheck==1)
+			 								   {return "是"}
+			 								else
+			 								   {return "否"}
+			 							}
+			 }
+			,{fixed: 'right', title:'操作', toolbar: '#barDemo1',align:"center",width:150}
+		  ]]
+		  ,id:"demo1Reload",
+		   done: function (res, page, count) {
+		         var that = this.elem.next();
+				 console.log(that)
+				 res.data.forEach(function (item, index) {
+					 if (item.type != -1) {
+						 var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "#FF0000");
+					 } 
+				 });
+		   }
+		});
+	}
+	// getTabledata1(baseUrl+"/cj/queryIllegalCjxxNew?startDate="+FunGetDateStr(-30)+"&endDate="+nowdate+"&jjbh=&deptCode=&type=&frm=0");
+	table.on('tool(demo1)', function(obj){
+	    var data = obj.data;
+	    if(obj.event === 'checkDetal1'){
+		  // window.location = "cjdetail.html?jjbh="+data.jjbh;
+		  console.log(data);
+		  if(data.type!="-1"){
+			layer.open({
+				  type: 1,
+				  // skin: 'layui-layer-rim', //加上边框
+				  area: ['80%', '60%'], //宽高
+				  content:`
+						  <div style="padding:10px">
+					<table class="layui-table" style="margin-bottom: 25px;">
+							<colgroup>
+							  <col width="150">
+							  <col width="">
+							</colgroup>
+					  <tbody>
+						<tr>
+						  <td width:150>单位</td>
+						  <td id="dw"></td>
+						</tr>
+								<tr>
+									<td>接警时间</td>
+									<td id="jjsj"></td>
+								</tr>
+						<tr>
+						  <td>备注</td>
+						  <td id="bz"></td>
+						</tr>
+						<tr>
+						  <td>异常类别</td>
+						  <td id="yclb"></td>
+						</tr>
+					  </tbody>
+					</table>
+							<div style="padding:10px;float:right">
+								<button class="layui-btn" id="yzg">已整改</button>
+								<button class="layui-btn layui-btn-warm" id="wzg">未整改(整改不正确)</button>
+								<button class="layui-btn layui-btn-danger" id="wfzg">无法整改</button>
+							</div>
+							</div>
+				  `
+				});  
+		  }else{
+			  layer.open({
+			  	  type: 1,
+			  	  // skin: 'layui-layer-rim', //加上边框
+			  	  area: ['80%', '60%'], //宽高
+			  	  content:`
+			  			  <div style="padding:10px">
+			  		<table class="layui-table" style="margin-bottom: 25px;">
+			  				<colgroup>
+			  				  <col width="150">
+			  				  <col width="">
+			  				</colgroup>
+			  		  <tbody>
+			  			<tr>
+			  			  <td width:150>单位</td>
+			  			  <td id="dw"></td>
+			  			</tr>
+			  					<tr>
+			  						<td>接警时间</td>
+			  						<td id="jjsj"></td>
+			  					</tr>
+			  			<tr>
+			  			  <td>备注</td>
+			  			  <td id="bz"></td>
+			  			</tr>
+			  			<tr>
+			  			  <td>异常类别</td>
+			  			  <td id="yclb"></td>
+			  			</tr>
+			  		  </tbody>
+			  		</table>
+			  		</div>
+			  	  `
+			  	});
+		  }
+		
+			$("#dw").text(data.dw);
+			$("#jjsj").text(data.jjsj);
+			$("#bz").text(data.remark);
+			var typeArr = data.type.split(",");
+			var parseType = [];
+			for(i of typeArr){
+				if(i=="01"){
+					parseType.push("处警类型定性不准确");
+				}else if(i=="02"){
+					parseType.push("处警人填写不规范");
+				}else if(i=="03"){
+					parseType.push("处警人联系方式填写不规范");
+				}else if(i=="04"){
+					parseType.push("发生地点填写不规范");
+				}else if(i=="05"){
+					parseType.push("警情属性定性不准确");
+				}else if(i=="06"){
+					parseType.push("简要警情及处理结果要素填写不全");
+				}else if(i=="07"){
+					parseType.push("简要警情及处理结果填写存在错误");
+				}else if(i=="08"){
+					parseType.push("处警统计信息填写不规范");
+				}else if(i=="09"){
+					parseType.push("损失情况填写不规范");
+				}else if(i=="10"){
+					parseType.push("涉警人员填写不规范");
+				}else if(i=="11"){
+					parseType.push("涉警单位填写不规范");
+				}else if(i=="12"){
+					parseType.push("涉警物品填写不规范");
+				}else if(i=="13"){
+					parseType.push("移送接收单位未填");
+				}else if(i=="14"){
+					parseType.push("移送接收人未填");
+				}else if(i=="15"){
+					parseType.push("移送接收时间未填");
+				}else if(i=="16"){
+					parseType.push("发生原因选择不规范");
+				}else if(i=="17"){
+					parseType.push("事发场所选择不规范");
+				}else if(i=="18"){
+					parseType.push("事发时间上限下限填写错误");
+				}else if(i=="19"){
+					parseType.push("两抢等警情未在两小时内反馈");
+				}else if(i=="20"){
+					parseType.push("违规升格,降格处理警情");
+				}else if(i=="21"){
+					parseType.push("超24小时登记");
+				}else if(i=="22"){
+					parseType.push("超24小时审批");
+				}else if(i=="23"){
+					parseType.push("未处警");
+				}else if(i=="24"){
+					parseType.push("自接警情登记不规范");
+				}else if(i=="25"){
+					parseType.push("警情标注标签输入不规范");
+				}else if(i=="26"){
+					parseType.push("处警反馈时间未填");
+				}else if(i=="27"){
+					parseType.push("天气情况未填写");
+				}
+				
+			}
+			$("#yclb").text(parseType.join("，"));
+			
+			
+			$("#yzg").click(function(){
+				$.get(baseUrl + "/cj/updateJqCjBhgNew?id="+data.id+"&state=2&token="+token,function(res){
+					console.log(res);
+					if(res.code==0){
+						table.reload("demo1Reload");
+						layer.closeAll();
+						layer.msg("状态跟新成功");
+					}else{
+						layer.msg(data.msg);
+					}
+				})
+			})
+			$("#wzg").click(function(){
+				$.get(baseUrl + "/cj/updateJqCjBhgNew?id="+data.id+"&state=3&token="+token,function(res){
+					console.log(res);
+					if(res.code==0){
+						table.reload("demo1Reload");
+						layer.closeAll();
+						layer.msg("状态跟新成功");
+					}else{
+						layer.msg(data.msg);
+					}
+				})
+			})
+			$("#wfzg").click(function(){
+				$.get(baseUrl + "/cj/updateJqCjBhgNew?id="+data.id+"&state=4&token="+token,function(res){
+					console.log(res);
+					if(res.code==0){
+						table.reload("demo1Reload");
+						layer.closeAll();
+						layer.msg("状态跟新成功");
+					}else{
+						layer.msg(data.msg);
+					}
+				})
+			})
+			
+	    }else if(obj.event=="del1"){
+			console.log(data.id)
+			layer.confirm('确认删除吗？', function(index){
+			       layer.close(index);
+					var load1 = layer.load(1);
+					$.ajax({
+						url:baseUrl+"/cj/deleteJqCjBhgNew?id="+data.id,
+						type:"GET",
+						cache:false,
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+							XMLHttpRequest.setRequestHeader("token",token);
+						},
+						success:function(data) {
+							//取消遮罩
+							if(data.code==0){
+								layer.close(load1);
+								layer.msg("删除成功");
+								table.reload("demo1Reload");
+								table.reload("demoReload");
+							}else {
+								layer.close(load1);
+								layer.msg(data.msg);
+							}
+						},
+						error : function (res) {
+							layer.close(load1);
+						}
+					})
+			     });
+			
+		}
+	  });
+	
+	$('#chaxun1').on('click', function(){
+		 var checkTime1 = $("#chooseTime1").val();
+		 var startDate1 = checkTime1.slice(0,10);
+		 var endDate1 = checkTime1.slice(13);
+		 var jjbh1 = $("#jjbh1").val();
+		 var xzdw1 = $("#xzdw1").val();
+		 var yclb1= $("#yclb1").val().toString();
+		var jiekou1 = baseUrl+"/cj/queryIllegalCjxxNew?jjbh="+jjbh1+"&deptCode="+xzdw1+"&type="+yclb1+"&startDate="+startDate1+"&endDate="+endDate1+"&frm=0";
+		getTabledata1(jiekou1);
+	});  
+	  
+	 
+	 function getTabledata2(url){
+	 	table.render({
+	 	  elem: '#demo2'
+	 	  ,url:url
+	 	  ,defaultToolbar: []
+	 	  ,page:true
+	 	  ,cols: [[
+	 		 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center",}
+	 		,{field:'dw',  title: '所属单位',align:"center",width:95,}
+	 		,{field:'jjsj',  title: '接警日期',align:"center",width:210}
+	 		,{field:'jjbh',  title: '接警编号',align:"center",width:210}
+	 		// ,{field:'type',  title: '是否异常',align:"center",
+	 		// 			templet:function(d)
+	 		// 				{
+	 		// 					if(d.type==-1)
+	 		// 					   {return "否"}
+	 		// 					else
+	 		// 					   {return "是"}
+	 		// 				}
+	 		// }
+	 		,{field:'type',  title: '异常原因',align:"center",
+	 						templet:function(d)
+	 							{
+	 								if(d.type!=undefined&&d.type!=null&&d.type!=""){
+	 									var typeArr = d.type.split(",");
+	 									var parseType = [];
+	 									for(i of typeArr){
+	 										if(i=="01"){
+	 											parseType.push("处警类型定性不准确");
+	 										}else if(i=="02"){
+	 											parseType.push("处警人填写不规范");
+	 										}else if(i=="03"){
+	 											parseType.push("处警人联系方式填写不规范");
+	 										}else if(i=="04"){
+	 											parseType.push("发生地点填写不规范");
+	 										}else if(i=="05"){
+	 											parseType.push("警情属性定性不准确");
+	 										}else if(i=="06"){
+	 											parseType.push("简要警情及处理结果要素填写不全");
+	 										}else if(i=="07"){
+	 											parseType.push("简要警情及处理结果填写存在错误");
+	 										}else if(i=="08"){
+	 											parseType.push("处警统计信息填写不规范");
+	 										}else if(i=="09"){
+	 											parseType.push("损失情况填写不规范");
+	 										}else if(i=="10"){
+	 											parseType.push("涉警人员填写不规范");
+	 										}else if(i=="11"){
+	 											parseType.push("涉警单位填写不规范");
+	 										}else if(i=="12"){
+	 											parseType.push("涉警物品填写不规范");
+	 										}else if(i=="13"){
+	 											parseType.push("移送接收单位未填");
+	 										}else if(i=="14"){
+	 											parseType.push("移送接收人未填");
+	 										}else if(i=="15"){
+	 											parseType.push("移送接收时间未填");
+	 										}else if(i=="16"){
+	 											parseType.push("发生原因选择不规范");
+	 										}else if(i=="17"){
+	 											parseType.push("事发场所选择不规范");
+	 										}else if(i=="18"){
+	 											parseType.push("事发时间上限下限填写错误");
+	 										}else if(i=="19"){
+	 											parseType.push("两抢等警情未在两小时内反馈");
+	 										}else if(i=="20"){
+	 											parseType.push("违规升格,降格处理警情");
+	 										}else if(i=="21"){
+	 											parseType.push("超24小时登记");
+	 										}else if(i=="22"){
+	 											parseType.push("超24小时审批");
+	 										}else if(i=="23"){
+	 											parseType.push("未处警");
+	 										}else if(i=="24"){
+	 											parseType.push("自接警情登记不规范");
+	 										}else if(i=="25"){
+	 											parseType.push("警情标注标签输入不规范");
+	 										}else if(i=="26"){
+												parseType.push("处警反馈时间未填");
+											}else if(i=="27"){
+												parseType.push("天气情况未填写");
+											}
+											else if(i=="-1"){
+	 											parseType.push("正常");
+	 										}
+	 									}
+	 									return parseType.join("<br/>")
+	 								}else{
+	 									return ""
+	 								}
+	 								
+	 							}
+	 		}
+			,{field:'doubleCheck',  title: '重复巡查',align:"center",
+									templet:function(d)
+										{
+											if(d.doubleCheck==1)
+											   {return "是"}
+											else
+											   {return "否"}
+										}
+			}
+	 		,{title:'操作', toolbar: '#barDemo2',align:"center",width:160 }
+	 	  ]]
+	 	});
+	 }
+	
+	table.on('tool(demo2)', function(obj){
+		var data = obj.data;
+		if(obj.event === 'checkDetal2'){
+		  // window.location = "cjdetail.html?jjbh="+data.jjbh;
+		  layer.open({
+		  	  type: 1,
+		  	  // skin: 'layui-layer-rim', //加上边框
+		  	  area: ['80%', '60%'], //宽高
+		  	  content:`
+			  <div style="padding:10px">
+		  		<table class="layui-table" style="margin-bottom: 25px;">
+				<colgroup>
+				  <col width="150">
+				  <col width="">
+				</colgroup>
+		  		  <tbody>
+		  			<tr>
+		  			  <td width:150>单位</td>
+		  			  <td id="dw"></td>
+		  			</tr>
+					<tr>
+						<td>接警时间</td>
+						<td id="jjsj"></td>
+					</tr>
+		  			<tr>
+		  			  <td>备注</td>
+		  			  <td id="bz"></td>
+		  			</tr>
+		  			<tr>
+		  			  <td>异常类别</td>
+		  			  <td id="yclb"></td>
+		  			</tr>
+		  		  </tbody>
+		  		</table>
+				</div>
+		  	  `
+		  	});
+			$("#dw").text(data.dw);
+			$("#jjsj").text(data.jjsj);
+			$("#bz").text(data.remark);
+			var typeArr = data.type.split(",");
+			var parseType = [];
+			for(i of typeArr){
+				if(i=="01"){
+					parseType.push("处警类型定性不准确");
+				}else if(i=="02"){
+					parseType.push("处警人填写不规范");
+				}else if(i=="03"){
+					parseType.push("处警人联系方式填写不规范");
+				}else if(i=="04"){
+					parseType.push("发生地点填写不规范");
+				}else if(i=="05"){
+					parseType.push("警情属性定性不准确");
+				}else if(i=="06"){
+					parseType.push("简要警情及处理结果要素填写不全");
+				}else if(i=="07"){
+					parseType.push("简要警情及处理结果填写存在错误");
+				}else if(i=="08"){
+					parseType.push("处警统计信息填写不规范");
+				}else if(i=="09"){
+					parseType.push("损失情况填写不规范");
+				}else if(i=="10"){
+					parseType.push("涉警人员填写不规范");
+				}else if(i=="11"){
+					parseType.push("涉警单位填写不规范");
+				}else if(i=="12"){
+					parseType.push("涉警物品填写不规范");
+				}else if(i=="13"){
+					parseType.push("移送接收单位未填");
+				}else if(i=="14"){
+					parseType.push("移送接收人未填");
+				}else if(i=="15"){
+					parseType.push("移送接收时间未填");
+				}else if(i=="16"){
+					parseType.push("发生原因选择不规范");
+				}else if(i=="17"){
+					parseType.push("事发场所选择不规范");
+				}else if(i=="18"){
+					parseType.push("事发时间上限下限填写错误");
+				}else if(i=="19"){
+					parseType.push("两抢等警情未在两小时内反馈");
+				}else if(i=="20"){
+					parseType.push("违规升格,降格处理警情");
+				}else if(i=="21"){
+					parseType.push("超24小时登记");
+				}else if(i=="22"){
+					parseType.push("超24小时审批");
+				}else if(i=="23"){
+					parseType.push("未处警");
+				}else if(i=="24"){
+					parseType.push("自接警情登记不规范");
+				}else if(i=="25"){
+					parseType.push("警情标注标签输入不规范");
+				}else if(i=="26"){
+					parseType.push("处警反馈时间未填");
+				}else if(i=="27"){
+					parseType.push("天气情况未填写");
+				}
+				
+			}
+			$("#yclb").text(parseType.join("，"));
+			
+			$("#yzg").click(function(){
+				$.get(baseUrl + "/cj/updateJqCjBhgNew?id="+data.id+"&state=2&token="+token,function(res){
+					console.log(res);
+					if(res.code==0){
+						table.reload("demo2");
+						layer.closeAll();
+						layer.msg("状态跟新成功");
+					}else{
+						layer.msg(data.msg);
+					}
+				})
+			})
+			$("#wzg").click(function(){
+				$.get(baseUrl + "/cj/updateJqCjBhgNew?id="+data.id+"&state=3&token="+token,function(res){
+					console.log(res);
+					if(res.code==0){
+						table.reload("demo2");
+						layer.closeAll();
+						layer.msg("状态跟新成功");
+					}else{
+						layer.msg(data.msg);
+					}
+				})
+			})
+			$("#wfzg").click(function(){
+				$.get(baseUrl + "/cj/updateJqCjBhgNew?id="+data.id+"&state=4&token="+token,function(res){
+					console.log(res);
+					if(res.code==0){
+						table.reload("demo2");
+						layer.closeAll();
+						layer.msg("状态跟新成功");
+					}else{
+						layer.msg(data.msg);
+					}
+				})
+			})
+		}
+	})
+	
+	
+	$('#chaxun2').on('click', function(){
+		 var checkTime2 = $("#chooseTime2").val();
+		 var startDate2 = checkTime2.slice(0,10);
+		 var endDate2 = checkTime2.slice(13);
+		 var jjbh2 = $("#jjbh2").val();
+		 var xzdw2 = $("#xzdw2").val();
+		 var yclb2= $("#yclb2").val().toString();
+		var jiekou2 = baseUrl+"/cj/queryIllegalCjxxNew?jjbh="+jjbh2+"&deptCode="+xzdw2+"&type="+yclb2+"&startDate="+startDate2+"&endDate="+endDate2+"&frm=1";
+		getTabledata2(jiekou2);
+	});  
+	
+	
+	function getTabledata3(url){
+		table.render({
+		  elem: '#demo3'
+		  ,url:url
+		   ,toolbar: true //开启头部工具栏，并为其绑定左侧模板
+		  ,defaultToolbar: ['filter', 'exports', 'print',]
+		  ,page:true
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center",rowspan:2}
+			,{field:'deptname',  title: '单位',align:"center",width:95,rowspan:2}
+			,{field:'ccs',  title: '抽查数',align:"center",rowspan:2}
+			,{field:'',  title: '整改前',align:"center",colspan:2}
+			,{field:'wzgs',  title: '未整改数',align:"center",rowspan:2}
+		  ],[
+			{field:'bhgs',  title: '不合格数',align:"center",}
+			,{field:'bhglv',  title: '不合格占比',align:"center",
+				templet:function(d){
+					return d.bhglv+"%"
+				}
+			}  
+		  ]]
+		});
+	}
+	
+	
+	
+	
+	$('#chaxun3').on('click', function(){
+		 var checkTime3 = $("#chooseTime3").val();
+		 var startDate3 = checkTime3.slice(0,10);
+		 var endDate3 = checkTime3.slice(13);
+		 var jiekou3 = baseUrl+"/cj/queryCjStatic?startDate="+startDate3+"&endDate="+endDate3;
+		 if(checkTime3==""){
+			 layer.msg("查询时间不能为空！");
+		 }else{
+			 getTabledata3(jiekou3);
+		 }
+		
+	});  
+	
+	$("#chaxun4").click(function(){
+		var checkTime4 = $("#chooseTime3").val();
+		var startDate4 = checkTime4.slice(0,10);
+		var endDate4 = checkTime4.slice(13);
+		if(checkTime4==""){
+			layer.msg("您还未选择时间，无法导出扣分表！");
+		}else{
+			window.location=baseUrl+"/cj/exportJqkf?startDate="+startDate4+"&endDate="+endDate4+"&token="+token;
+		}
+	})
+	
+	$("#chaxun5").click(function(){
+		var checkTime5 = $("#chooseTime3").val();
+		var startDate5 = checkTime5.slice(0,10);
+		var endDate5 = checkTime5.slice(13);
+		if(checkTime5==""){
+			layer.msg("您还未选择时间，无法导出每月警情质量通报！");
+		}else{
+			window.location=baseUrl+"/cj/exportJqtb?startDate="+startDate5+"&endDate="+endDate5+"&token="+token;
+		}
+	})
+	
+	// 获取703已抽查待确认的警情
+	function getCjts(){
+		$.get(baseUrl+"/cj/queryCjNotice?deptCode=&state=1",function(res){
+			console.log(res);
+			if(res.data!=0){
+				layer.open({
+				  type: 1
+				  ,offset:  "rb"  //具体配置参考：offset参数项['79%', '74%']
+				  ,content: `<div style="padding: 10px">
+							<p style="color:red">您有`+ res.data +`条派出所已处理警情待确认！</p>
+							</div>`
+				  ,btn: '立即处理'
+				  ,btnAlign: 'c' //按钮居中
+				  ,shade: 0 //不显示遮罩
+				  ,yes: function(index){
+					   // layer.closeAll();
+					  layer.close(index);
+					  // 新增弹窗展示待处理警情
+					  table.render({
+					    elem: '#layerInfo'
+					    ,url:baseUrl+"/cj/queryCjNotice?deptCode=&state=1"
+						 ,parseData: function(res){ //res 即为原始返回的数据
+						    return {
+						      "code": res.code, //解析接口状态
+						      "msg": res.msg, //解析提示文本
+						      "data": res.list //解析数据列表
+						    };
+						  }
+					    ,page:true
+					    ,cols: [[
+							{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center",}
+							,{field:'dw', title: '所属单位',align:"center",width:95}
+							,{field:'jjbh',  title: '接警编号',align:"center",width:200}
+							,{field:'createTime',  title: '下发时间',align:"center",width:120}
+							,{field:'updateTime',  title: '整改时间',align:"center",width:120}
+							 ,{field:'state',  title: '状态',align:"center",width:120,
+										templet:function(d)
+											{
+												if(d.state==0)
+												   {return "派出所未整改"}
+												else if(d.state==1)
+												   {return "派出所已整改"}
+												else if(d.state==2)
+													{return "确认整改"}
+												else if(d.state==3)
+													{return "整改不正确"}
+												else if(d.state==4)
+													{return "无法整改"}
+											}
+							 }
+							 ,{field:'type',  title: '异常原因',align:"center",
+							 				templet:function(d)
+							 					{
+							 						if(d.type!=undefined&&d.type!=null&&d.type!=""){
+							 							var typeArr = d.type.split(",");
+							 							var parseType = [];
+							 							for(i of typeArr){
+							 								if(i=="01"){
+							 									parseType.push("处警类型定性不准确");
+							 								}else if(i=="02"){
+							 									parseType.push("处警人填写不规范");
+							 								}else if(i=="03"){
+							 									parseType.push("处警人联系方式填写不规范");
+							 								}else if(i=="04"){
+							 									parseType.push("发生地点填写不规范");
+							 								}else if(i=="05"){
+							 									parseType.push("警情属性定性不准确");
+							 								}else if(i=="06"){
+							 									parseType.push("简要警情及处理结果要素填写不全");
+							 								}else if(i=="07"){
+							 									parseType.push("简要警情及处理结果填写存在错误");
+							 								}else if(i=="08"){
+							 									parseType.push("处警统计信息填写不规范");
+							 								}else if(i=="09"){
+							 									parseType.push("损失情况填写不规范");
+							 								}else if(i=="10"){
+							 									parseType.push("涉警人员填写不规范");
+							 								}else if(i=="11"){
+							 									parseType.push("涉警单位填写不规范");
+							 								}else if(i=="12"){
+							 									parseType.push("涉警物品填写不规范");
+							 								}else if(i=="13"){
+							 									parseType.push("移送接收单位未填");
+							 								}else if(i=="14"){
+							 									parseType.push("移送接收人未填");
+							 								}else if(i=="15"){
+							 									parseType.push("移送接收时间未填");
+							 								}else if(i=="16"){
+							 									parseType.push("发生原因选择不规范");
+							 								}else if(i=="17"){
+							 									parseType.push("事发场所选择不规范");
+							 								}else if(i=="18"){
+							 									parseType.push("事发时间上限下限填写错误");
+							 								}else if(i=="19"){
+							 									parseType.push("两抢等警情未在两小时内反馈");
+							 								}else if(i=="20"){
+							 									parseType.push("违规升格,降格处理警情");
+							 								}else if(i=="21"){
+							 									parseType.push("超24小时登记");
+							 								}else if(i=="22"){
+							 									parseType.push("超24小时审批");
+							 								}else if(i=="23"){
+							 									parseType.push("未处警");
+							 								}else if(i=="24"){
+							 									parseType.push("自接警情登记不规范");
+							 								}else if(i=="25"){
+							 									parseType.push("警情标注标签输入不规范");
+							 								}else if(i=="26"){
+																parseType.push("处警反馈时间未填");
+															}else if(i=="27"){
+																parseType.push("天气情况未填写");
+															}
+															else if(i=="-1"){
+							 									parseType.push("正常");
+							 								}
+							 							}
+							 							return parseType.join("<br/>")
+							 						}else{
+							 							return ""
+							 						}
+							 						
+							 					}
+							 }
+							 ,{field:'doubleCheck',  title: '重复巡查',align:"center",
+							 						templet:function(d)
+							 							{
+							 								if(d.doubleCheck==1)
+							 								   {return "是"}
+							 								else
+							 								   {return "否"}
+							 							}
+							 }
+							,{fixed: 'right', title:'操作', toolbar: '#barNotice',align:"center",width:230}
+					    ]]
+					  });
+					  
+					  table.on('tool(layerInfo)', function(obj){
+					      var data = obj.data;
+					      if(obj.event === 'yzg'){
+							$.get(baseUrl + "/cj/updateJqCjBhgNew?id="+data.id+"&state=2&token="+token,function(res){
+								// console.log(res);
+								if(res.code==0){
+									table.reload("demo1Reload");
+									// $("#pcsztbox").hide();
+									// layer.closeAll();
+									layer.msg("状态跟新成功");
+								}else{
+									layer.msg(data.msg);
+								}
+							})
+						}else if(obj.event === 'wzg'){
+							$.get(baseUrl + "/cj/updateJqCjBhgNew?id="+data.id+"&state=3&token="+token,function(res){
+								console.log(res);
+								if(res.code==0){
+									table.reload("demo1Reload");
+									// $("#pcsztbox").hide();
+									// layer.closeAll();
+									layer.msg("状态跟新成功");
+								}else{
+									layer.msg(data.msg);
+								}
+							})
+						}else if(obj.event === "wfzg"){
+							$.get(baseUrl + "/cj/updateJqCjBhgNew?id="+data.id+"&state=4&token="+token,function(res){
+								console.log(res);
+								if(res.code==0){
+									table.reload("demo1Reload");
+									// $("#pcsztbox").hide();
+									// layer.closeAll();
+									layer.msg("状态跟新成功");
+								}else{
+									layer.msg(data.msg);
+								}
+							})
+						}
+					  })
+					  layer.open({
+					   type:1,
+					   area:['1140px','600px'],
+					    title: '待确认警情',
+					    content: $("#pcsztbox"),
+					    shade: 0,
+					    btn: ['确定'],
+					  	  btn1: function(index, layero){
+					  			$("#pcsztbox").hide();
+					  			layer.close(index);
+					  	  },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+					  	cancel: function(index,layero){ 
+					  		 $("#pcsztbox").hide();
+					  			layer.close(index);
+					  	  }
+					  });
+				  }
+				  ,cancel: function(index,layero){
+				  		layer.closeAll();
+				    }
+				});
+			}
+		});
+	}
+	getCjts();
+	// setInterval("getCjts()",5000);
+	
+	
+	
+	
+	$("#chaxun6").click(function(){
+		var checkTime6 = $("#chooseTime3").val();
+		var startDate6 = checkTime6.slice(0,10);
+		var endDate6 = checkTime6.slice(13);
+		if(checkTime6==""){
+			layer.msg("您还未选择时间，无法导出每月警情质量通报！");
+		}else{
+			window.location=baseUrl+"/cj/exportCjjcByDate?startDate="+startDate6+"&endDate="+endDate6+"&token="+token
+		}
+	})
+	
+	
+	
+	
+	// 派出所查询
+	//日期范围
+	  laydate.render({
+	    elem: '#pcschooseTime'
+	    ,range: true
+	  });
+	
+	$('#pcschaxun').on('click', function(){
+		 var checkTime = $("#pcschooseTime").val();
+		 var startDate = checkTime.slice(0,10);
+		 var endDate = checkTime.slice(13);
+		 var pcsjjbh = $("#pcsjjbh").val();
+		 var dwcode = $("#pcsdw").val();
+		 var jiekou = baseUrl+"/cj/queryCjList?beforeDate="+startDate+"&afterDate="+endDate+"&dw="+dwcode+"&frm=1&jjbh="+pcsjjbh;
+		getTablepcsdata(jiekou);
+	});
+	
+	function getTablepcsdata(url){
+		// 获取全部头部数据
+		table.render({
+		  elem: '#pcsdemo'
+		  ,url:url
+		  ,defaultToolbar: []
+		  ,page:true
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center",}
+			 ,{field:'deptsname',  title: '所属单位',align:"center",width:95,}
+			,{field:'jjbh',  title: '接警编号',align:"center",width:250,}
+			,{field:'jjrqsj',  title: '接警日期',align:"center",width:200,}
+			 ,{field:'type',  title: '异常原因',align:"center",
+				templet:function(d)
+					{
+						if(d.type!=undefined&&d.type!=null&&d.type!=""){
+							var typeArr = d.type.split(",");
+							var parseType = [];
+							for(i of typeArr){
+								if(i=="01"){
+									parseType.push("处警类型定性不准确");
+								}else if(i=="02"){
+									parseType.push("处警人填写不规范");
+								}else if(i=="03"){
+									parseType.push("处警人联系方式填写不规范");
+								}else if(i=="04"){
+									parseType.push("发生地点填写不规范");
+								}else if(i=="05"){
+									parseType.push("警情属性定性不准确");
+								}else if(i=="06"){
+									parseType.push("简要警情及处理结果要素填写不全");
+								}else if(i=="07"){
+									parseType.push("简要警情及处理结果填写存在错误");
+								}else if(i=="08"){
+									parseType.push("处警统计信息填写不规范");
+								}else if(i=="09"){
+									parseType.push("损失情况填写不规范");
+								}else if(i=="10"){
+									parseType.push("涉警人员填写不规范");
+								}else if(i=="11"){
+									parseType.push("涉警单位填写不规范");
+								}else if(i=="12"){
+									parseType.push("涉警物品填写不规范");
+								}else if(i=="13"){
+									parseType.push("移送接收单位未填");
+								}else if(i=="14"){
+									parseType.push("移送接收人未填");
+								}else if(i=="15"){
+									parseType.push("移送接收时间未填");
+								}else if(i=="16"){
+									parseType.push("发生原因选择不规范");
+								}else if(i=="17"){
+									parseType.push("事发场所选择不规范");
+								}else if(i=="18"){
+									parseType.push("事发时间上限下限填写错误");
+								}else if(i=="19"){
+									parseType.push("两抢等警情未在两小时内反馈");
+								}else if(i=="20"){
+									parseType.push("违规升格,降格处理警情");
+								}else if(i=="21"){
+									parseType.push("超24小时登记");
+								}else if(i=="22"){
+									parseType.push("超24小时审批");
+								}else if(i=="23"){
+									parseType.push("未处警");
+								}else if(i=="24"){
+									parseType.push("自接警情登记不规范");
+								}else if(i=="25"){
+									parseType.push("警情标注标签输入不规范");
+								}else if(i=="26"){
+									parseType.push("处警反馈时间未填");
+								}else if(i=="27"){
+									parseType.push("天气情况未填写");
+								}
+								else if(i=="-1"){
+									parseType.push("正常");
+								}
+							}
+							return parseType.join("<br/>")
+						}else{
+							return ""
+						}
+						
+					}
+			 }
+			  ,{field:'cjrhzxs',  title: '处警人',align:"center",
+				templet:function(d){
+					return d.cjrhzxs.split(",")[0];
+				}
+			  }
+			  ,{field:'jcr',  title: '巡查人',align:"center",}
+		  ]],
+		  done:function(res){
+			  console.log(res);
+			  $("#jclbtn").show();
+			  $("#jcl").html(res.jclv);
+			  // jclbtn jcl
+		  }
+		});
+	}
+	
+	// 获取派出所当前单位
+	getTablepcsdata(baseUrl+"/cj/queryCjList?beforeDate="+FunGetDateStr(-30)+"&afterDate="+nowdate+"&frm=1");
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

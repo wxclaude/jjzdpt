@@ -1,0 +1,70 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+#获取所有项目
+GET {{baseUrl}}/video/queryAllXm
+Accept: */*
+Cache-Control: no-cache
+###
+
+#获取所有配置
+GET {{baseUrl}}/video/queryAllXmConfig
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#新增配置
+#type 0指挥中心 1自建 2交警  3教育 4小区 5内部 6其它单位
+POST {{baseUrl}}/video/addXmConfig
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{
+  "dw":3,
+  "xmid":"V202003280002",
+  "xmmc":"小区监控",
+  "sort":0
+}
+
+###
+
+#更新配置
+#type 0指挥中心 1自建 2交警  3教育 4小区 5内部 6其它单位
+POST {{baseUrl}}/video/updateXmConfig
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{
+  "id":7,
+  "dw":1,
+  "xmid":"1",
+  "xmmc":"1",
+  "sort":"1"
+}
+
+###
+
+#根据id批量删除配置
+POST {{baseUrl}}/video/deleteXmConfig
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[
+  {"id":"1"},
+  {"id":"9"}
+]
+###

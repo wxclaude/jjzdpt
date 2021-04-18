@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-在岗统计</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	
+	
+	
+	
+	
+	
+    <div class="zhibantable" style="margin-bottom: 150px;">
+		  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+            <legend>管理应急点名</legend>
+          </fieldset>
+			<div class="layui-form demoTable">
+			  <div class="layui-form-item">
+			    <div class="layui-inline">
+			      <label class="layui-form-label">日期范围</label>
+			      <div class="layui-input-inline">
+			        <input type="text" class="layui-input" id="chooseTime" placeholder="请选择" autocomplete="off">
+			      </div>
+				  <button class="layui-btn" data-type="reload" id="chaxun">查询</button>
+				  <button class="layui-btn" id="daochu">导出到Excel</button>
+			    </div>
+			  </div>
+			</div>
+		 
+		  <table class="layui-hide" id="LAY_table_user" lay-filter="user"></table> 
+		  
+    </div>
+	
+	
+	
+	
+	
+
+    <div id="footer">
+    	
+    </div>
+	
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	var laydate = layui.laydate;
+	var table = layui.table;
+	function getTabledata(url){
+		table.render({
+		  elem: '#LAY_table_user'
+		  ,url: url
+		  ,cols: [[
+		     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'dept_name', title: '被点单位',  align:"center"}
+		    ,{field:'total', title: '被点次数',  align:"center"}
+		    ,{field:'yd1Total', title: '正常应答',  align:"center"}
+			,{field:'yd2Total', title: '未应答数',  align:"center"}
+		    ,{field:'yd1totalPrecent', title: '应答率' ,align:"center" }
+		  ]]
+		  ,id: 'testReload'
+		  ,page: true
+		});
+	}
+	
+	  getTabledata(baseUrl+"/yjdm/queryYjdmStatisticsByDatePage?startDate=2020-01-18&endDate=2020-01-18");
+	  
+	 // http://localhost:8080/yjdm/queryYjdmStatisticsByDatePage?startDate=2020-03-18&endDate=2020-05-18&page=1&limit=10
+	  
+	  
+	  
+	  
+	  
+	  $('#chaxun').on('click', function(){
+		 var checkTime = $("#chooseTime").val();
+		 var startDate = checkTime.slice(0,10);
+		 var endDate = checkTime.slice(13);
+		if(checkTime !=""){
+			var jiekou = baseUrl+"/yjdm/queryYjdmStatisticsByDatePage?startDate="+startDate+"&endDate="+endDate;
+			getTabledata(jiekou);
+		}else{
+			layer.msg("您还没有选择时间！");
+		}
+			
+		
+	  
+	  });
+	
+	
+	//日期范围
+	  laydate.render({
+	    elem: '#chooseTime'
+	    ,range: true
+	  });
+	
+	
+	
+	$("#daochu").click(function(){
+		var checkTime = $("#chooseTime").val();
+		var startDate = checkTime.slice(0,10);
+		var endDate = checkTime.slice(13);
+		if(checkTime !=""){
+			window.location.href = baseUrl+"/yjdm/exportYjdmStatisticsByDate?startDate="+startDate+"&endDate="+endDate+"&token="+token;
+			layer.msg("导出成功");
+		}else{
+			layer.msg("您还没有选择时间！");
+		}
+		
+	})
+	//http://localhost:8080/yjdm/exportYjdmStatisticsByDate?startDate=2020-03-18&endDate=2020-05-18&token=a258bf018763e452f569f180a0f4a542
+	
+	
+	
+	
+	
+</script>
+
+</body>
+</html>

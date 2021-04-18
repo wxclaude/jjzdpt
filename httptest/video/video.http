@@ -1,0 +1,173 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "jw",   "password": "111" }
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+#根据类型查询该类型单位最近一次巡检的日期
+#type 0指挥中心 1自建 2交警  3教育 4小区 5内部 6其它单位
+GET http://localhost:8080/video/queryLastVideoDateByType?type=0
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据类型和日期查询视频巡检记录
+#type 0指挥中心 1自建 2交警  3教育 4小区 5内部 6其它单位 7人脸
+GET http://localhost:8080/video/queryVideoDataByTypeAndDate?date=2020-06-08&type=7
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#分页查询监控详情
+#type 0指挥中心 1自建 2交警  3教育 4小区 5内部 6其它单位 7人脸
+# dept 该行选择的dept值 queryVideoDataByTypeAndDate接口返回的dept字段 如 天网一期
+# kind 0全部点位 1故障点位
+# pointName 搜索的监控点名称
+GET http://localhost:8080/video/queryVideoDataDetail?date=2020-06-19&type=7&dept=人脸&kind=1&page=1&limit=10&pointName=304
+Accept: */*
+Cache-Control: no-cache
+###
+
+#进入新增巡检页面时 根据类型获取上次巡检结果
+#type 3教育 4小区 5内部 6其它单位
+GET http://localhost:8080/video/queryLastVideoDataByType?type=3
+Accept: */*
+Cache-Control: no-cache
+###
+
+# 批量新增巡检
+POST http://localhost:8080/video/addVideoCheckBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:ae547b378b27817e054a98b575ada614
+
+[{"xmid":"V201710120018","xlzt":"正常","bz":"","jkzs":"100","zxjks":"22"},
+  {"xmid":"V201710130017","xlzt":"正常","bz":"","jkzs":"55","zxjks":"2"}
+]
+
+###
+
+
+#统计
+#type 0指挥中心 1自建 2交警  3教育 4小区 5内部 6其它单位
+GET http://localhost:8080/video/queryVideoStatisticsByTypeAndDate?type=3&startDate=2020-04-26&endDate=2020-04-26
+Accept: */*
+Cache-Control: no-cache
+###
+
+# 修改故障点位备注
+#type 0指挥中心 1自建 2交警  3教育 4小区 5内部 6其它单位 7人脸
+#category 0画面树木遮挡 1监控角度异常 2设备离线 3画面异常 4录像异常 5其它
+# bh 天网通道/派出所自建/交警 添加备注时传sn  天网点位 添加备注时传dwid
+POST http://127.0.0.1:8080/video/updateVideoBz
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{  "bh": "V201708210126",   "bz": "33333333", "type": 0,  "category": 3}
+
+###
+
+
+#根据dwid获取该设备的历史备注信息
+#page=1页码  limit=10每页数量
+GET http://localhost:8080/video/queryVideoBzDataPage?bh=V202004140068&page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+###
+
+#获取国标编码或者名称不匹配的点位信息
+GET http://localhost:8080/video/queryCompareDataPage
+Accept: */*
+Cache-Control: no-cache
+###
+
+#正常点位详情（新）根据配合id获取巡检详情
+# pointName 搜索的监控点名称
+GET http://localhost:8080/video/queryNormalVideoDataDetailByConfigId?configId=1&page=1&limit=10&date=2020-06-19&pointName=1007
+Accept: */*
+Cache-Control: no-cache
+###
+
+#故障点位详情（新）根据配合id获取巡检详情
+# pointName 搜索的点位名称
+GET http://localhost:8080/video/queryErrorVideoDataDetailByConfigId?configId=1&date=2020-06-19&pointName=扬路与
+Accept: */*
+Cache-Control: no-cache
+###
+
+#合同点位详情 根据配置id获取巡检详情
+GET http://localhost:8080/video/queryHtVideoDataDetailByConfigId?configId=1&page=1&limit=10&pointName=101
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据bh(dwid) 获取该点位的历史巡检信息
+GET http://localhost:8080/video/queryHistoryDataPage?page=1&limit=10&dwid=V201708210137
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据dwid/日期 获取该点位该日期的具体监控点信息
+GET http://localhost:8080/video/queryDwDetailByDwidAndDate?dwid=V201708210137&date=2020-04-20
+Accept: */*
+Cache-Control: no-cache
+###
+
+#获取报修数据
+#kind 0通道故障  1点位故障
+#state 0未修复  1已修复
+#name 点位名称/通道名称 模糊搜索用
+GET http://localhost:8080/video/queryBxData?page=1&limit=10&kind=0&state=1
+Accept: */*
+Cache-Control: no-cache
+###
+
+# 修改故障点位备注
+POST http://127.0.0.1:8080/video/updateBxById
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[{  "id": 133,  "state": 1,"czqk": "xxxx已经修好了"},{  "id": 119,  "state": 1}]
+
+###
+
+
+#查询点位或者通道列表
+#kind 0通道故障
+#name 点位名称/通道名称 模糊搜索用
+GET http://localhost:8080/video/queryDwOrTd?page=1&limit=10&kind=1&name=1001
+Accept: */*
+Cache-Control: no-cache
+###
+
+# 修改故障点位备注 不登录
+# type -1
+# category 0画面树木遮挡 1监控角度异常 2设备离线 3画面异常 4录像异常 5其它
+# bh 天网通道/派出所自建/交警 添加备注时传sn  天网点位 添加备注时传dwid
+# user_id 报修人   dh 电话
+POST http://127.0.0.1:8080/video/queryUpdateVideoBz
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "bh": "V201708210126",   "bz": "3", "type": -1,  "category": 3, "userId":"报修人","dh":"888888" ,"dwortd": 1}
+
+###
+
+#根据ip查询点位或者通道列表
+GET http://localhost:8080/video/queryDwOrTdByIp?page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+###
+
+

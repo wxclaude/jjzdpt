@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.mrtz.dao.MrtzDao">
+
+
+  <select id="queryMrtz" resultType="io.renren.modules.mrtz.entity.ZhMrtzEntity">
+      select z.*, t.short_dept_name as deptName
+      from zh_mrtz z
+      left join tdept t on z.dept_id = t.dept_id
+      where z.isdel = 0
+      <if test="params.deptId !=null and params.deptId !='' ">
+        and z.dept_id = #{params.deptId}
+      </if>
+      <if test="params.startDate != null and params.startDate != ''">
+        and z.tz_date &gt;= #{params.startDate}
+      </if>
+      <if test="params.endDate != null and params.endDate != ''">
+        and z.tz_date &lt;= #{params.endDate}
+      </if>
+      order by z.create_time desc
+  </select>
+
+    <select id="queryMrtzData" resultType="java.util.Map">
+
+
+        select ifnull(temp.total,0) as total, t.dept_id, t.short_dept_name as deptName
+
+        from
+            (
+                    select * from tdept where dept_id in (
+                    'D0059','D0068','D0078','D0086','D0245','D0095','D00003','D0181','D0102','D0112',
+                    'D0122','D0173','D0191','D0209','D0220','D0238')
+                ) t
+            left join
+                (
+                    select count(*) as total, dept_id
+                    from zh_mrtz
+                    where isdel = 0 and left(tz_date,7) = #{tzMonth}
+                    group by dept_id
+                ) temp on temp.dept_id = t.dept_id
+
+                order by total desc
+
+    </select>
+
+    <select id="queryMrtzStat" resultType="java.util.Map">
+
+        select ifnull(temp.total,0) as ysb,t.dept_id, t.dept_name as deptName
+        from
+        (
+        select * from tdept
+        where 1=1
+        and dept_id in (
+        'D0059','D0068','D0078','D0086','D0245','D0095','D00003','D0181','D0102','D0112',
+        'D0122','D0173','D0191','D0209','D0220','D0238')
+        <if test="params.deptId != null and params.deptId != ''">
+            and dept_id = #{params.deptId}
+        </if>
+        ) t
+        left join
+        (
+        select count(*) as total,dept_id
+        from zh_mrtz
+        where isdel = 0
+        <if test="params.startDate != null and params.startDate != ''">
+            and date_format( tz_date, '%Y-%m-%d' ) &gt;= #{params.startDate}
+        </if>
+        <if test="params.endDate != null and params.endDate != ''">
+            and date_format( tz_date, '%Y-%m-%d' ) &lt;= #{params.endDate}
+        </if>
+        group by dept_id
+        ) temp on temp.dept_id = t.dept_id
+
+        order by LENGTH(t.dept_id),t.dept_id
+
+
+    </select>
+
+</mapper>
+

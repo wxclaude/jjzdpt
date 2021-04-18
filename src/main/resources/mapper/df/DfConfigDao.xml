@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.df.dao.DfConfigDao">
+
+
+    <select id="queryAllDept" resultType="java.util.Map">
+        select deptId,deptName,deptSName
+        from tDept
+        where CanBeCalled =1
+        order by len(deptId),deptId
+    </select>
+    <select id="getDeptByDeptId" resultType="java.util.Map">
+        select deptId,deptName,deptSName
+        from tDept
+        where deptId = #{deptId}
+    </select>
+</mapper>

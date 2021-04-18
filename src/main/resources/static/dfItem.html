@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>邗江分局视频监控运行质态平台</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-tool{
+			z-index: 1;
+		}
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>打分项目</legend>
+	      </fieldset>  
+		<div class="layui-container">
+			<div class="layui-row">
+				<div class="layui-col-lg12">
+					<table id="dfDetail" lay-filter="dfDetail"></table>
+				</div>
+			</div>
+		</div>  
+		 
+	</div>
+	
+	
+	<!-- 新增父打分项 -->
+	<form class="layui-form" id="newfudfxbox" style="display:none;padding: 10px;" lay-filter="newfudfxbox">
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label" style="width: auto;">打分项目</label>
+		<div class="layui-input-inline">
+			<input type="text" class="layui-input" id="fudfxone" autocomplete="off">
+		</div>
+	  </div>
+	</form>
+	<!-- 新增父打分项end -->
+	
+	<!-- 新增子打分项 -->
+	<form class="layui-form" id="newdfxbox" style="display:none;padding: 10px;" lay-filter="newdfxbox">
+		<div class="layui-form-item" style="margin-top: 20px;">
+		  <label class="layui-form-label" style="width: ;">选择父项目</label>
+				<div class="layui-input-inline">
+					<select id="searchDw" lay-filter="searchDw" lay-search></select>
+				</div>
+		</div>
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label" style="width: ;">打分项目</label>
+		<div class="layui-input-inline">
+			<input type="text" class="layui-input" id="dfxone" autocomplete="off">
+		</div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label" style="width: ;">权重比</label>
+	  		<div class="layui-input-inline">
+	  			<input type="number" class="layui-input" id="qzbone" autocomplete="off">
+	  		</div>
+	  </div>
+	</form>
+	<!-- 新增子打分项end -->
+	
+	
+	
+	
+	<!-- 修改打分项目 -->
+	<form class="layui-form" id="xiugaifxbox" style="display:none;padding: 10px;" lay-filter="xiugaifxbox">
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	  		  <label class="layui-form-label" style="width: ;">选择父项目</label>
+	  				<div class="layui-input-inline">
+	  					<select id="xgsearchDw" lay-filter="xgsearchDw" lay-search></select>
+	  				</div>
+	  		</div>
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label" style="width: ;">打分项目</label>
+	  		<div class="layui-input-inline">
+	  			<input type="text" class="layui-input" id="xgdfxone" autocomplete="off">
+	  		</div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label" style="width: ;">权重比</label>
+	  		<div class="layui-input-inline">
+	  			<input type="number" class="layui-input" id="xgqzbone" autocomplete="off">
+	  		</div>
+	  </div>
+	</form>
+	<!-- 修改打分项目end -->
+	
+	<!-- 修改父打分box -->
+	<form class="layui-form" id="xgfudfxbox" style="display:none;padding: 10px;" lay-filter="xgfudfxbox">
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label" style="width: auto;">打分项目</label>
+		<div class="layui-input-inline">
+			<input type="text" class="layui-input" id="xgfudfxone" autocomplete="off">
+		</div>
+	  </div>
+	</form>
+	<!-- 修改父打分boxend -->
+	<!-- 修改子打分box -->
+	
+	
+	<!-- 修改子打分box -->
+	
+	
+<div id="footer"></div>
+    
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="daochu" style="display: none;">导出详情</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="xiugai">修改</a>
+</script>
+<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">
+	<button class="layui-btn layui-btn-sm" lay-event="addfa">新增父级打分项目</button>
+    <button class="layui-btn layui-btn-sm" lay-event="addCheckData">新增打分项目</button>
+    <button class="layui-btn layui-btn-sm" lay-event="backdfjl">返回打分记录</button>
+    
+  </div>
+</script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	var laydate = layui.laydate;
+	  
+	  function tableDfx(url){
+		  table.render({
+		    elem: '#dfDetail'
+		    ,url:  url//数据接口
+		    ,page: false //开启分页
+			,toolbar: '#toolbarDemo'
+			,defaultToolbar:[]
+		    ,cols: [[ //表头
+		      {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		      ,{field: 'dfx', title: '打分项目',align:"center"}
+			  ,{field: 'type', title: '项目类别',templet: function(d){ if(d.type==0){ return "父类别"}else{return "子类别"} },align:"center"}
+		      ,{field: 'qzb', title: '权重比',align:"center",width:100}
+		  	  ,{field: 'createBy', title: '创建人',align:"center"}
+			  ,{field: 'createTime', title: '创建时间',align:"center"}
+			  ,{fixed: 'right', title:'操作', toolbar: '#barDemo',align:"center",width:100,align:"center"}
+		    ]]
+			,id:"testReload"
+		  });
+	  }
+	  
+	  tableDfx(baseUrl+'/df/queryDfConfig');
+	  
+	  // 按月份查询记录
+	  
+	  $("#cx").click(function(){
+		  var cxMonth = $("#month").val();
+		  tableDfx(baseUrl+'/df/queryDfRecord?date='+cxMonth);
+	  })
+	  
+	   // 动态添加选择框
+	   
+	   function SelectDw(selectID,url,value){
+	   	$.get(url,function(data){
+	   		if(selectID.indexOf("#")!=0){
+	   			selectID="#"+selectID;
+	   		}
+	   		$(selectID).empty();
+	   		$(selectID).append("<option value='' >请选择</option>");
+	   		for(var k of data.data){
+	   			$(selectID).append("<option value='"+k.id+"'>"+k.dfx+"</option>");
+	   		}
+	   		if(value!=undefined||value!=null||value!=""){
+	   			$(selectID).val(value);
+	   		}
+	   		layui.form.render();
+	   	})
+	   }
+	   SelectDw("searchDw",baseUrl+"/df/queryParentDfConfig?type=0");
+	    // 动态添加选择框
+	   
+	   
+	   //工具栏事件
+	    table.on('toolbar(dfDetail)', function(obj){
+	      var checkStatus = table.checkStatus(obj.config.id);
+	      switch(obj.event){
+	        case 'addCheckData':
+				layer.open({
+				 type:1,
+				// area:['400px','600px'],
+				  title: '新增打分项'
+				  ,content: $("#newdfxbox"),
+				  shade: 0,
+				  btn: ['提交', '取消']
+				  ,btn1: function(index, layero){
+					  if($("#dfxone").val()==""){
+					  	layer.msg("打分项目不能为空！");
+					  	return false;
+					  }else if($("#qzbone").val()==""){
+					  	layer.msg("权重比不能为空！");
+					  	return false;
+					  }
+					  var dataSend = {"dfx":$("#dfxone").val(),"qzb":$("#qzbone").val(),"parentId":$("#searchDw").val(),"type":1};
+					  var load1 = layer.load(1);  
+						$.ajax({
+						    url:baseUrl + "/df/addDfConfig",
+						    type:"post",
+						    cache:false,
+							data:JSON.stringify(dataSend),
+							dataType : 'JSON',
+							contentType: "application/json",
+							beforeSend: function (XMLHttpRequest) {
+							   XMLHttpRequest.setRequestHeader("token", token);
+							},
+						    success:function(data) {
+								if(data.code==0){
+									layer.close(load1);
+								    layer.msg("添加成功");
+									table.reload("testReload");
+									$("input").val("");
+									layer.closeAll();
+									$("#newdfxbox").hide();
+								}else {
+									layer.close(load1);
+								    layer.msg(data.msg);
+									$("#newdfxbox").hide();
+								}
+						    },
+						    error : function (res) {
+								// layer.close(load1);
+						        layer.msg('添加失败');
+								$("#newdfxbox").hide();
+						    }
+						})
+				  },
+				  btn2: function(index, layero){
+						layer.closeAll();
+						$("#newdfxbox").hide();
+				  },
+				cancel: function(layero,index){ 
+					   layer.closeAll();
+					  $("#newdfxbox").hide();
+				  }
+				}); 
+	        break;
+			 case 'backdfjl':
+				window.location="dfjl.html"
+			break;
+			case 'addfa':
+					layer.open({
+					 type:1,
+					// area:['400px','600px'],
+					  title: '新增父打分项'
+					  ,content: $("#newfudfxbox"),
+					  shade: 0,
+					  btn: ['提交', '取消']
+					  ,btn1: function(index, layero){
+						  if($("#fudfxone").val()==""){
+						  	layer.msg("打分项目不能为空！");
+						  	return false;
+						  }
+						  var dataSend = {"dfx":$("#fudfxone").val(),"type": 0,};
+						  var load1 = layer.load(1);  
+							$.ajax({
+							    url:baseUrl + "/df/addDfConfig",
+							    type:"post",
+							    cache:false,
+								data:JSON.stringify(dataSend),
+								dataType : 'JSON',
+								contentType: "application/json",
+								beforeSend: function (XMLHttpRequest) {
+								   XMLHttpRequest.setRequestHeader("token", token);
+								},
+							    success:function(data) {
+									if(data.code==0){
+										layer.close(load1);
+									    layer.msg("添加成功");
+										table.reload("testReload");
+										$("input").val("");
+										layer.closeAll();
+										$("#newfudfxbox").hide();
+										history.go(0);
+									}else {
+										layer.close(load1);
+									    layer.msg(data.msg);
+										$("#newfudfxbox").hide();
+									}
+							    },
+							    error : function (res) {
+									// layer.close(load1);
+							        layer.msg('添加失败');
+									$("#newfudfxbox").hide();
+							    }
+							})
+					  },
+					  btn2: function(index, layero){
+							layer.closeAll();
+							$("#newfudfxbox").hide();
+					  },
+					cancel: function(layero,index){ 
+						   layer.closeAll();
+						  $("#newfudfxbox").hide();
+					  }
+					}); 
+			break;
+				
+			
+	      };
+	    });
+	  
+	  // 修改
+	  table.on('tool(dfDetail)', function(obj){
+		  if(obj.event == "xiugai"){
+			  if(obj.data.type==0){
+				  $("#xgfudfxone").val(obj.data.dfx);
+				  layer.open({
+				   type:1,
+				  // area:['400px','600px'],
+				    title: '修改打分项目'
+				    ,content: $("#xgfudfxbox"),
+				    shade: 0,
+				    btn: ['提交', '取消']
+				    ,btn1: function(index, layero){
+				  	  var dataSend = {"dfx":$("#xgfudfxone").val(),"id":obj.data.id};
+				  	  var load1 = layer.load(1);  
+				  		$.ajax({
+				  		    url:baseUrl + "/df/updateDfConfig",
+				  		    type:"post",
+				  		    cache:false,
+				  			data:JSON.stringify(dataSend),
+				  			dataType : 'JSON',
+				  			contentType: "application/json",
+				  			beforeSend: function (XMLHttpRequest) {
+				  			   XMLHttpRequest.setRequestHeader("token", token);
+				  			},
+				  		    success:function(data) {
+				  				if(data.code==0){
+				  					layer.close(load1);
+				  				    layer.msg("修改成功");
+				  					table.reload("testReload");
+				  					$("input").val("");
+				  					layer.closeAll();
+				  					$("#xgfudfxbox").hide();
+									history.go(0);
+				  				}else {
+				  					layer.close(load1);
+				  				    layer.msg(data.msg);
+				  					$("#xgfudfxbox").hide();
+				  				}
+				  		    },
+				  		    error : function (res) {
+				  				// layer.close(load1);
+				  		        layer.msg('修改失败');
+				  				$("#xgfudfxbox").hide();
+				  		    }
+				  		})
+				    },
+				    btn2: function(index, layero){
+				  		layer.closeAll();
+				  		$("#xgfudfxbox").hide();
+				    },
+				  cancel: function(layero,index){ 
+				  	   layer.closeAll();
+				  	  $("#xgfudfxbox").hide();
+				    }
+				  }); 
+				  
+				  
+			  }else if(obj.data.type==1){
+				  console.log(obj.data)
+				  $("#xgdfxone").val(obj.data.dfx);
+				  $("#xgqzbone").val(obj.data.qzb);
+				  $("#xgsearchDw").html("<option value='"+obj.data.parentId+"'>"+obj.data.parentName+"</option>");
+				  // $("#xgsearchDw").val(obj.data.parentId);
+				  $.get({
+				      url:baseUrl+"/df/queryParentDfConfig?type=0",
+				      success:function(data){
+				  		for(var k of data.data){
+				  			//$("#xialian1").append("<option value='"+k.id+"'>"+k.dklx+"/"+k.bkh+"/"+k.dkh+"</option>");
+				  				$("#xgsearchDw").append("<option value='"+k.id+"'>"+k.dfx+"</option>");
+				  		}
+				  		form.render('select'); 
+				      }
+				  });  
+				  form.render();
+				  
+				  layer.open({
+				   type:1,
+				  // area:['400px','600px'],
+				    title: '修改打分项目'
+				    ,content: $("#xiugaifxbox"),
+				    shade: 0,
+				    btn: ['提交', '取消']
+				    ,btn1: function(index, layero){
+				  	  var dataSend = {"dfx":$("#xgdfxone").val(),"id":obj.data.id,"qzb":$("#xgqzbone").val(),"type": 1,"parentId":$("#xgsearchDw").val()};
+				  	  var load1 = layer.load(1);  
+				  		$.ajax({
+				  		    url:baseUrl + "/df/updateDfConfig",
+				  		    type:"post",
+				  		    cache:false,
+				  			data:JSON.stringify(dataSend),
+				  			dataType : 'JSON',
+				  			contentType: "application/json",
+				  			beforeSend: function (XMLHttpRequest) {
+				  			   XMLHttpRequest.setRequestHeader("token", token);
+				  			},
+				  		    success:function(data) {
+				  				if(data.code==0){
+				  					layer.close(load1);
+				  				    layer.msg("修改成功");
+				  					table.reload("testReload");
+				  					$("input").val("");
+				  					$("#xiugaifxbox").hide();
+									layer.closeAll();
+				  				}else {
+				  					layer.close(load1);
+				  				    layer.msg(data.msg);
+				  					$("#xiugaifxbox").hide();
+				  				}
+				  		    },
+				  		    error : function (res) {
+				  				// layer.close(load1);
+				  		        layer.msg('修改失败');
+				  				$("#xiugaifxbox").hide();
+				  		    }
+				  		})
+				    },
+				    btn2: function(index, layero){
+						$("#xiugaifxbox").hide();
+				  		layer.closeAll();
+				  		
+				    },
+				  cancel: function(layero,index){ 
+					  $("#xiugaifxbox").hide();
+				  	   layer.closeAll();
+				  	  
+				    }
+				  }); 
+				  
+			  }
+			  
+			  
+		  }
+	  })
+	
+	
+	
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

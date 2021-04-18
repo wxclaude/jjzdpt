@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-提交点名</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style>
+		.layui-table-view{
+			margin: 0;
+		}
+			
+	</style>
+</head>
+<body>
+	
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	
+ <!-- 导航栏 -->
+ <div class="wrap" id="app">
+     <ul class="layui-nav cbox padd">
+ 		<li class="layui-nav-item"><a href="index.html">首页</a></li>
+         <li class="layui-nav-item" v-for="item in list">
+           <a href="javascript:;">{{item.modelName}}</a>
+ 		  <dl class="layui-nav-child">
+ 		        <dd v-for="k in item.subModelList">
+ 		        	<a :href="k.url" v-html="k.modelName"></a>
+ 		        </dd>
+ 		    </dl>
+         </li>
+       </ul>
+ </div>
+ <!-- 导航栏 -->
+	
+	
+	
+		<div class="zhibantable">
+			<div class="layui-container" style="margin-top: 15px;">
+				<div class="layui-row">
+					<div class="layui-col-md12">
+						<h2>立即点名</h2>
+						<hr class="layui-bg-blue" style="border: 2px solid;">
+					</div>
+				</div>
+				<form action="" class="layui-form">
+					<div class="layui-row">
+						<div class="layui-col-md12">
+							<table id="demo" lay-filter="test"></table>
+						</div>
+					</div>
+					<div class="layui-row" style="margin: 20px 0 120px 0;">
+						<div class="layui-col-md12" style="text-align: center;">
+							<button type="button" class="layui-btn"  lay-filter="demo2" id="fanhui">返回上一页</button>
+							<button type="button" class="layui-btn" lay-submit="" lay-filter="demo1">提交本次点名结果</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	
+	<div id="footer"></div>
+	
+	
+	<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script type="text/html" id="titleTpl">
+	  <input type="radio" name="yd_{{d.id}}" value="1" title="应答" lay-filter='bianse'>
+	  <input type="radio" name="yd_{{d.id}}" value="2" title="未应答" lay-filter='bianse'>
+	  <input type="radio" name="yd_{{d.id}}" value="3" title="非本机应答" lay-filter='bianse'>
+	</script>
+	<script type="text/html" id="remark_temp">
+	  <input type="text" lay-vertype="tips" value="{{d.bz}}"  name="bz_{{d.id}}" style="border: none;line-height:38px;" class="layui-input">
+	</script>
+
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	
+	var table = layui.table;
+	var form = layui.form;
+	table.render({
+	    elem: '#demo'
+	    ,url: baseUrl+'/dm/queryDmDataByCondition?chouquDate='+nowdate //数据接口
+	    ,cols: [[ //表头
+	      {field: '', title: '序号',width:60,align:"center",templet: function(d){ return (d.LAY_INDEX); }}
+	      ,{field:'deptName', title: '单位',align:"center"}
+	      ,{field:'police', width:90, title: '被点人员',align:"center" }
+	      ,{field:'policeCode', width:85, title: '警号',align:"center"}
+		  ,{field:'djj', title: '对讲机号',width:95,align:"center"}
+		  // ,{field:'shortPhone', title: '短号',width:86,align:"center"}
+	      ,{field:'chouquren', title: '抽取人',width:86,align:"center"}
+		  ,{field:'yd', title: '应答情况', width: 250, templet:'#titleTpl',align:"center"}
+		  ,{field: 'bz', title: '备注', align: 'center', templet: '#remark_temp',align:"center"}
+	    ]]
+	  });
+	
+	//监听提交
+	  form.on('submit(demo1)', function(data){
+		 console.log(data.field);
+		 var datas = [];
+		 $.each(data.field,function(key,value){
+		 	console.log("key="+key+",value="+value);
+			 if(key.substring(0, 2) == "bz"){
+				 var id = key.split("_")[1];
+				 console.log("id:"+id);
+				 var d = {};
+				 d.id=id;
+				 datas.push(d);
+			 }
+		 });
+		  for(var i in datas){
+			 // if(datas[i])
+			  $.each(data.field,function(key,value){
+				  if(key.substring(0, 2) == "bz" ){
+					  var bzId = key.split("_")[1];
+					  if(bzId == datas[i].id){
+						  datas[i].bz = value;
+					  }
+				  }
+				  if(key.substring(0, 2) == "yd" ){
+					  var ydId = key.split("_")[1];
+					  if(ydId == datas[i].id){
+						  datas[i].yd = value;
+					  }
+				  }
+			  });
+		  }
+		  for(var i in datas){
+			  if(datas[i].yd == undefined || datas[i].yd== null ||datas[i].yd==0){
+			  	layer.msg("存在未点名数据");
+			  	return false;
+			  }
+		  }
+		  var load1 = layer.load(1);
+		 $.ajax({
+		     url:baseUrl + "/dm/updateDMBatch",
+		     data:JSON.stringify(datas),
+		     type:"POST",
+		     cache:false,
+		     dataType : 'JSON',
+		     contentType: "application/json",
+		 	beforeSend: function (XMLHttpRequest) {
+		 	   XMLHttpRequest.setRequestHeader("token", token);
+		 	},
+		     success:function(data) {
+				 layer.close(load1);
+		         if(data.code==0){
+		             layer.msg("点名成功");
+					 window.location="zhiban4.html"
+		         }else {
+		             layer.msg(data.msg);
+		         }
+		     },
+		     error : function (res) {
+				 layer.close(load1);
+				
+		         layer.msg('点名失败');
+		     }
+		 })
+		 return false; 
+	  });
+	
+	$("#fanhui").click(function(){
+		window.location="zhiban2.html";
+	})
+	
+	// 选中改变样式
+	
+	form.on('radio(bianse)', function(data){
+		$(data.elem).parent().parent().parent().css({"background":"#f2f2f2"})
+	});
+	
+</script>
+
+
+
+
+
+</body>
+</html>

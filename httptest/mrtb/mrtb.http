@@ -1,0 +1,218 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "jw",   "password": "111" }
+###
+
+#导出通报
+GET {{baseUrl}}/mrtb/exportMrxj
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#分页获取每日110数据
+GET http://localhost:8080/mrtb/queryPage?page=1&limit=2
+Accept: */*
+Cache-Control: no-cache
+###
+
+#新增每日通报
+GET http://localhost:8080/mrtb/addMrtb?tbrq=2020-05-23
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#根据id获取每日110详情
+##登录时需传递deptId
+GET http://localhost:8080/mrtb/queryById?id=78&deptId=D0086
+Accept: */*
+Cache-Control: no-cache
+###
+
+#更新每日通报
+POST http://localhost:8080/mrtb/updateMrtb
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"id": 2,"tbrq":"2020-05-27","qs":"050","chenbanren":"sss","shenheren":"ccc","comment1":"123123","comment2":"123123","comment3":"<table></table><p>123123</o>"}
+###
+
+#更新10种警情
+POST http://localhost:8080/mrtb/updateMrtb
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"id": 20,"totalnum": 268,"num01":8,"num02":23,"num03":27,"num04":0,"num05":59,"num06":17,"num08":68,"num11":0,"num99":66}
+###
+
+#更新各派出所
+POST http://localhost:8080/mrtb/updateMrtb
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"id": 20,
+  "jd01": 31, "jd02": 0, "jd03": 0,
+  "hs01": 63, "hs02": 2, "hs03": 6,
+  "ch01": 16, "ch02": 1, "ch03": 4,
+  "gz01": 8, "gz02": 0, "gz03": 1,
+  "jw01": 13, "jw02": 0, "jw03": 2,
+  "ym01": 3, "ym02": 1, "ym03": 0,
+  "hss01": 11, "hss02": 1, "hss03": 1,
+  "fx01": 2, "fx02": 1, "fx03": 0,
+  "gd01": 4, "gd02": 0, "gd03": 1,
+  "ys01": 4, "ys02": 0, "ys03": 0,
+  "sjy01": 24, "sjy02": 0, "sjy03": 0,
+  "nsq01": 11, "nsq02": 0, "nsq03": 1,
+  "xs01": 20, "xs02": 0, "xs03": 2,
+  "zx01": 6, "zx02": 0, "zx03": 2,
+  "xh01": 27, "xh02": 1, "xh03": 3,
+  "jy01": 11, "jy02": 0, "jy03": 0,
+  "gq01": 14, "gq02": 1, "gq03": 2
+}
+
+//{"id": 20,
+//  "jd01": 311, "jd02": 110, "jd03": 10,
+//  "hs01": 631, "hs02": 12, "hs03": 16,
+//  "ch01": 161, "ch02": 11, "ch03": 14,
+//  "gz01": 81, "gz02": 10, "gz03": 11,
+//  "jw01": 131, "jw02": 10, "jw03": 12,
+//  "ym01": 31, "ym02": 11, "ym03": 10,
+//  "hss01": 111, "hss02": 11, "hss03": 11,
+//  "fx01": 21, "fx02": 11, "fx03": 10,
+//  "gd01": 41, "gd02": 10, "gd03": 11,
+//  "ys01": 41, "ys02": 10, "ys03": 10,
+//  "sjy01": 241, "sjy02": 10, "sjy03": 10,
+//  "nsq01": 111, "nsq02": 10, "nsq03": 11,
+//  "xs01": 201, "xs02": 10, "xs03": 12,
+//  "zx01": 61, "zx02": 10, "zx03": 12,
+//  "xh01": 271, "xh02": 11, "xh03": 13,
+//  "jy01": 111, "jy02": 10, "jy03": 10,
+//  "gq01": 141, "gq02": 11, "gq03": 12
+//}
+###
+
+#删除每日通报
+GET http://localhost:8080/mrtb/deleteMrtb?id=2
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#删除每日通报刑事警情
+GET http://localhost:8080/mrtb/deleteMrtbXsjq?id=13&tbid=44
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#更新每日通报刑事警情
+POST http://localhost:8080/mrtb/updateMrtbXsjq
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"id": 14,"tbid": 44,"jjsj": "2020-04-07","jqlb": "wx","jyaq": "胡旭阳猥亵"}
+###
+
+#根据deptId查看该单位是否查看昨日的通报
+#若已经查看则result为空
+#未查看
+GET http://localhost:8080/mrtb/queryMrtbView?deptId=D0086
+Accept: */*
+Cache-Control: no-cache
+###
+
+#分页获取每日110电话数据
+GET http://localhost:8080/mrtb/queryMrtbDhPage?page=1&limit=10?phone=xxx
+Accept: */*
+Cache-Control: no-cache
+###
+
+#下载短信号码模板
+GET http://localhost:8080/mrtb/downloadMrtbDh?token=
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#上传短信号码
+POST http://localhost:8080/mrtb/uploadMrtbDh
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+###
+
+
+#每日通报发送短信通知
+POST http://localhost:8080/mrtb/sentMrtb
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"mrtbId": 76,"msg": "胡旭阳猥亵尾人接"}
+###
+
+#分页查看短信发送历史记录
+GET http://localhost:8080/mrtb/queryMrtbHisPage?page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+###
+
+#删除短信电话
+GET http://localhost:8080/mrtb/deleteMrtbDh?id=2
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+###
+
+
+#根据id批量删除电话
+POST {{baseUrl}}/mrtb/deleteAllMrtbDh
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[
+  {"id":"11"},{"id":"12"}
+]
+
+###
+
+#每日通报发布
+POST http://localhost:8080/mrtb/publishMrtb
+Accept: */*，
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"mrtbId": 81,"publishContent": "胡旭阳22222"}
+###

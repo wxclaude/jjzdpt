@@ -1,0 +1,94 @@
+/* 首页导航字体设置 */
+.layui-nav .layui-nav-item{
+	line-height: 50px;
+}
+.layui-nav .layui-nav-item a{
+	font-size: 16px;
+}
+.layui-nav-child{
+	top:55px;
+}
+
+.layui-nav{
+    background-color: #083485;
+}
+.red{
+    color: red;
+}
+.wrap{
+    width: 100%;
+    background-color: #083485;
+}
+.cbox{
+    width: 1140px;
+    margin: 0 auto;
+}
+.topBanner{
+    background: url(../images/banner2.png) no-repeat center center;
+    height: 250px;
+}
+/* .layui-nav .layui-nav-item a{
+    font-size: 20px;
+} */
+
+.layui-nav .layui-this:after, .layui-nav-bar, .layui-nav-tree .layui-nav-itemed:after{
+    background-color: #fff;
+}
+
+.zhibantable{
+    width: 1140px;
+    margin: 0 auto;
+}
+.dianming{
+    width: 1140px;
+    margin: 0 auto;
+}
+.indianming{
+    margin: 0 auto;
+    /* width: 250px; */
+    text-align: center;
+}
+
+.bottom{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    background: #eeeeee;
+    margin: 0 auto;
+    text-align: center;
+	z-index: 33;
+}
+.padd{
+    padding: 0;
+}
+.bottom .bottomContent {
+    width: 1140px;
+    background-color: #eeeeee;
+    margin: 0 auto;
+    height: 30px;
+    line-height: 30px;
+    color: #666;
+}
+.topbar{
+	width: 100%;
+	height: 30px;
+	background-color: #083485;
+}
+.topbarbox {
+	width: 1140px;
+	margin: 0 auto;
+	height: 30px;
+	line-height: 30px;
+	color: white;
+}
+
+/* 首页漂浮窗口 start*/
+#floatdivids{
+	width: 259px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 9999;
+	border: 1px solid #ccc;
+}
+/* 首页漂浮窗口 end*/

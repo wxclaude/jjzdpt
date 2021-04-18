@@ -1,0 +1,8 @@
+电警/球机/卡口/全程监控，0/1（是否有录像），在线/不通/修路/维修中
+1、用vsl_dev_encoder_chn的数据把veh_new_channel_info表过滤一遍。
+
+ 	只保留“在两张表中同时存在的记录（vsl_dev_encoder_chn.CHANNEL_CODE = veh_new_channel_info.channel_id ）”作为结果A
+	
+	结果A有的字段：vsl_dev_encoder_chn里的（DEVICE_CODE，CHANNEL_CODE，CHANNEL_NAME），veh_new_channel_info里的（channel_IP，build_time，build_company，channel_detail）
+
+2、解析结果A的channel_detail字段，字段值为“XXX（电警/球机/卡口/全程监控），X（0/1，表示是否有录像）XX（在线/离线）（，网络不通/修路/维修中）”，第三个字段值只有第二个字段值是“离线时才有”

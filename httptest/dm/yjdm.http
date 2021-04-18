@@ -1,0 +1,94 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+POST http://localhost:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "test",   "password": "admin" }
+
+<> 2020-03-16T110533.200.json
+###
+
+#应急点名
+POST http://localhost:8080/yjdm/addYjdmBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:a049715d7650244ef289bda3e6162752
+
+[
+  {"deptId":"D0209","yd":"1"},
+  {"deptId":"D0209","yd":"1"}
+]
+<> 2020-03-16T110533.200.json
+###
+
+#分页查看应急点名
+GET http://localhost:8080/yjdm/queryYjdmPage?page=1&limit=1
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+#导出应急点名
+GET http://localhost:8080/yjdm/exportYjdmByDate?dmTime=2020-03-20 13:21:00
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:a049715d7650244ef289bda3e6162752
+
+###
+
+#应急点名报表接口
+GET http://localhost:8080/yjdm/queryYjdmReportDate
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+#根据时间查看应急点名详情
+GET http://localhost:8080/yjdm/queryYjdmByDmTime?dmTime=2020-04-10 10:00:00
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+#修改应急点名
+POST http://localhost:8080/yjdm/upateYjdmBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[
+  {"id":"148","yd":"1"},
+  {"id":"149","yd":"2"}
+]
+<> 2020-03-16T110533.200.json
+###
+
+#应急点名统计
+GET http://localhost:8080/yjdm/queryYjdmStatisticsByDatePage?startDate=2020-03-18&endDate=2020-05-18&page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+###
+#应急点名统计导出
+GET http://localhost:8080/yjdm/exportYjdmStatisticsByDate?startDate=2020-03-18&endDate=2020-05-18&token=a258bf018763e452f569f180a0f4a542
+Accept: */*
+Cache-Control: no-cache
+
+###

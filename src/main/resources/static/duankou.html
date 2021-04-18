@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-端口管理</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-tool{
+			z-index: 1;
+		}
+		.layui-form-item .layui-input-inline{
+			width: auto;
+		}
+		#labelWidth .layui-form-label{
+			width: auto;
+		}
+		
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+	<div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 140px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>端口管理</legend>
+	      </fieldset>  
+		  <div class="demoTable">
+		    设备编号：
+		    <div class="layui-inline">
+		      <input class="layui-input"  autocomplete="off" id="searchId">
+		    </div>
+		    <button class="layui-btn" id="search">搜索</button>
+		  </div>
+		<table class="layui-hide" id="shebei" lay-filter="demo"></table>
+	</div>
+	
+	<!-- 添加设备 -->
+	
+	<form class="layui-form" id="addnew" style="display:none;width: 800px;padding: 10px;">
+	  <div class="layui-form-item" style="margin-top: 20px;" id="searchBox">
+	    <label class="layui-form-label" style="width: auto;">设备编号</label>
+	    <div class="layui-input-inline" style="width: 500px;">
+	      <select name="id" id="sbbh" lay-filter="sbbh" lay-search></select>
+	    </div>
+		<div class="layui-input-inline">
+		  <button type="button" class="layui-btn" id="addDk">+</button>
+		</div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;" >
+	    <label class="layui-form-label" style="width: auto;display: none;" id="nameBox">
+			品牌类型: <span id="name0"></span>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			所在位置: <span id="name1"></span>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			网络类型: <span id="name2"></span>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			设备类型: <span id="name3"></span>
+			<!-- &nbsp;&nbsp;&nbsp;&nbsp;
+			所属单位: <span id="name4"></span> -->
+		</label>
+	  </div>
+		  <div class="layui-form-item" id="labelWidth">
+		    <label class="layui-form-label">端口类型</label>
+		    <div class="layui-input-inline" >
+		      <input type="text" name="dklx_0" class="layui-input" style="width: 90px;">
+		    </div>
+			<label class="layui-form-label">板卡号</label>
+			<div class="layui-input-inline" >
+			  <input type="text" name="bkh_0" class="layui-input" style="width: 90px;">
+			</div>
+			<label class="layui-form-label">端口数</label>
+			<div class="layui-input-inline" >
+			  <input type="text" name="dkh_0" class="layui-input" style="width: 90px;">
+			</div>
+			<label class="layui-form-label">起始号</label>
+			<div class="layui-input-inline" >
+			  <input type="number" name="qsh_0" class="layui-input" style="width: 90px" value="0"  min="0">
+			</div>
+			<div class="layui-input-inline">
+			  <button type="button" class="layui-btn" onclick="remove(this)" id="removeBtn">删除</button>
+			</div>
+		  </div>
+	</form>
+	
+	<form class="layui-form" id="xiugai" style="display:none;width: 700px;padding: 10px;">
+	  </div>
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">端口类型</label>
+		    <div class="layui-input-inline" style="margin-right: 0;">
+		      <input type="text" id="dklx" class="layui-input" style="width: 90px;">
+		    </div>
+			<label class="layui-form-label">板卡号</label>
+			<div class="layui-input-inline">
+			  <input type="text"  id="bkh" class="layui-input" style="width: 90px;">
+			</div>
+			<label class="layui-form-label">端口数</label>
+			<div class="layui-input-inline">
+			  <input type="text" id="dkh" class="layui-input" style="width: 90px;">
+			</div>
+			
+		  </div>
+	</form>
+	
+	
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-danger layui-btn-xs btnXiugaiSb" lay-event="xiugai">修改</a>
+	<!-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="del">删除</a> -->
+</script>
+<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="addSb" id="btnAddSb" style="display: none;">添加端口</button>
+    <button class="layui-btn layui-btn-sm" lay-event="delAll" id="btnDelSb">删除选中</button>
+  </div>
+</script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	
+	// 获取头部数据
+	function getMoren(url){
+		table.render({
+		  elem: '#shebei'
+		  ,url:url
+		  ,defaultToolbar: ['filter']
+		  ,toolbar: '#toolbarDemo'
+		  ,page:true
+		  ,cols: [[
+			 {type:'checkbox'}
+			,{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'sbId',title: '设备编号',align:"center",width:155,}
+			,{field:'',title: '品牌',align:"center",templet: function(d){ return (d.sbMap.Brand); }}
+			,{field:'',title: '所在位置',align:"center",templet: function(d){ return (d.sbMap.BZs6); }}
+			,{field:'',title: '网络类型',align:"center",templet: function(d){ return (d.sbMap.jrlx); }}
+			// ,{field:'dklx',title: '端口类型',align:"center"}
+			,{field:'bks',title: '板卡数',align:"center"}
+			,{field:'dks',title: '端口数',align:"center"}
+		    ,{field:'createTime',title: '添加时间', align:"center",width:200,}
+			,{field:'createBy',title: '添加人员', align:"center"}
+			,{field:'',  title: '操作',align:"center",event: 'itemdetail',templet: function(d){ return "详情"; },style:'color: #083485;cursor: pointer;'}
+			// ,{title:'操作', toolbar: '#barDemo',align:"center"  }
+		  ]]
+		  ,id:"testReload"
+			,done: function(res, curr, count){
+				if(checkRole(roles,Role0027)){
+					$(".btnXiugaiSb").hide();
+				}
+			}
+		});
+	}
+	getMoren(getUrl());
+	
+	//头工具栏事件
+	  table.on('toolbar(demo)', function(obj){
+	    var checkStatus = table.checkStatus(obj.config.id);
+	    switch(obj.event){
+	      case 'addSb':
+		  $("input").val("");
+		  $("select").val("");
+		  $("#searchBox").show();
+		  $("#removeBtn").show();
+		  layui.form.render("select");
+			layer.open({
+			 type:1,
+			 area:['900px','650px'],
+			  title: '添加新端口'
+			  ,content: $("#addnew"),
+			  shade: 0,
+			  btn: ['提交', '取消']
+			  ,btn1: function(index, layero){
+				  var datas = $("#addnew").serializeArray();
+				  // console.log(datas);
+				  if(datas[0].value==""){
+					  layer.msg("您还没有填写设备编号!");
+					  return false;
+				  }
+				  var dataSend=[];
+				  var sbId = null;
+				  //去取id
+				  $.each(datas,function(i,k){
+					  if(datas[i].name=="id"){
+						  sbId=datas[i].value;
+					  }
+				  })
+				  
+				  var temp ={};
+				  $.each(datas,function(i,v){
+					  // console.log(v);
+					  if(v.name!="id"){
+						   var column = v.name.split("_")[0];
+						   var index = v.name.split("_")[1];
+						   if(column =='dklx'){
+							   temp.dklx = v.value;
+						   }else if(column =='bkh'){
+							   temp.bkh = v.value;
+						   }else if(column =='dkh'){
+							   temp.dks = v.value;
+						   }else if(column =='qsh'){
+							   temp.dkhqs = v.value;
+							   temp.sbId = sbId;
+							   dataSend.push(temp);
+							   temp ={};
+						   }
+					  }
+				  })
+				  
+				  
+				  // console.log(dataSend);
+				  
+				  var load1 = layer.load(1);  
+					$.ajax({
+					    url:baseUrl + "/xlgl/addDkBatch",
+					    type:"post",
+					    cache:false,
+						data:JSON.stringify(dataSend),
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+						   XMLHttpRequest.setRequestHeader("token", token);
+						},
+					    success:function(data) {
+							if(data.code==0){
+								layer.close(load1);
+							    layer.msg("添加成功");
+								table.reload("testReload");
+								$("input").val("");
+								$("#nameBox").hide();
+							}else {
+								layer.close(load1);
+							    layer.msg(data.msg);
+								$("#nameBox").hide();
+							}
+					    },
+					    error : function (res) {
+							layer.close(load1);
+					        layer.msg('添加失败');
+							$("#nameBox").hide();
+					    }
+					})
+					layer.closeAll();
+					$("#addnew").hide();
+					$("#nameBox").hide();
+					layui.form.render("select")
+			  },
+			  btn2: function(index, layero){
+					layer.closeAll();
+					$("#addnew").hide();
+					$("#nameBox").hide();
+					layui.form.render("select")
+			  },
+			cancel: function(layero,index){ 
+					layui.form.render("select")
+				   layer.closeAll();
+				   $("#addnew").hide();
+				   $("#nameBox").hide();
+			  }
+			
+			}); 
+	      break;
+	      case 'delAll':
+			var data = checkStatus.data;
+			console.log(data);
+			if(data.length>0){
+				$.ajax({
+				    url:baseUrl + "/xlgl/deleteDkBatch",
+				    type:"POST",
+				    cache:false,
+					dataType : 'JSON',
+					data:JSON.stringify(data),
+					contentType: "application/json",
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+				    success:function(data) {
+						if(data.code==0){
+						    layer.msg("删除成功");
+							table.reload('testReload');
+							$("#addnew").hide();
+						}else {
+						    layer.msg(data.msg);
+							$("#addnew").hide();
+						}
+				    },
+				    error : function (res) {
+				        layer.msg('删除失败');
+						$("#addnew").hide();
+				    }
+				})
+			}else{
+				layer.msg("您未选中任何数据!");
+				return false
+			}
+			
+	      break;
+	      
+	      //自定义头工具栏右侧图标 - 提示
+	      case 'LAYTABLE_TIPS':
+	        layer.alert('这是工具栏右侧自定义的一个图标按钮');
+	      break;
+	    };
+	  });
+	  
+	  table.on('tool(demo)', function(obj){
+	      var data = obj.data;
+	      if(obj.event === 'del'){
+	  	  layer.msg("我是删除")
+	      }  else if(obj.event ==="xiugai"){
+	  		// console.log(JSON.stringify(data))
+	  		$("#dklx").val(data.dklx);
+	  		$("#bkh").val(data.bkh);
+	  		$("#dkh").val(data.dkh);
+	  		layer.open({
+	  		 type:1,
+	  		 area:['800px','200px'],
+	  		  title: '修改设备端口',
+	  		  content: $("#xiugai"),
+	  		  shade: 0,
+	  		  btn: ['提交', '取消']
+	  		  ,btn1: function(index, layero){
+	  				var load1 = layer.load(1);  
+	  				$.ajax({
+	  				    url:baseUrl+"/xlgl/updateDk",
+	  				    type:"post",
+	  				    cache:false,
+	  					data:JSON.stringify({
+	  						"id":data.id,
+							"sbId":data.sbId,
+	  						"dklx":$("#dklx").val(),
+	  						"bkh":$("#bkh").val(),
+	  						"dkh":$("#dkh").val()
+	  					}),
+	  					dataType : 'JSON',
+	  					contentType: "application/json",
+	  					beforeSend: function (XMLHttpRequest) {
+	  					   XMLHttpRequest.setRequestHeader("token", token);
+	  					},
+	  				    success:function(data) {
+	  						if(data.code==0){
+	  							layer.close(load1);
+	  						    layer.msg("修改成功");
+	  							table.reload("testReload");
+								$("#xiugai").hide();
+	  						}else {
+	  							layer.close(load1);
+	  						    layer.msg(data.msg);
+								$("#xiugai").hide();
+	  						}
+	  				    },
+	  				    error : function (res) {
+	  						layer.close(load1);
+	  				        layer.msg('修改失败');
+							$("#xiugai").hide();
+	  				    }
+	  				})
+	  				layer.closeAll();
+					$("#xiugai").hide();
+	  		  },
+	  		  btn2: function(index, layero){
+	  				layer.closeAll();
+					$("#xiugai").hide();
+	  		  },
+	  		cancel: function(layero,index){ 
+	  				layer.closeAll();
+					$("#xiugai").hide();
+	  		  }
+	  		});
+	  	}else if(obj.event==="itemdetail"){
+			layer.open({
+			      type: 1,
+				  scrollbar: false,
+			      area: ['800px', '580px'],
+				  title:"查看所有端口",
+			      shadeClose: true, //点击遮罩关闭
+			      content: '<table id="history"></table>',
+				  success:function(layero, index){
+						table.render({
+						  elem: '#history'
+						  ,page:true
+						  ,url:baseUrl+"/xlgl/queryDkDetailBySbIdPage?sbId="+data.sbId
+						  ,cols: [[
+							{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+							,{field:'dklx', title: '端口类型',}
+							,{field:'bkh', title: '板卡号',}
+							,{field:'dkh',  title: '端口号',}
+							,{field:'xlbh',  title: '所属线路编号',}
+							,{field:'wllx',  title: '网络类型',}
+						  ]]
+						});	
+							
+				   }
+			    });
+		}
+	    });
+	  
+	 
+	  
+	  
+	  // 查询判断权限
+	  function getUrl(){
+	  	var sbbh = $("#searchId").val();
+	  	if(checkRole(roles,Role0027)){
+			return baseUrl+"/xlgl/queryDkByPage?sbbh="+sbbh+"&deptId="+deptId;
+	  	}else{
+			return baseUrl+"/xlgl/queryDkByPage?sbbh="+sbbh;
+	  	}
+	  }
+	  	// 查询
+	  	$("#search").click(function(){
+	  		var sbbh = $("#searchId").val();
+	  		// layer.msg(sbbh);
+	  		getMoren(getUrl());
+	  	})
+	  
+	  
+	  // 动态添加select下拉,带搜索
+	  function layuiSelect(selectID,url,value){
+	  	$.get(url,function(data){
+	  		if(selectID.indexOf("#")!=0){
+	  			selectID="#"+selectID;
+	  		}
+	  		$(selectID).empty();
+	  		$(selectID).append("<option value='' >请选择</option>");
+	  		
+	  		for(var k of data.data){
+	  			// console.log(k)
+	  			$(selectID).append("<option value='"+k.V_RWSBId+"'>"+k.V_RWSBId+"("+ k.Brand+"/"+ k.BZs6 +"/"+ k.jrlx +")</option>");
+	  		}
+	  		if(value!=undefined||value!=null||value!=""){
+	  			$(selectID).val(value);
+	  		}
+	  		layui.form.render();
+	  		
+	  	})
+	  }
+	  // 调用该方法
+	  layuiSelect("sbbh",baseUrl+"/xlgl/querySbByPageNew?page=1&limit=100000");
+	  
+	  
+	  // 展示部门
+	  function showBm(K){
+		  if(checkRole(roles,Role0027)){
+		  	return baseUrl+"/xlgl/querySbByPageNew?sbbh="+K+"&deptId="+deptId+"&page=1&limit=1";
+		  }else{
+		  	return baseUrl+"/xlgl/querySbByPageNew?sbbh="+K+"&page=1&limit=1";
+		  }	
+	  }
+	  
+	  
+	  
+	  // 选择选设备
+	  form.on('select(sbbh)',function(data){
+			console.log(showBm(data.value));
+			$.get(showBm(data.value),function(res){
+				$("#nameBox").show();
+				$("#name0").html(res.data[0].Brand);
+				$("#name1").html(res.data[0].BZs6);
+				$("#name2").html(res.data[0].jrlx);
+				$("#name3").html(res.data[0].sblx);
+				// $("#name4").html(res.data[0].deptName);
+			})
+	  });
+	  
+	  
+	  
+	  
+	  function remove(btn){
+	  	$(btn).parent().parent().remove();
+	  }
+	  var it=1;
+	  $("#addDk").click(function(){
+	  	var box = `<div class="layui-form-item">
+	  	    <label class="layui-form-label" style="width: auto;">端口类型</label>
+	  	    <div class="layui-input-inline" >
+	  	      <input type="text" name="dklx_`+it+`" class="layui-input" style="width: 90px;">
+	  	    </div>
+	  		<label class="layui-form-label" style="width: auto;">板卡号</label>
+	  		<div class="layui-input-inline">
+	  		  <input type="text" name="bkh_`+it+`" class="layui-input" style="width: 90px;">
+	  		</div>
+	  		<label class="layui-form-label" style="width: auto;">端口号</label>
+	  		<div class="layui-input-inline">
+	  		  <input type="text" name="dkh_`+it+`" class="layui-input" style="width: 90px;">
+	  		</div>
+			<label class="layui-form-label" style="width: auto;">起始号</label>
+			<div class="layui-input-inline">
+			  <input type="number" id="qsh" name="qsh_`+it+`" class="layui-input" style="width: 90px;" value="0"  min="0">
+			</div>
+	  		<div class="layui-input-inline">
+	  		  <button type="button" class="layui-btn" onclick="remove(this)">删除</button>
+	  		</div>
+	  	  </div>`;
+	  	  $("#addnew").append(box);
+	  	  it++;
+	  })
+	  
+</script>
+
+<script>
+	$(function () {
+		if(checkRole(roles,Role0027)){
+			$("#btnAddSb").hide();
+			$("#btnDelSb").hide();
+		}
+	})
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

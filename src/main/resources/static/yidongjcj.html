@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-移动接处警</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-header .layui-table-cell {
+			height: auto;
+			line-height: 28px;
+			padding: 0 15px;
+			position: relative;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: normal;
+			box-sizing: border-box;
+		}
+		/* .layui-table-view .layui-table {
+		            height: 100%;
+		        } */
+	</style>
+</head>
+<body>
+	
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	
+    <div class="zhibantable" style="margin-bottom: 150px;">
+		  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+            <legend>移动接处警应用</legend>
+          </fieldset>
+			
+			<div class="layui-container">
+				<div class="layui-row">
+					<div class="layui-col-lg5">
+						<div class="layui-form demoTable">
+						  <div class="layui-form-item">
+						    <div class="layui-inline">
+						      <label class="layui-form-label">日期范围</label>
+						      <div class="layui-input-inline">
+						        <input type="text" class="layui-input" id="chooseTime" placeholder="请选择" autocomplete="off">
+						      </div>
+							  <button class="layui-btn" data-type="reload" id="chaxun">查询</button>
+						    </div>
+						  </div>
+						</div>
+					</div>
+					<div class="layui-col-lg7">
+						<div class="layui-form demoTable">
+						  <div class="layui-form-item">
+						    <div class="layui-inline">
+						      <label class="layui-form-label">数据日期</label>
+						      <div class="layui-input-inline">
+						        <input type="text" class="layui-input" id="pushTime" placeholder="请选择" autocomplete="off">
+						      </div>
+							  <button class="layui-btn" id="daoru">导入派出所数据</button>
+							  <button class="layui-btn" id="daoru2">导入交警中队数据</button>
+						    </div>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-lg12">
+						<fieldset class="layui-elem-field" style="display: none;" id="showDateBox">
+						  <legend>未上传数据日期:</legend>
+						  <div class="layui-field-box">
+						    <span style="color: #DA4F49;font-size: 16px;" id="showDate"></span>
+						  </div>
+						</fieldset>
+						<table class="layui-hide" id="LAY_table_user" lay-filter="user"></table> 
+					</div>
+				</div>
+			</div>
+		  
+		  
+    </div>
+	
+	
+   
+	
+	
+
+    <div id="footer"></div>
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	
+	
+	
+	$("#footer").load("public/footer.html");
+	
+	var upload = layui.upload;
+	var laydate = layui.laydate;
+	var table = layui.table;
+	function getTabledata(url){
+		table.render({
+		  elem: '#LAY_table_user'
+		  ,url: url
+		  ,cols: [[
+		     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'dw', title: '单位名称',  align:"center",width:290}
+		    ,{field:'zjql', title: '总警情量',  align:"center"}
+		    ,{field:'xptjjl', title: '新平台<br/>接警量',  align:"center",}
+			,{field:'lptjjl', title: '老平台<br/>接警量',  align:"center"}
+			,{field:'xptjjlv', title: '新平台<br/>接警率',  align:"center" ,templet:function(d){ return d.xptjjlv+"%"}}
+		    ,{field:'zcjdj', title: '总处警登记' ,align:"center" }
+		    ,{field:'xptzmdcjdj', title: '新平台桌面端处警登记',  align:"center"}
+			,{field:'xptyddcjdj', title: '新平台移动端处警登记',  align:"center"}
+			,{field:'xptcjlv', title: '新平台<br/>处警率',align:"center",templet:function(d){ return d.xptcjlv+"%"}}
+			,{field:'yddcjlv', title: '移动端<br/>处警率',align:"center",templet:function(d){ return d.yddcjlv+"%"}}
+		  ]]
+		  ,id: 'testReload'
+		  // ,page: true
+		});
+	}
+	
+	   // http://localhost:8080/ydjcj/queryByDate?startDate=2020-04-02&endDate=2020-04-20
+	  $('#chaxun').on('click', function(){
+		 var checkTime = $("#chooseTime").val();
+		 var startDate = checkTime.slice(0,10);
+		 var endDate = checkTime.slice(13);
+		if(checkTime !=""){
+			var jiekou = baseUrl+"/ydjcj/queryByDate?startDate="+startDate+"&endDate="+endDate;
+			getTabledata(jiekou);
+			var Tdate = baseUrl + "/ydjcj/queryNotUploadDateByDate?startDate="+startDate+"&endDate="+endDate;
+			$.get(Tdate,function(res){
+				if(res.data!=""){
+					$("#showDateBox").show();
+					$("#showDate").text(res.data.toString());
+				}
+			})
+		}else{
+			layer.msg("您还没有选择时间！");
+		}
+	  
+	  });
+	
+	
+	//日期范围
+	  laydate.render({
+	    elem: '#chooseTime'
+	    ,range: true
+	  });
+	laydate.render({
+	  elem: '#pushTime' //指定元素
+	});
+	
+	
+   
+  //执行实例
+  var uploadInst = upload.render({
+    elem: '#daoru' //绑定元素
+    ,url: baseUrl +"/ydjcj/upload?" //上传接口
+	,accept: 'file'
+	,headers:{token:token}
+    ,done: function(res){
+      //上传完毕回调
+	  if(res.code==0){
+	  	layer.msg("上传成功");
+	  }else{
+		  layer.msg(res.msg);
+	  }
+	  
+	  layer.closeAll('loading');
+    }
+    ,error: function(res){
+      //请求异常回调
+	  layer.closeAll('loading');
+    }
+	,before:function(obj){
+		// layer.load(1)
+		var pushTime = $("#pushTime").val();
+		if(pushTime.length>0){
+			this.data={date:pushTime}
+			layer.load(1);
+		}else{
+			layer.msg("请选择时间后再上传");
+			return false
+		}
+		
+	}
+  });
+
+	//执行实例
+	var uploadInst2 = upload.render({
+		elem: '#daoru2' //绑定元素
+		,url: baseUrl +"/ydjcj/uploadZd?" //上传接口
+		,accept: 'file'
+		,headers:{token:token}
+		,done: function(res){
+			//上传完毕回调
+			if(res.code==0){
+				layer.msg("上传成功");
+			}else{
+				layer.msg(res.msg);
+			}
+
+			layer.closeAll('loading');
+		}
+		,error: function(res){
+			//请求异常回调
+			layer.closeAll('loading');
+		}
+		,before:function(obj){
+			// layer.load(1)
+			var pushTime = $("#pushTime").val();
+			if(pushTime.length>0){
+				this.data={date:pushTime}
+				layer.load(1);
+			}else{
+				layer.msg("请选择时间后再上传");
+				return false
+			}
+
+		}
+	});
+	
+	
+	
+</script>
+
+</body>
+</html>

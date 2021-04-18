@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-会议点名</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.midd{
+			text-align: center;
+		}
+		.midd th{
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>会议点名</legend>
+	      </fieldset>  
+		<form class="layui-form">
+			<table class="layui-table midd">
+			  <colgroup>
+				<col width="60" >
+			  </colgroup>
+			  <thead>
+				<tr>
+					<th colspan="5" style="text-align: left;">
+						<div class="layui-input-inline">
+							请选择日期
+						</div>
+						  <div class="layui-input-inline">
+							<input type="text" class="layui-input" id="ri" placeholder="请选择日期时间" name="hydmtime" lay-verify="required" autocomplete="off">
+						  </div>
+					</th>
+				</tr>
+				<tr>
+					<th colspan="5" style="text-align: left;">
+						<div class="layui-input-inline">
+							会议标题：
+						</div>
+						<div class="layui-input-inline">
+							<input id="hytitle" type="text" class="layui-input" name="hytitle" style="width: 500px;" lay-verify="required">
+						</div>
+					</th>
+				</tr>
+				<tr>
+				  <th>序号</th>
+				  <th>单位名称</th>
+				  <th>应答情况</th>
+				  <th>图像声音效果</th>
+				  <th>备注</th>
+				</tr> 
+			  </thead>
+				  <tbody>
+					<tr>
+					  <td>1</td>
+					  <td>邗上</td>
+					  <td>
+						<input type="radio" name="yd_D0059" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0059" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0059" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0059" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0059">
+					  </td>
+					</tr>
+					<tr>
+					  <td>2</td>
+					  <td>蒋王</td>
+					  <td>
+						<input type="radio" name="yd_D0086" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0086" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0086" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0086" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0086">
+					  </td>
+					</tr>
+					<tr>
+					  <td>3</td>
+					  <td>汊河</td>
+					  <td>
+						<input type="radio" name="yd_D0068" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0068" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0068" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0068" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0068">
+					  </td>
+					</tr>
+					<tr>
+					  <td>4</td>
+					  <td>瓜洲</td>
+					  <td>
+						<input type="radio" name="yd_D0078" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0078" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0078" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0078" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0078">
+					  </td>
+					</tr>
+					<tr>
+					  <td>5</td>
+					  <td>杨庙</td>
+					  <td>
+						<input type="radio" name="yd_D0095" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0095" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0095" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0095" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0095">
+					  </td>
+					</tr>
+					<tr>
+					  <td>6</td>
+					  <td>甘泉</td>
+					  <td>
+						<input type="radio" name="yd_D0245" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0245" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0245" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0245" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0245">
+					  </td>
+					</tr>
+					<tr>
+					  <td>7</td>
+					  <td>杨寿</td>
+					  <td>
+						<input type="radio" name="yd_D0173" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0173" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0173" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0173" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0173">
+					  </td>
+					</tr>
+					<tr>
+					  <td>8</td>
+					  <td>槐泗</td>
+					  <td>
+						<input type="radio" name="yd_D0102" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0102" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0102" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0102" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0102">
+					  </td>
+					</tr>
+					<tr>
+					  <td>9</td>
+					  <td>方巷</td>
+					  <td>
+						<input type="radio" name="yd_D0112" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0112" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0112" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0112" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0112">
+					  </td>
+					</tr>
+					<tr>
+					  <td>10</td>
+					  <td>公道</td>
+					  <td>
+						<input type="radio" name="yd_D0122" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0122" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0122" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0122" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0122">
+					  </td>
+					</tr>
+					<tr>
+					  <td>11</td>
+					  <td>四季园</td>
+					  <td>
+						<input type="radio" name="yd_D0181" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0181" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0181" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0181" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0181">
+					  </td>
+					</tr>
+					<tr>
+					  <td>12</td>
+					  <td>念四桥</td>
+					  <td>
+						<input type="radio" name="yd_D0191" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0191" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0191" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0191" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0191">
+					  </td>
+					</tr>
+					<tr>
+					  <td>13</td>
+					  <td>西湖</td>
+					  <td>
+						<input type="radio" name="yd_D0220" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0220" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0220" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0220" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0220">
+					  </td>
+					</tr>
+					<tr>
+					  <td>14</td>
+					  <td>江阳</td>
+					  <td>
+						<input type="radio" name="yd_D0238" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0238" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0238" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0238" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0238">
+					  </td>
+					</tr>
+					<tr>
+					  <td>15</td>
+					  <td>竹西</td>
+					  <td>
+						<input type="radio" name="yd_D0209" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0209" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0209" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0209" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0209">
+					  </td>
+					</tr>
+					<tr>
+					  <td>16</td>
+					  <td>新盛</td>
+					  <td>
+						<input type="radio" name="yd_D00003" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D00003" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D00003" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D00003" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D00003">
+					  </td>
+					</tr>
+					<tr>
+					  <td>17</td>
+					  <td>交警大队</td>
+					  <td>
+						<input type="radio" name="yd_D0032" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="yd_D0032" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0032" value="1" title="良好" lay-verify="otherReq">
+						<input type="radio" name="xg_D0032" value="2" title="问题" lay-verify="otherReq">
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0032">
+					  </td>
+					</tr>
+					<tr>
+					  <td>18</td>
+					  <td>巡特警</td>
+					  <td>
+						<input type="radio" name="yd_D0050" value="1" title="应答" >
+						<input type="radio" name="yd_D0050" value="2" title="未应答" >
+					  </td>
+					  <td>
+						<input type="radio" name="xg_D0050" value="1" title="良好" >
+						<input type="radio" name="xg_D0050" value="2" title="问题" >
+					  </td>
+					  <td>
+						  <input type="text" class="layui-input" name="bz_D0050">
+					  </td>
+					</tr>
+				  </tbody>
+			</table>
+			<div class="midd" style="margin-top: 50px;">
+				<button class="layui-btn" style="width: 100px;"  lay-filter="tijiao" lay-submit="" id="tijiao">提交</button>
+				<a class="layui-btn" style="width: 100px;" href="huiyitongji.html">返回</a>
+			</div>
+		</form>
+	</div>
+	
+<div id="footer"></div>
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	var laydate = layui.laydate;
+	laydate.render({
+	   elem: '#ri'
+	   ,type: 'datetime'
+	 });
+	// #根据会议点名时间 查看会议点名详情
+	// GET http://localhost:8080/hydm/queryByDate?dmTime=2020-06-23 00:00:00
+	// Accept: */*
+	// Cache-Control: no-cache
+	var dmTime = getQueryStringRegExp("dmTime");
+	$.get(baseUrl+"/hydm/queryByDate?dmTime="+dmTime,function(res){
+		// console.log(res);
+		console.log(res);
+		$("#ri").val(res.data[0].dmTime);
+		$("#hytitle").val(res.data[0].title);
+		for(var i=0;i<res.data.length;i++){
+			var deptId = res.data[i].deptId;
+			// console.log(deptId)
+			$("input[name=yd_"+deptId+"][value=1]").attr("checked", res.data[i].yd == 1 ? true : false);
+			$("input[name=yd_"+deptId+"][value=2]").attr("checked", res.data[i].yd == 2 ? true : false);
+			$("input[name=xg_"+deptId+"][value=1]").attr("checked", res.data[i].xg == 1 ? true : false);
+			$("input[name=xg_"+deptId+"][value=2]").attr("checked", res.data[i].xg == 2 ? true : false);
+			$("input[name=bz_"+deptId+"]").val(res.data[i].bz);
+			$("input[name=bz_"+deptId+"]").attr("title",res.data[i].id);
+		}
+		form.render();
+	})
+	
+	
+	//监听提交
+	form.on('submit(tijiao)', function(data){
+		var load1 = layer.load(1); 
+		var huiyidata = $("form").serializeArray();
+		var fdata = {};
+		fdata.title = huiyidata[1].value;
+		fdata.dmTime = huiyidata[0].value;
+		fdata.data = [];
+		
+		$.each(huiyidata,function(key,value){
+			if(huiyidata[key].name.substring(0,2)=="yd"){
+				var d= {};
+				d.deptId = huiyidata[key].name.split("_")[1];
+				fdata.data.push(d);
+			}
+		})
+		
+		for(var i in fdata.data){
+			$.each(huiyidata,function(key,value){
+				if(huiyidata[key].name.substring(0,2)=="yd"){
+					var ydId = huiyidata[key].name.split("_")[1];
+					// console.log(ydId);
+					if(ydId == fdata.data[i].deptId){
+						fdata.data[i].yd = value.value;
+					}
+				}
+				
+				if(huiyidata[key].name.substring(0,2)=="xg"){
+					var xgId = huiyidata[key].name.split("_")[1];
+					if(xgId == fdata.data[i].deptId){
+						fdata.data[i].xg = value.value;
+					}
+				}
+				
+				if(huiyidata[key].name.substring(0,2)=="bz"){
+					var bzId = huiyidata[key].name.split("_")[1];
+					if(bzId == fdata.data[i].deptId){
+						// console.log(value)
+						fdata.data[i].bz = value.value;
+						fdata.data[i].id = $("input[name*=bz]")[i].title;
+					}
+				}
+				
+				
+			});
+		}
+		// console.log(fdata)
+		$.ajax({
+		    url:baseUrl + "/hydm/updateHydmBatch",
+		    data:JSON.stringify(fdata),
+		    type:"POST",
+		    cache:false,
+		    dataType : 'JSON',
+		    contentType: "application/json",
+			beforeSend: function (XMLHttpRequest) {
+			   XMLHttpRequest.setRequestHeader("token", token);
+			},
+		    success:function(data) {
+				layer.close(load1); 
+		        if(data.code==0){
+		            layer.msg("修改成功");
+					window.location="huiyitongji.html"
+		        }else {
+		            layer.msg(data.msg);
+		        }
+		    },
+		    error : function (res) {
+				layer.close(load1); 
+		        layer.msg('修改失败，请联系系统管理员');
+		    }
+		})
+		
+	    return false;
+	  });
+	 
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

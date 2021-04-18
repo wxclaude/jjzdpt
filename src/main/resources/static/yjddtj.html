@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-一键点调统计</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.midd{
+			text-align: center;
+		}
+		.midd th{
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>一键点调统计</legend>
+	      </fieldset>  
+		 <table class="layui-hide" id="djjdetail" lay-filter="demo"></table>
+		
+	</div>
+	
+	
+<div id="footer"></div>
+    
+
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="daochu">导出详情</a>
+  <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="xiugai">修改</a>
+</script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	
+	
+	var table=layui.table;
+	table.render({
+	  elem: '#djjdetail'
+	  ,url:baseUrl+"/hydm/queryHydmPage"
+	  ,defaultToolbar: []
+	  ,page:true
+	  ,cols: [[
+		 {field: '', title: '序号',templet: function(d){ return (d.LAY_INDEX); },align:"center",width:80}
+		 ,{field:'title',  title: '会议名称',align:"center"}
+	    ,{field:'dm_time',  title: '点名日期',align:"center"}
+		,{field:'yd1Total',  title: '应答单位数',align:"center"}
+		,{field:'yd1totalPrecent',  title: '应答率',align:"center" ,templet:function(d){ return (d.yd1totalPrecent*100).toFixed(2)+"%"}}
+		,{fixed: 'right', title:'操作', toolbar: '#barDemo',align:"center"  }
+	  ]]
+	});
+	
+	table.on('tool(demo)', function(obj){
+	    var data = obj.data;
+		var dmTime = data.dm_time;
+	    if(obj.event === "daochu"){
+			window.location.href = baseUrl+"/hydm/exportHydmByDate?dmTime="+dmTime+"&token="+token;
+		}else if(obj.event === "xiugai") {
+			window.location="huiyixiugai.html?dmTime="+data.dm_time;
+		}
+	  });
+	
+	
+	
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

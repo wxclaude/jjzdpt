@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-每日台帐</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 100px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>各派出所每日台帐报送情况</legend>
+	      </fieldset>  
+		  
+		 <div class="demoTable">
+		   
+		   <div class="layui-form">
+				   单位
+				   <div class="layui-inline">
+					   <select name="city" lay-filter="pid" id="tzdw">
+						 <option value="">请选择</option>
+						 <option value="D0059">邗上派出所</option>
+						 <option value="D0068">汊河派出所</option>
+						 <option value="D0078">瓜洲派出所</option>
+						 <option value="D0086">蒋王派出所</option>
+						 <option value="D0245">甘泉派出所</option>
+						 <option value="D0095">杨庙派出所</option>
+						 <option value="D00003">新盛派出所</option>
+						 <option value="D0181">四季园派出所</option>
+						 <option value="D0102">槐泗派出所</option>
+						 <option value="D0112">方巷派出所</option>
+						 <option value="D0122">公道派出所</option>
+						 <option value="D0173">杨寿派出所</option>
+						 <option value="D0191">念四桥派出所</option>
+						 <option value="D0209">竹西派出所</option>
+						 <option value="D0220">西湖派出所</option>
+						 <option value="D0238">江阳派出所</option>
+					   </select> 
+				   </div>
+				   日期范围
+				   <div class="layui-input-inline">
+					 <input type="text" class="layui-input" id="chooseTime" placeholder="请选择" autocomplete="off">
+				   </div>
+			   <button class="layui-btn" id="search" type="button">查询</button>
+			   <a href="mrtztj.html" class="layui-btn">台帐统计</a>
+		 </div>
+		  </div>
+		<table class="layui-hide" id="mrtbqk" lay-filter="mrtbqk"></table>
+		
+		<!-- <div class="panel-body">
+			<h1>
+				<a class="media" href="js/2020.pdf">5555</a>  
+			</h1>
+		    
+		</div> -->
+		
+	</div>
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery.media.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">下载</a>
+</script>
+<script type="text/javascript">
+	// $('a.media').media({width:800, height:600});  
+	
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	var laydate = layui.laydate;
+	//日期范围
+	  laydate.render({
+	    elem: '#chooseTime'
+	    ,range: true
+	  });
+	
+	
+	 // http://localhost:8080/mrtz/queryMrtzPage?page=1&limit=10&deptId=&startDate=&endDate=
+	
+	// 获取头部数据
+	function getMrtz(url){
+		table.render({
+		  elem: '#mrtbqk'
+		  ,url:url
+		  ,defaultToolbar: []
+		  ,page:true
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			 ,{field:'deptName',  title: '单位',align:"center",width:120}
+			 ,{field:'fileName',  title: '文件名称',align:"center"}
+			 ,{field:'tzDate',  title: '台帐时间',align:"center",width:120}
+			,{title:'操作', toolbar: '#barDemo',align:"center",width:100}
+		  ]]
+		  ,id: 'testReload'
+		});
+	}
+	
+	getMrtz(baseUrl+"/mrtz/queryMrtzPage?deptId=&startDate=&endDate=");
+	
+	// http://127.0.0.1:8080/mrtz/exportMrtz?id=22
+	
+	table.on('tool(mrtbqk)', function(obj){
+		console.log(obj.data);
+		// path
+		if(obj.event=="checkDetal"){
+			// console.log(baseUrl+obj.data.path+obj.data.fileName)
+			window.location.href=baseUrl+"/mrtz/exportMrtz?id="+obj.data.id+"&token="+token;
+		}
+	})
+	
+	
+	$("#search").click(function(){
+		var tzdw = $("#tzdw").val();
+		var checkTime = $("#chooseTime").val();
+		var startDate = checkTime.slice(0,10);
+		var endDate = checkTime.slice(13);
+		// table.reload('testReload', {
+		// 	method: 'post',
+		// 	 where: {
+		// 	  'deptId':tzdw,
+		// 	  'startDate': startDate,
+		// 	  'endDate': endDate,
+		// 	}
+		// 	, 
+		// 	page: {
+		// 	  curr: 1
+		// 	}
+		//   });
+		getMrtz(baseUrl+"/mrtz/queryMrtzPage?deptId="+tzdw+"&startDate="+startDate+"&endDate="+endDate);
+	})
+	
+	
+	
+	
+	
+</script>
+	
+
+
+</body>
+</html>

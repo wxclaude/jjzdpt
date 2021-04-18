@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-每日台帐</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-nav-child{
+				z-index: 999;
+		}
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item mainPage"><a href="pcsindex.html">首页</a></li>
+	        <li class="layui-nav-item">
+	          <a href="pcsxl.html">设备管理</a>
+	        </li>
+			<li class="layui-nav-item">
+			  <a href="javascript:;">接处警模块</a>
+			  <dl class="layui-nav-child">
+			        <dd>
+						<a href="pcscjlist.html">处警信息</a>
+					</dd>
+			    </dl>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsmrtz.html">每日台帐报备</a>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsjszl.html">接收指令</a>
+			</li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+		  <legend>导入昨日台帐</legend>
+		</fieldset>
+		
+		<div class="layui-row">
+			<div class="layui-col-lg5">
+				<div class="layui-form demoTable">
+				  <div class="layui-form-item">
+				    <div class="layui-inline">
+				      <label class="layui-form-label">日期范围</label>
+				      <div class="layui-input-inline">
+				        <input type="text" class="layui-input" id="chooseTime" placeholder="请选择" autocomplete="off">
+				      </div>
+					  <button class="layui-btn" data-type="reload" id="chaxun">查询</button>
+				    </div>
+				  </div>
+				</div>
+			</div>
+			<div class="layui-col-lg7">
+				<div class="layui-form demoTable">
+				  <div class="layui-form demoTable">
+				    <div class="layui-form-item">
+				      <div class="layui-inline">
+				        <label class="layui-form-label">台帐日期</label>
+				        <div class="layui-input-inline">
+				          <input type="text" class="layui-input" id="pushTime" readonly="">
+				        </div>
+				  	  <button class="layui-btn" id="daoru">导入昨日台帐</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+			</div>
+			<div class="layui-col-lg12">
+				<table class="layui-hide" id="taizhang" lay-filter="taizhang"></table>
+			</div>
+		</div>
+	</div>
+	
+	
+<div id="footer"></div>
+    
+
+
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDetal">下载</a>
+</script>
+<script type="text/javascript">
+	// data里面非法处警
+	// http://localhost:8080/cj/queryIllegalCjxx
+	
+	$("#footer").load("public/footer.html");
+	var upload = layui.upload;
+	var laydate = layui.laydate;
+	var table = layui.table;
+	var element = layui.element;
+	//日期范围
+	  laydate.render({
+	    elem: '#chooseTime'
+	    ,range: true
+	  });
+	 
+	 
+	 function FunGetDateStr(p_count) {
+		 var dd = new Date();
+		 dd.setDate(dd.getDate() + p_count);//获取p_count天后的日期
+		 var y = dd.getFullYear();
+		 var m = dd.getMonth() + 1;//获取当前月份的日期
+		 if( m <10){
+			 m = '0'+m;
+		 }
+		 var d = dd.getDate();
+		 if( d <10){
+			 d = '0'+d;
+		 }
+		 return y + "-" + m + "-" + d;
+	 }
+	 
+	 // console.log(FunGetDateStr(0))
+	 
+	 function getNowFormatDate() {
+	        var date = new Date();
+	        var seperator1 = "-";
+	        var year = date.getFullYear();
+	        var month = date.getMonth() + 1;
+	        var strDate = date.getDate();
+	        if (month >= 1 && month <= 9) {
+	            month = "0" + month;
+	        }
+	        if (strDate >= 0 && strDate <= 9) {
+	            strDate = "0" + strDate;
+	        }
+	        var currentdate = year + seperator1 + month + seperator1 + strDate;
+	        return currentdate;
+	    }
+	
+	 $("#pushTime").val(FunGetDateStr(-1));
+	
+	
+	// 默认调取数据
+	getTabledata(baseUrl+"/mrtz/queryMrtzPage?deptId="+deptId+"&startDate=&endDate=");	
+	
+	 $('#chaxun').on('click', function(){
+		 var checkTime = $("#chooseTime").val();
+		 var startDate = checkTime.slice(0,10);
+		 var endDate = checkTime.slice(13);
+		 // 接口未填
+		 getTabledata(baseUrl+"/mrtz/queryMrtzPage?deptId="+deptId+"&startDate="+startDate+"&endDate="+endDate);
+			 
+	})
+	
+	
+	function getTabledata(url){
+		table.render({
+		  elem: '#taizhang'
+		  ,url: url
+		  ,cols: [[
+		    {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		     ,{field:'deptName',  title: '单位',align:"center",width:120}
+		     ,{field:'fileName',  title: '文件名称',align:"center"}
+		     ,{field:'tzDate',  title: '台帐时间',align:"center",width:120}
+		    ,{title:'操作', toolbar: '#barDemo',align:"center",width:100}
+		  ]]
+		  ,id: 'testReload'
+		  ,page: true
+		});
+	}
+	
+	//执行实例
+	var uploadInst = upload.render({
+	  elem: '#daoru' //绑定元素
+	  ,url: baseUrl +"/mrtz/addMrtz?tzDate=" + $("#pushTime").val()+"&deptId="+deptId//上传接口
+	  ,accept: 'file'
+	  ,headers:{token:token}
+	  ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+			// $("#pushTime")
+			if(getNowFormatDate()==$("#pushTime").val()){
+				alert("当前上传日期不匹配，页面即将刷新，请重新上传！");
+				window.history.go(0);
+			}else{
+				 layer.load();
+			}
+	    }
+	  ,done: function(res){
+	    //上传完毕回调
+		  if(res.code==0){
+		  	layer.msg("上传成功");
+			history.go(0)
+		  }else{
+			  layer.msg(res.msg);
+		  }
+		  layer.closeAll('loading');
+	  }
+	  ,error: function(res){
+	    //请求异常回调
+		  layer.closeAll('loading');
+	  }
+	});
+	
+	table.on('tool(taizhang)', function(obj){
+		// console.log(obj.data);
+		// path
+		if(obj.event=="checkDetal"){
+			// console.log(baseUrl+obj.data.path+obj.data.fileName)
+			window.location.href=baseUrl+"/mrtz/exportMrtz?id="+obj.data.id+"&token="+token;
+		}
+	})
+	
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

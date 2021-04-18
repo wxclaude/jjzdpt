@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.dm.dao.TzbwbzDao">
+
+    <select id="queryTzbwbzSta" resultType="java.util.Map">
+
+        select
+        d.dept_name as deptNme, d.dept_id as deptId, COUNT(t.id) AS 'total'
+        from
+        (   select * from tzbwbz
+            where 1=1
+            <if test="params.startDate != null and params.startDate != ''">
+                and zbdate &gt;= #{params.startDate}
+            </if>
+            <if test="params.endDate != null and params.endDate != ''">
+                and zbdate &lt;= #{params.endDate}
+            </if>
+        ) t
+        left join
+        (select * from tDept) d
+        on t.dept_id = d.dept_id
+        where 1=1
+        GROUP BY d.dept_name,d.dept_id
+        HAVING total >0
+        ORDER BY  LENGTH(d.dept_id),d.dept_id
+    </select>
+
+</mapper>

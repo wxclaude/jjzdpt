@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邗江分局视频监控运行质态平台</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			       <dd v-for="k in item.subModelList">
+			       	<a :href="k.url" v-html="k.modelName"></a>
+			       </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>打分记录</legend>
+	      </fieldset>  
+		<div class="layui-container">
+			<div class="layui-row">
+				<div class="layui-col-lg12">
+					<div class="layui-form">
+					  <div class="layui-inline">
+					        <label class="layui-form-label" style="width: auto;">请选日期</label>
+					        <div class="layui-input-inline">
+								<input type="text" class="layui-input" id="month" autocomplete="off">
+					        </div>
+					  </div>
+					  <div class="layui-inline">
+					        <label class="layui-form-label" style="width: auto;">打分规则</label>
+					        <div class="layui-input-inline">
+								
+								<select id="xzdfgz" lay-filter="xzdfgz" lay-search></select>
+								
+					        </div>
+					  </div>
+						  <div class="layui-inline">
+							  <button class="layui-btn" style="margin-left: 10px;" id="cx" lay-filter="cx">查询</button>
+						  </div>
+						  <div class="layui-inline">
+								<!-- <a href="dfItem.html" class="layui-btn" style="margin-left: 10px;" >新增打分项</a> -->
+								<!-- <a href="dfgzpz.html" class="layui-btn" style="margin-left: 10px;" >规则配置</a> -->
+								<button class="layui-btn layui-btn-danger" style="margin-left: 10px;" id="godf" >开始打分</button>
+						  </div>
+					</div>
+				</div>
+				<div class="layui-col-lg12">
+					<table id="dfDetail" lay-filter="dfDetail"></table>
+				</div>
+			</div>
+			
+			
+		</div>  
+		 
+	</div>
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script type="text/html" id="barDemo">
+	
+	{{#  if(d.state == 1){ }}
+		<a class="layui-btn  layui-btn-normal layui-btn-xs" lay-event="checkDetail">详情</a>
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delOne">删除</a>
+	{{#  } else { }}
+		<a class="layui-btn  layui-btn-normal layui-btn-xs" lay-event="checkDetail">详情</a>
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delOne">删除</a>
+		<a class="layui-btn layui-btn-xs" lay-event="xiugai">修改</a>
+	{{#  } }}
+	
+</script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	var laydate = layui.laydate;
+	// 监听提交事件
+	//年月范围选择
+	laydate.render({ 
+	  elem: '#month'
+	  ,type: 'month'
+	});
+	
+	//#分页查看打分记录
+	//GET {{baseUrl}}/df/queryDfRecord?page=1&limit=10&date=2020-04
+	 //第一个实例
+	  
+	  
+	  function tableDf(url){
+		  table.render({
+		    elem: '#dfDetail'
+		    ,url:  url//数据接口
+		    ,page: true //开启分页
+		    ,cols: [[ //表头
+		      {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		      ,{field: 'title', title: '标题',}
+		      ,{field: 'dfMonth', title: '打分月份',}
+		  	  ,{field: 'state', title: '状态',templet:function(d){if(d.state==1){return "已完成"}else if(d.state==0){return "未完成"}}}
+		  	  ,{field: 'createTime', title: '创建时间',}
+			  ,{title:'操作', toolbar: '#barDemo',align:"" ,}
+		    ]]
+			,id:"testReload"
+			,done:function(res){
+			}
+		  });
+	  }
+	  
+	  tableDf(baseUrl+'/df/queryDfRecord');
+	  
+	  // 按月份查询记录
+	  
+	  $("#cx").click(function(){
+		  var cxMonth = $("#month").val();
+		  tableDf(baseUrl+'/df/queryDfRecord?date='+cxMonth);
+	  })
+	
+	// #进入打分详情页，获取打分详情
+	// GET {{baseUrl}}/df/queryDfDetailByRecordId?recordId=7
+	
+	
+		$("#godf").click(function(){
+			if($("#month").val()==""){
+				layer.msg("请先选择打分日期！");
+				return false;
+			}else if($("#xzdfgz").val()==""){
+				layer.msg("请选择打分规则");
+				return false;
+			}
+			
+			// #根据id获取打分配置列表
+			// GET {{baseUrl}}/df/queryDfRuleById?id=1
+			// Accept: */*
+			// Cache-Control: no-cache
+			// ###
+			
+			var load1 = layer.load(1);
+			$.ajax({
+				url:baseUrl+"/df/generateDfRecordAndDetail",
+				data:JSON.stringify({"dfMonth":$("#month").val(),"ruleId": $("#xzdfgz").val()}),
+				type:"POST",
+				cache:false,
+				dataType : 'JSON',
+				contentType: "application/json",
+				beforeSend: function (XMLHttpRequest) {
+					XMLHttpRequest.setRequestHeader("token", token);
+				},
+				success:function(data) {
+					//取消遮罩
+					var recordId = data.data;
+					if(data.code==0){
+						layer.close(load1);
+						//console.log(data)
+						//layer.msg(data.msg);
+						window.location="ksdf.html?recordId="+recordId;
+					}else {
+						layer.close(load1);
+						layer.msg(data.msg);
+					}
+				},
+				error : function (res) {
+					layer.close(load1);
+				}
+			})
+		})
+	
+		table.on('tool(dfDetail)', function(obj){
+			var listData = obj.data;
+			if(obj.event=="xiugai"){
+				console.log(listData);
+				window.location="ksdf.html?recordId="+listData.id;
+			}else if(obj.event=="checkDetail"){
+				window.location="dfxq.html?recordId="+listData.id;
+			}else if(obj.event=="delOne"){
+				
+				 layer.confirm('真的删除么', function(index){
+				        layer.close(index);
+				        //向服务端发送删除指令
+						var load1 = layer.load(1);
+						$.ajax({
+							url:baseUrl+"/df/deleteDfRecordAndDetail?recordId="+listData.id,
+							//data:JSON.stringify({"id":listData.id}),
+							type:"GET",
+							cache:false,
+							dataType : 'JSON',
+							contentType: "application/json",
+							beforeSend: function (XMLHttpRequest) {
+								XMLHttpRequest.setRequestHeader("token", token);
+							},
+							success:function(data) {
+								//取消遮罩
+								//var recordId = data.data;
+								if(data.code==0){
+									layer.close(load1);
+									layer.msg("删除成功");
+									table.reload("testReload");
+									//window.location="ksdf.html?recordId="+recordId;
+								}else {
+									layer.close(load1);
+									layer.msg(data.msg);
+								}
+							},
+							error : function (res) {
+								layer.close(load1);
+							}
+						})
+				      });
+			}
+		})
+	
+	// /df/queryDfRule
+	// 动态添加选择框
+	
+	function SelectDw(selectID,url,value){
+		$.get(url,function(data){
+			if(selectID.indexOf("#")!=0){
+				selectID="#"+selectID;
+			}
+			$(selectID).empty();
+			$(selectID).append("<option value='' >请选择</option>");
+			for(var k of data.data){
+				$(selectID).append("<option value='"+k.id+"'>"+k.title+"</option>");
+			}
+			if(value!=undefined||value!=null||value!=""){
+				$(selectID).val(value);
+			}
+			layui.form.render();
+		})
+	}
+	SelectDw("xzdfgz",baseUrl+"/df/queryDfRule");
+	 // 动态添加选择框
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

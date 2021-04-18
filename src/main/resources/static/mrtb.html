@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-每日通报</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+		<div class="zhibantable" style="margin-top: 15px;margin-bottom: 150px;">
+			 <fieldset class="layui-elem-field layui-field-title" >
+				<legend>每日通报</legend>
+			  </fieldset> 
+			  <div class="layui-container">
+			  	<div class="layui-row">
+			  		
+			  		<div class="layui-col-lg12">
+			  			<div class="layui-form">
+			  			  <div class="layui-inline">
+			  			        <label class="layui-form-label" style="width: auto;">发布日期</label>
+			  			        <div class="layui-input-inline">
+									<input type="text" class="layui-input" id="fbrq" autocomplete="off" lay-verify="required">
+			  			        </div>
+								<!-- http://127.0.0.1:8080/mrtb/exportMrxj?fbrq=2020-04-27&tbrq=2020-04-10&qs=100 -->
+								
+								
+			  			      </div>
+			  			      <div class="layui-inline">
+			  			        <label class="layui-form-label" style="width: auto;">通报日期</label>
+			  			        <div class="layui-input-inline">
+			  						<input type="text" class="layui-input" id="tbrq" autocomplete="off" lay-verify="required">
+			  			        </div>
+			  			      </div>
+							  <div class="layui-inline">
+							    <label class="layui-form-label" style="width: auto;">期数</label>
+							    <div class="layui-input-inline">
+							  		<input type="number" class="layui-input" id="qs" autocomplete="off" lay-verify="required">
+							    </div>
+							  </div>
+			  				  <div class="layui-inline">
+			  					  <button class="layui-btn" style="margin-left: 10px;" id="sc" lay-filter="sc" lay-submit="" >生成每日通报</button>
+			  				  </div>
+			  			</div>
+			  		</div>
+			  	</div>
+			  </div>  			
+		</div>  
+		  
+	</div>
+	
+	
+	
+	
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	
+	var table = layui.table;
+	var laydate = layui.laydate;
+	  //执行一个laydate实例
+	  laydate.render({
+	    elem: '#tbrq' //指定元素
+	  });
+	  laydate.render({
+	    elem: '#fbrq' //指定元素
+	  });
+	form.on('submit(sc)', function(data){
+		// http://127.0.0.1:8080/mrtb/exportMrxj?fbrq=2020-04-27&tbrq=2020-04-10&qs=100
+		
+		window.location.href = baseUrl+"/mrtb/exportMrxj?fbrq="+$("#fbrq").val()+"&tbrq="+$("#tbrq").val()+"&qs="+$("#qs").val()+"&token="+token;
+		// window.location.href = baseUrl+"/mrtb/exportMrxj?fbrq=2020-04-27&tbrq=2020-04-10&qs=100"
+	})
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

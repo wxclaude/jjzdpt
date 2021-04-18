@@ -1,0 +1,56 @@
+POST http://localhost:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+> {% client.global.set("token", response.body.token); %}
+
+<> 2020-03-16T110533.200.json
+###
+
+#一键点调
+POST http://localhost:8080/yjdd/addYjdd
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"dmTime": "2020-08-26 16:20:00",
+"data":[
+  {"deptId":"D0209","zg":"7","yd":"1","xg":"1","gf":"1","bz": "bz"},
+  {"deptId":"D0086","zg":"7","yd":"1","xg":"1","gf":"1","bz": "bz"}
+]
+}
+###
+
+#一键点调列表
+GET http://localhost:8080/yjdd/queryYjddPage?page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+
+#根据点调时间查看
+GET http://localhost:8080/yjdd/queryYjddByDmTime?ddsj=2020-08-26 16:20:00
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+
+#修改一键点调
+POST http://localhost:8080/yjdd/upateYjddBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{
+  "dmTime": "2020-08-24 00:00:00",
+  "data":[
+    {"id":1,"deptId":"D0209","zg":"8","yd":"0","xg":"0","gf":"0","bz": "bz0"}
+  ]
+}
+###

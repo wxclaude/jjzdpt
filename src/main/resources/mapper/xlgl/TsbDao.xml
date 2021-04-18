@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.xlgl.dao.TsbDao">
+
+
+    <select id="querySbByPage" resultType="io.renren.modules.xlgl.entity.TsbEntity">
+        select sb.*, ifnull(t.dept_name,'') as dept_name
+        from tsb sb
+        left join tdept t on sb.sxdw = t.dept_id
+        where sb.isdel = 0
+        <if test="params.sbbh != null and params.sbbh != ''">
+          and sb.sbbh LIKE CONCAT(CONCAT('%', #{params.sbbh}),'%')
+        </if>
+        order by sb.sbbh
+    </select>
+
+    <select id="querySbByPageNew" resultType="java.util.Map">
+      select sb.* ,
+      d1.DictionaryText as sblx, d2.DictionaryText as jrlx , d3.DictionaryText as sbzt ,
+      d.DeptSName as deptName, p.PoliceName as syr
+      from tV_RWSB sb
+      left join tDictionary d1 on d1.DictionaryName = 'D_RWSBLX' and sb.RWSBLX = d1.Dictionary
+      left join tDictionary d2 on d2.DictionaryName = 'D_WLLX' and sb.DWID = d2.Dictionary
+      left join tDictionary d3 on d2.DictionaryName = 'D_SXJStatus' and sb.BZs2 = d3.Dictionary
+      left join tDept d on d.DeptId = sb.BZs5
+      left join tPolice p on p.PoliceId = sb.BZs3
+      where 1=1
+      <if test="params.deptId != null and params.deptId !=''">
+        and sb.BZs5 = #{params.deptId}
+      </if>
+        <if test="params.sbbh != null and params.sbbh != ''">
+            and sb.V_RWSBId LIKE '%'+#{params.sbbh}+'%'
+        </if>
+        order by sb.V_RWSBId desc
+
+    </select>
+
+    <select id="querySbIdAll" resultType="java.lang.String">
+        select sb.V_RWSBId as sbId
+        from tV_RWSB sb
+        where 1=1
+        <if test="params.deptId != null and params.deptId !=''">
+            and sb.BZs5 = #{params.deptId}
+        </if>
+        <if test="params.sbbh != null and params.sbbh != ''">
+            and sb.V_RWSBId LIKE '%'+#{params.sbbh}+'%'
+        </if>
+        order by sb.V_RWSBId desc
+
+    </select>
+
+    <select id="querySbByPageST" resultType="java.util.Map">
+        select sb.*,
+        (select isnull(count(*),0) from tV_RWDK where sb_id = sb.设备编号 and isdel=0) as 端口数,
+        (select isnull(count(*),0) from tV_RWXL where (sl_sb_id = sb.设备编号 or xl_sb_id = sb.设备编号) and isdel = 0) as 线路数
+        from tV_RWSB_DYBQ sb
+        where 1=1
+        <if test="params.gldw != null and params.gldw !=''">
+            and sb.管理单位 LIKE '%'+ #{params.gldw}+'%'
+        </if>
+        <if test="params.sblx != null and params.sblx != ''">
+            and sb.设备类型 LIKE '%'+ #{params.sblx}+'%'
+        </if>
+        <if test="params.wllx != null and params.wllx != ''">
+            and sb.网络类型 LIKE '%'+ #{params.wllx}+'%'
+        </if>
+        <if test="params.sbbh != null and params.sbbh != ''">
+            and  (sb.设备编号 LIKE '%'+#{params.sbbh}+'%' or sb.IP地址 LIKE '%'+#{params.sbbh}+'%' or sb.使用人 LIKE '%'+#{params.sbbh}+'%')
+        </if>
+
+        <if test="params.deptId != null and params.deptId !=''">
+            and sb.BZs5 = #{params.deptId}
+        </if>
+        <if test="params.sbzt != null and params.sbzt !=''">
+            and sb.设备状态 = #{params.sbzt}
+        </if>
+        order by sb.设备编号 desc
+    </select>
+
+    <select id="querySbSearchCondition" resultType="java.util.Map">
+      select
+        <if test="type == 0">
+            distinct sb.管理单位 as value
+        </if>
+        <if test="type == 1">
+            distinct sb.设备类型 as value
+        </if>
+        <if test="type == 2">
+            distinct sb.网络类型 as value
+        </if>
+        <if test="type == 3">
+            distinct sb.设备状态 as value
+        </if>
+      from tV_RWSB_DYBQ sb
+        <if test="type == 0">
+            where sb.管理单位 is not null
+        </if>
+        <if test="type == 1">
+            where sb.设备类型 is not null
+        </if>
+        <if test="type == 2">
+            where sb.网络类型 is not null
+        </if>
+        <if test="type == 3">
+            where sb.设备状态 is not null
+        </if>
+    </select>
+
+    <select id="querySbDkDetailBySbId" resultType="java.util.Map">
+       SELECT DISTINCT a.sb_id as 设备编号,a.dklx,a.bkh,count(a.sb_id) as 端数量,MIN(dkh)  as 起始端口号 ,
+        b.设备类型,b.品牌型号,b.所在位置
+        from tV_RWDK a LEFT JOIN tV_RWSB_DYBQ b ON a.sb_id=b.设备编号
+        where b.设备编号=#{params.sbbh} and isdel=0
+        group by sb_id,dklx,bkh,b.设备类型,b.品牌型号,b.所在位置
+        order by sb_id,bkh
+
+    </select>
+    <select id="getSbById" resultType="java.util.Map">
+        select top 1 * from tV_RWSB_DYBQ where  设备编号 = #{sbId}
+    </select>
+
+    <select id="querySbCount" resultType="java.util.Map">
+      select count(sb.设备编号) as total,
+        SUM(CASE 设备状态 WHEN '正常' THEN 1 ELSE 0 END) AS 'total1',
+        SUM(CASE 设备状态 WHEN '报废' THEN 1 ELSE 0 END) AS 'total2',
+        SUM(CASE 设备状态 WHEN '维修中' THEN 1 ELSE 0 END) AS 'total3',
+        SUM(CASE 设备状态 WHEN '拟建设（规划中）' THEN 1 ELSE 0 END) AS 'total4'
+        from tV_RWSB_DYBQ sb
+        where 1=1
+      <if test="params.deptId != null and params.deptId !=''">
+        and sb.BZs5 = #{params.deptId}
+      </if>
+    </select>
+
+
+</mapper>

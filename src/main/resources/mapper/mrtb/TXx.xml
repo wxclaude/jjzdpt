@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--suppress MybatisXMapperXmlInspection -->
+<mapper namespace="io.renren.modules.mrtb.dao.TXxDao">
+
+<!--  INSERT INTO [T_XX] ([id], [lmid], [lbid], [fbdw], [bt], [nr], [keys], [fbrq], [hits], [plsx], [Uid], [bmid], [PicUrl], [fujian], [bmi], [zhyw], [canComment], [reqAccept], [isPicNews], [isImport], [linkUrl], [jrdd], [tcxx], [dtime], [tcw], [tch], [tcl], [tct], [canps], [btcolor], [sffb], [sfbtj], [stcy], [ydjw]) -->
+<!--  VALUES ('93632', '57', '225', N',43,', N'指挥中心每日情况通报(第314期)', N'', N'', '2020-11-12 08:24:12.000', '54', '999', N'zhzx', '43', N'', N'', N'0', N'0', N'0', N',,', N'0', N'0', N'', '0', '0         ', NULL, '          ', '          ', '          ', '          ', N'0', '          ', N'1', N'1', N'0', N'0');-->
+
+    <insert id="saveCC"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+      INSERT INTO T_XX (lmid, lbid, fbdw, bt, nr, keys, fbrq, hits, 
+                        plsx, Uid, bmid, PicUrl, fujian, bmi, zhyw, canComment, 
+                        reqAccept, isPicNews, isImport, linkUrl, jrdd, tcxx, dtime, 
+                        tcw, tch, tcl, tct, canps, btcolor, sffb, sfbtj, stcy, ydjw)
+      values(#{lmid}, #{lbid}, #{fbdw}, #{bt}, #{nr}, #{keys}, #{fbrq}, #{hits},
+              #{plsx}, #{Uid}, #{bmid}, #{PicUrl}, #{fujian}, #{bmi}, #{zhyw}, #{canComment},
+              #{reqAccept}, #{isPicNews}, #{isImport}, #{linkUrl}, #{jrdd}, #{tcxx}, #{dtime},
+              #{tcw}, #{tch}, #{tcl}, #{tct}, #{canps}, #{btcolor}, #{sffb}, #{sfbtj}, #{stcy}, #{ydjw}
+              )
+    </insert>
+
+</mapper>
+

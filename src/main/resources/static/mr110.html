@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-每日110</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-nav-child{
+				z-index: 999;
+		}
+		.layui-form-label{
+			width: 58px;
+		}
+	</style>
+</head>
+<body>
+	
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+    <div class="zhibantable" style="margin-bottom: 150px;">
+		  <div class="layui-tab">
+		    <ul class="layui-tab-title">
+		      <li class="layui-this">每日通报110</li>
+		      <li>号码管理</li>
+			  <li>短信发送记录</li>
+		    </ul>
+		    <div class="layui-tab-content">
+		      <div class="layui-tab-item layui-show">
+				  <div class="layui-container">
+				  	<div class="layui-row">
+				  		<div class="layui-col-lg12">
+				  			<div class="demoTable">
+				  			    请选择新增通报日期：
+				  			    <div class="layui-inline">
+				  			      <input class="layui-input"  autocomplete="off" id="newTime">
+				  			    </div>
+				  			    <button class="layui-btn" id="sctb">生成通报</button>
+				  			  </div>
+				  			<table class="layui-hide" id="mrtbList" lay-filter="demo"></table>
+				  			
+				  		</div>
+				  	</div>
+				  	
+				  </div>
+			  </div>
+		      <div class="layui-tab-item">
+				  
+				 <div class="layui-container">
+				 	<div class="layui-row">
+				 		<div class="layui-col-lg12">
+				 			    手机号/姓名：
+				 			    <div class="layui-inline">
+				 			      <input class="layui-input"  autocomplete="off" id="telorname">
+				 			    </div>
+				 			    <button class="layui-btn" id="hmcx">查询</button>
+								<button class="layui-btn" id="xzdrmb">下载导入模版</button>
+								<button class="layui-btn" id="drhm">导入号码</button>
+				 			<table id="hmgl" lay-filter="hmgl" class="layui-table"></table>
+				 		</div>
+				 	</div>
+				 </div>
+				  
+			  </div>
+			  <div class="layui-tab-item">
+			  				  
+					<table id="fsjl" lay-filter="fsjl" class="layui-table"></table>
+			  				  
+			  </div>
+		    </div>
+		  </div>
+		  
+		  
+		  
+			
+		  
+		  
+    </div>
+	
+	
+   
+	
+	
+
+    <div id="footer"></div>
+
+
+	<!-- 发送短信弹窗 -->
+	<div class="layui-form" lay-filter="msgbox" style="display: none;padding: 10px;" id="msgbox">
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">短信内容</label>
+		    <div class="layui-input-block">
+		      <textarea id="fsdxnr" placeholder="请输入内容" class="layui-textarea" style="height: 125px;"></textarea>
+		    </div>
+			<!-- 短信展示 -->
+			<label class="layui-form-label">发送名单</label>
+			<div class="layui-input-block">
+				<table class="layui-hide" id="fsry" lay-filter="fsry"></table>
+			</div>
+		  </div>
+	</div>
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+	<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="xiugai">修改</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="fsdx">发送短信</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="fbtb">发布通报</a>
+	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="del">删除</a>
+	<!-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy">复制地址</a> -->
+</script>
+<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="delAll">删除选中</button>
+  </div>
+</script>
+
+<script type="text/html" id="telbar">
+	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="teldel">删除</a>
+</script>
+<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	
+	
+	
+	$("#footer").load("public/footer.html");
+	
+	var upload = layui.upload;
+	var laydate = layui.laydate;
+	var table = layui.table;
+	
+	// 生成每日通报时间选择
+	 laydate.render({
+	    elem: '#newTime'
+	  });
+	  
+	  $("#sctb").click(function(){
+		  if($("#newTime").val()==""){
+			  layer.msg("生成通报时间不能为空！");
+		  }else{
+			  $.get(baseUrl+"/mrtb/addMrtb?tbrq="+$("#newTime").val()+"&token="+token,function(res){
+				  //console.log(res)
+				  if(res.code==0){
+					  layer.msg("生成成功！");
+					  table.reload("testReload");
+					  window.location = "mr110xiugai.html?id="+res.data;
+				  }else{
+					  layer.msg(res.msg);
+				  }
+			  })
+		  }
+		  
+	  })
+	
+	
+	
+	function getTabledata(url){
+		table.render({
+		  elem: '#mrtbList'
+		  ,url: url
+		  ,page:true
+		  
+		  ,cols: [[
+		     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'', title: '通报日期',  align:"center",templet: function(d){ return (d.tbrq+"每日通报");}}
+			 ,{field:'', title: '是否发送短信',  align:"center",templet: function(d){
+				 if(d.msgCount>0){
+					 return "已发送"
+				 }else {
+					 return "未发送"
+				 }
+			 },width:180,}
+			 ,{field:'', title: '是否发布通报',  align:"center",templet: function(d){
+				 if(d.published>0){
+					 return "已发布"
+				 }else {
+					 return "未发布"
+				 }
+			 },width:180,}
+			,{title:'操作', toolbar: '#barDemo',align:"center"}
+		  ]]
+		  ,id:"testReload"
+		});
+	}
+	
+	
+	// #分页获取每日110数据
+	// GET http://localhost:8080/mrtb/queryPage
+	getTabledata(baseUrl+"/mrtb/queryPage");
+	
+	
+	
+	
+	table.on('tool(demo)', function(obj){
+		var data = obj.data;
+		if(obj.event=="detail"){
+			// window.location="mr110detail.html?id="+data.id;
+			window.open("mr110detail.html?id="+data.id); 
+		}else if(obj.event=="xiugai"){
+			window.location="mr110xiugai.html?id="+data.id;
+		}else if(obj.event=="del"){
+			// alert(obj.data.id);
+			layer.confirm('真的删除么', function(index){
+			   layer.close(index);
+			   //向服务端发送删除指令
+				var load1 = layer.load(1);
+				$.get(baseUrl+"/mrtb/deleteMrtb?id="+obj.data.id+"&token="+token,function(res){
+					  if(res.code==0){
+						  layer.close(load1);
+						  layer.msg("删除成功！");
+						  table.reload("testReload");
+					  }else{
+						  layer.close(load1);
+						  layer.msg(res.msg);
+					  }
+				})
+			  });
+			
+			
+		}else if(obj.event=="fsdx"){
+			console.log(data);
+			$("#fsdxnr").val(data.msg);
+			layer.open({
+			 type:1,
+			 area:['670px','600px'],
+			  title: '提示',
+			  content: $("#msgbox"),
+			  shade: 0,
+			  btn: ['提交', '取消']
+			  ,btn1: function(index, layero){
+					var load1 = layer.load(1, {shade: [0.8, '#393D49'], time: 0});
+					$.ajax({
+					    url:baseUrl + "/mrtb/sentMrtb",
+					    type:"post",
+					    cache:false,
+						data:JSON.stringify({
+							 "mrtbId": data.id, 
+							 "msg":$("#fsdxnr").val(),
+						}),
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+						   XMLHttpRequest.setRequestHeader("token", token);
+						},
+					    success:function(data) {
+							if(data.code==0){
+								layer.closeAll();
+								 $("#msgbox").hide();
+								layer.msg("发送成功");
+							}else {
+								layer.closeAll();
+								 $("#msgbox").hide();
+								layer.msg(data.msg);
+							}
+					    },
+					    error : function (res) {
+							layer.closeAll();
+							 $("#msgbox").hide();
+					        layer.msg('提交失败');
+					    }
+					})
+			  },
+				  btn2: function(index, layero){
+						$("#msgbox").hide();
+						layer.closeAll();
+				  },
+				cancel: function(layero,index){ 
+					 $("#msgbox").hide();
+						layer.closeAll();
+				  }
+			});
+		}else if(obj.event === "fbtb"){
+			window.open("fbmr110.html?id="+data.id); 
+			// layer.confirm('确认发布吗？', function(index){
+			//    layer.close(index);
+			// 	var load1 = layer.load(1);
+			// 	$.get(baseUrl+"/mrtb/deleteMrtb?id="+obj.data.id+"&token="+token,function(res){
+			// 		  if(res.code==0){
+			// 			  layer.close(load1);
+			// 			  table.reload("testReload");
+			// 		  }else{
+			// 			  layer.close(load1);
+			// 			  layer.msg(res.msg);
+			// 		  }
+			// 	})
+			//   });
+		}
+	})
+	
+	
+   // 号码管理
+   // #分页获取每日110电话数据
+   // GET http://localhost:8080/mrtb/queryMrtbDhPage?page=1&limit=10
+	telgl(baseUrl+"/mrtb/queryMrtbDhPage");
+	
+	function telgl(url){
+		table.render({
+		  elem: '#hmgl'
+		  ,url: url
+		  ,page:true
+		  ,toolbar: '#toolbarDemo'
+		  ,cols: [[
+			  {type:'checkbox'}
+		    ,{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'name', title: '姓名', align:"center",width:214}
+			,{field:'phone', title: '号码', align:"center",width:215}
+			,{field:'dept', title: '部门', align:"center",width:214}
+			,{field:'role', title: '职位', align:"center",width:214}
+			,{title:'操作', toolbar: '#telbar',align:"center",width:167}
+		  ]],
+		  id:"demoReload"
+		});
+	}
+	
+	// teldel
+	table.on('tool(hmgl)', function(obj){
+		var data = obj.data;
+		if(obj.event=="teldel"){
+			
+			layer.confirm('确认删除吗？', function(index){
+				// /mrtb/deleteMrtbDh?id=2
+			       layer.close(index);
+					var load1 = layer.load(1);
+					$.ajax({
+						url:baseUrl+"/mrtb/deleteMrtbDh?id="+data.id,
+						type:"GET",
+						cache:false,
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+							XMLHttpRequest.setRequestHeader("token",token);
+						},
+						success:function(data) {
+							//取消遮罩
+							if(data.code==0){
+								layer.close(load1);
+								layer.msg("删除成功");
+								table.reload("demoReload");
+							}else {
+								layer.close(load1);
+								layer.msg(data.msg);
+							}
+						},
+						error : function (res) {
+							layer.close(load1);
+						}
+					})
+			     });
+		}
+	});
+	
+	
+	table.on('toolbar(hmgl)', function(obj){
+	  var checkStatus = table.checkStatus(obj.config.id);
+	  switch(obj.event){
+	    case 'delAll':
+	    var data = checkStatus.data;
+		//添加id
+		console.log(data);
+		$.ajax({
+			url:baseUrl+"/mrtb/deleteAllMrtbDh",
+			type:"POST",
+			cache:false,
+			dataType : 'JSON',
+			data:JSON.stringify(data),
+			contentType: "application/json",
+			beforeSend: function (XMLHttpRequest) {
+			   XMLHttpRequest.setRequestHeader("token", token);
+			},
+			success:function(data) {
+				if(data.code==0){
+					layer.msg("删除成功");
+					table.reload('demoReload');
+				}else {
+					layer.msg(data.msg);
+				}
+			},
+			error : function (res) {
+				layer.msg('删除失败');
+			}
+		})
+				
+				
+	    break;
+	    
+	  };
+	});
+	
+	
+	
+	$("#hmcx").click(function(){
+		 var telorname = $("#telorname").val();	  
+		 telgl(baseUrl+"/mrtb/queryMrtbDhPage?phone="+telorname);
+	})
+	
+	$("#xzdrmb").click(function(){
+		 window.location=baseUrl+"/mrtb/downloadMrtbDh?token="+token
+	})
+	
+	var upload = layui.upload;
+	var loadIndex;
+	var uploadInst = upload.render({
+	  elem: '#drhm' //绑定元素
+	  ,url: baseUrl +'/mrtb/uploadMrtbDh'
+	  ,accept: 'file'
+	  ,headers:{token:token}
+	  ,before: function(obj){//参数
+	  　　loadIndex = layer.load(1);
+	   } 
+	  ,done: function(res){
+		  if(res.code==0){
+			layer.close(loadIndex); 
+		  	layer.msg("上传成功");
+			table.reload("demoReload");
+			// history.go(0);
+		  }else{
+			  layer.close(loadIndex); 
+			  layer.msg(res.msg);
+		  }
+	  }
+	  ,error: function(res){
+		  layer.close(loadIndex); 
+		  layer.msg(res.msg);
+	  }
+	});
+	
+	table.render({
+	  elem: '#fsry'
+	  ,url: baseUrl+"/mrtb/queryMrtbDhPage"
+	  ,page:true
+	  ,cols: [[
+	     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+	    ,{field:'name', title: '姓名', align:"center",width:118}
+		,{field:'phone', title: '号码', align:"center",width:118}
+		,{field:'dept', title: '部门', align:"center",width:118}
+		,{field:'role', title: '职位', align:"center",width:120}
+	  ]]
+	});
+	
+	
+	// 发送记录
+		table.render({
+		  elem: '#fsjl'
+		  ,url: baseUrl + "/mrtb/queryMrtbHisPage"
+		  ,page:true
+		  ,cols: [[
+		     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'tbrq', title: '通报日期', align:"center",width:120}
+			,{field:'createBy', title: '发送人', align:"center",width:90}
+			,{field:'content', title: '短信内容', align:"center"}
+			,{field:'phones', title: '发送号码', align:"center"}
+		  ]]
+		});
+	
+	
+</script>
+
+</body>
+</html>

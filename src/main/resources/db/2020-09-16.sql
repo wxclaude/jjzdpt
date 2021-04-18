@@ -1,0 +1,1 @@
+ALTER TABLE `zh_xscz` ADD COLUMN `zhzxqssj` datetime AFTER `qssj`;

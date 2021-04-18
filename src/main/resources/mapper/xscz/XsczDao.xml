@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.xscz.dao.ZhXsczDao">
+
+    <select id="queryZhXsczPage" resultType="io.renren.modules.xscz.entity.ZhXsczEntity">
+
+        select z.*, t.short_dept_name as deptName
+        from zh_xscz z
+        left join tdept t on z.dept_id = t.dept_id
+        where z.isdel = 0
+        and z.type = #{params.type}
+        <if test="params.deptId !=null and params.deptId !='' ">
+            and z.dept_id = #{params.deptId}
+        </if>
+        <if test="params.startDate != null and params.startDate != ''">
+            and date_format( z.xfsj, '%Y-%m-%d' ) &gt;= #{params.startDate}
+        </if>
+        <if test="params.endDate != null and params.endDate != ''">
+            and date_format( z.xfsj, '%Y-%m-%d' ) &lt;= #{params.endDate}
+        </if>
+        <if test="params.czzt !=null and params.czzt !='' ">
+            and z.czzt = #{params.czzt}
+        </if>
+        order by z.create_time desc
+
+    </select>
+
+
+    <select id="queryZhXsczStatDetail" resultType="java.util.Map">
+        select * from zh_xscz
+        where isdel = 0 and type = #{params.type}
+        <if test="params.deptId != null and params.deptId != '' and params.deptId != 'undefined' ">
+            and dept_id = #{params.deptId}
+        </if>
+
+        <if test="params.startDate != null and params.startDate != ''">
+            and date_format( xfsj, '%Y-%m-%d' ) &gt;= #{params.startDate}
+        </if>
+        <if test="params.endDate != null and params.endDate != ''">
+            and date_format( xfsj, '%Y-%m-%d' ) &lt;= #{params.endDate}
+        </if>
+
+        <if test="params.kind == 1">
+            and czzt in (1,3) and fksj &lt;= czsj
+
+        </if>
+
+        <if test="params.kind == 2">
+            and czzt in (1,3) and fksj &gt; czsj
+        </if>
+
+        <if test="params.kind == 3">
+            and czzt not in (1,3)
+        </if>
+
+        order by xfsj desc
+    </select>
+
+    <select id="queryZhXsczStat" resultType="java.util.Map">
+
+        select ifnull(temp.total,0) as total,
+        ifnull(temp.zcTotal,0) as zcTotal,
+        ifnull(temp.csTotal,0) as csTotal,
+        ifnull(temp.wfkTotal,0) as wfkTotal,
+        t.dept_id, t.dept_name as deptName
+        from
+            (
+                    select * from tdept
+                    where 1=1
+                    and dept_id in (
+                    'D0059','D0068','D0078','D0086','D0245','D0095','D00003','D0181','D0102','D0112',
+                    'D0122','D0173','D0191','D0209','D0220','D0238','D0032')
+                    <if test="params.deptId != null and params.deptId != ''">
+                        and dept_id = #{params.deptId}
+                    </if>
+                    ) t
+            left join
+                (
+                    select count(*) as total,
+                    SUM(CASE WHEN czzt in (1,3) and fksj &gt; czsj THEN 1 ELSE 0 END) AS 'csTotal',
+                    SUM(CASE WHEN czzt in (1,3) and fksj &lt;= czsj THEN 1 ELSE 0 END) AS 'zcTotal',
+                    SUM(CASE WHEN czzt not in (1,3) THEN 1 ELSE 0 END) AS 'wfkTotal',
+                    dept_id
+                    from zh_xscz
+                    where isdel = 0 and type = #{params.type}
+                    <if test="params.startDate != null and params.startDate != ''">
+                        and date_format( xfsj, '%Y-%m-%d' ) &gt;= #{params.startDate}
+                    </if>
+                    <if test="params.endDate != null and params.endDate != ''">
+                        and date_format( xfsj, '%Y-%m-%d' ) &lt;= #{params.endDate}
+                    </if>
+                    <if test="params.deptId != null and params.deptId != ''">
+                        and dept_id = #{params.deptId}
+                    </if>
+                    group by dept_id
+                ) temp on temp.dept_id = t.dept_id
+
+                order by LENGTH(t.dept_id),t.dept_id;
+
+    </select>
+
+</mapper>
+

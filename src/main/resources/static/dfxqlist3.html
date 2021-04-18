@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-警情质量考核</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		#qbxx th,#qbxx td{
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<div  style="margin-bottom: 150px;padding: 0 10px;" >
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>打分详情</legend>
+	      </fieldset>
+		<div id="app">
+			<table class="layui-table" id="qbxx">
+			  <thead>
+				<tr>
+				  <th colspan="12" style="font-size: 18px;">警情质量考核<small>（绩效分值15分）</small></th>
+				</tr> 
+			  </thead>
+			  <tbody>
+				<tr>
+				  <td rowspan="2" width="45">单位</td>
+				  <td rowspan="2">分局抽查总数</td>
+				  <td colspan="4">分局通报</td>
+				  <td rowspan="2">超时登记、超时审批数</td>
+				  <td rowspan="2" width="45">1分/起</td>
+				  <td colspan="2">省厅（市局）通报</td>
+				  <td rowspan="2">合计扣分</td>
+				  <td rowspan="2">总分（满分15分）</td>
+				</tr>
+				<tr>
+					
+					<td>24小时内整改数</td>
+					<td>已整改数据扣分（已整改数/抽查数*15）</td>
+					<td>24小时内未整改数</td>
+					<td>未整改数据扣分（未整改数/抽查数*15*2）</td>
+					
+					<td>市局通报数</td>
+					<td width="45">2分/起</td>
+					
+				</tr>
+				<tr v-for="k in info">
+					<td>{{k.dept}}</td>
+					<td>{{k.s10}}</td>
+					
+					<td>{{k.s11}}</td>
+					<td>{{k.s12}}</td>
+					<td>{{k.s1}}</td>
+					<td>{{k.s13}}</td>
+					
+					<td>{{k.s14}}</td>
+					<td>{{k.s15}}</td>
+					
+					<td>{{k.s2}}</td>
+					<td>{{k.s16}}</td>
+					<td>{{k.s17}}</td>
+					<td>{{k.s3}}</td>
+				</tr>
+				
+			  </tbody>
+			</table>
+		</div>
+	</div>
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="axios.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	// 获取浏览器字符串
+	 function getQueryStringRegExp(name)
+	{
+	 var reg = new RegExp("(^|\\?|&)"+ name +"=([^&]*)(\\s|&|$)", "i"); 
+	 if (reg.test(location.href)) return unescape(RegExp.$2.replace(/\+/g, " ")); return "";
+	}
+	
+	
+	// #根据年月和category/type查看该category打分项所有单位打分详情
+	// #type 1为派出所 2为机关
+	// #0情报信息 1数据赋能 2综合指挥 3警情质量考核
+	// GET {{baseUrl}}/df/queryDfDetailByDfMonthAndTypeAndCategory?dfMonth=2020-06&type=1&category=2
+	// Accept: */*
+	// Cache-Control: no-cache
+	// ###
+	
+	
+	
+	var dfMonth = getQueryStringRegExp("dfMonth");
+	var type = getQueryStringRegExp("type");
+	var category = getQueryStringRegExp("category");
+	
+	$.get(baseUrl+"/df/queryDfDetailByDfMonthAndTypeAndCategory?dfMonth="+dfMonth+"&type=1&category="+category,function(res){
+		var vm = new Vue({
+			el:"#app",
+			data:{
+				info: res.data,
+			},
+		})
+		
+	}) 
+	
+	
+	
+	
+	
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

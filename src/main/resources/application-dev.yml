@@ -1,0 +1,123 @@
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        druid:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+#            url: jdbc:mysql://192.168.32.4:3306/renrenfast?useUnicode=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+            url: jdbc:mysql://localhost:3306/renrenfast?useUnicode=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+            username: root
+            password: password
+            initial-size: 2
+            max-active: 10
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            #Oracle需要打开注释
+            #validation-query: SELECT 1 FROM DUAL
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+##多数据源的配置
+dynamic:
+  datasource:
+#    slave1:
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      url: jdbc:mysql://localhost:3306/renren?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+#      username: root
+#      password: password
+    slave2:
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://127.0.0.1:1433;DatabaseName=dm
+#      url: jdbc:sqlserver://192.168.32.4:1433;DatabaseName=dm
+      username: sa
+      password: Cc_121100
+#    slave3:
+#      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      url: jdbc:sqlserver://localhost:1433;DatabaseName=xx
+#      username: sa
+#      password: Cc_121100
+#    slave2:
+#      driver-class-name: org.postgresql.Driver
+#      url: jdbc:postgresql://localhost:5432/renren_security
+#      username: renren
+#      password: 123456
+
+renren:
+    model:
+        # 综合指挥父菜单
+        ZHZH_ID: 1000083
+        DLRZ_NAME: 登录日志
+        MRTZ_NAME: 每日台账
+        XSCZ_NAME: 线索处置
+        NAME1: ----值班点名
+        NAME1_1: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点名'
+        NAME1_2: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;查看'
+        NAME1_3: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;统计'
+        NAME2: ----应急点名
+        NAME2_1: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点名'
+        NAME2_2: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;查看'
+        NAME2_3: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;统计'
+        NAME3: ----会议点名
+        NAME3_1: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点名'
+        NAME3_2: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;统计'
+        FILE_PATH_MRTZ: C:\dahua\zxpt-upload\mrtz\
+        FILE_PATH_XSCZ: C:\dahua\zxpt-upload\xscz\
+
+#        FILE_PATH_MRTZ: /Users/tomchen/zxpt-upload/mrtz/
+#        FILE_PATH_XSCZ: /Users/tomchen/zxpt-upload/xscz/
+    df:
+        SJFN: 1
+        ZHZH: 1
+        JQZLKH: 1
+        QBXX: 0.55
+        KJXX: 1
+        QBXS: 1
+        ZDMB: 1
+    mrtb:
+        ACCOUNT: hjzhzx
+        PASSWORD: 123456
+        VIEWSTATE: /wEPDwUKMTM2NDY5Njk5OGRkbwuJIcwqQ8m4iuFeakADvT7HWuhRPYDTYOgkHfBeWd8=
+        EVENTVALIDATION: /wEWBgKO/7DuDwK2p6qQBAKbntHjAwKUj8fhDAK1qbSRCwKC3IeGDESPeBWwABtK7Fw8+2JDdk0IKF0HXxMQQbeHkeOozgHr
+
+    myh:
+        #        upload_dir: /Users/tomchen/Downloads
+        upload_dir: D:\tools\apache-tomcat-renren-fast\webapps\uploadfile
+        file_prefix: /uploadfile/
+        #        dwNumMap: {hs:27,sjy:11,xs:10,nsq:10,ch:8,xh:7,jw:6,jy:10,zx:11,hss:6,fx:5,ym:8,gq:4,gd:4,gz:4,ys:4,xtj:10}
+        #        dwNumMap: {hs:'189',sjy:'77',xs:'70',nsq:'70',ch:'56',xh:'49',jw:'42',jy:'70',zx:'77',hss:'42',fx:'35',ym:'56',gq:'28',gd:'28',gz:'28',ys:'28',xtj:'70',total:'145'}
+        dwNumMap:
+            hs: 27
+            sjy: 11
+            xs: 10
+            nsq: 10
+            ch: 8
+            xh: 7
+            jw: 6
+            jy: 10
+            zx: 11
+            hss: 6
+            fx: 5
+            ym: 8
+            gq: 4
+            gz: 4
+            ys: 4
+            gd: 4
+            xtj: 10
+            total: 145

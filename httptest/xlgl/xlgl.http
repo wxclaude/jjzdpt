@@ -1,0 +1,271 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "jw",   "password": "111" }
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+#查询设备
+GET {{baseUrl}}/xlgl/querySbByPage?page=1&limit=10&sbbh=1
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#查询设备
+#deptId 在ROLE0026时不传，其它传，登录时已经保存
+GET {{baseUrl}}/xlgl/querySbByPageNew?page=1&limit=10&sbbh=1&deptId=
+Accept: */*
+Cache-Control: no-cache
+###
+
+#查询设备 视图
+#查询条件 管理单位:gldw  设备类型:sblx 网络类型:wllx 设备编号/IP地址:sbbh
+GET {{baseUrl}}/xlgl/querySbByPageST?page=1&limit=10&sbbh=V202001070003
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据设备编号分页查询设备信息 的select查询条件
+//0单位 1设备类型  2网络类型
+GET {{baseUrl}}/xlgl/querySbSearchCondition?type=2
+Accept: */*
+Cache-Control: no-cache
+###
+
+#新增设备
+POST {{baseUrl}}/xlgl/addSb
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{
+  "sbbh":"cc-1",
+  "sblx":"交换机",
+  "jrlx":"公安网",
+  "sxdw":"指挥中心",
+  "szwz":"1号机房",
+  "jgh":"22",
+  "sbghs":"222",
+  "wbdh":"333",
+  "glzzr":"44",
+  "pzwjdz":"ftp://127.0.0.1"
+
+}
+###
+
+#修改设备
+POST {{baseUrl}}/xlgl/updateSb
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{
+  "id": 23,
+  "sbbh":"100044",
+  "sblx":"交换机",
+  "jrlx":"公安网",
+  "sxdw":"D0050",
+  "szwz":"1号机房",
+  "jgh":"22",
+  "sbghs":"222",
+  "wbdh":"333",
+  "glzzr":"44",
+  "pzwjdz":"ftp://127.0.0.1"
+
+}
+###
+
+#根据id批量删除设备
+POST {{baseUrl}}/xlgl/deleteSbBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[
+  {"id":"23"}
+]
+###
+
+#根据设备编号获取唯一设备
+GET {{baseUrl}}/xlgl/querySbBySbbh?sbbh=cc1
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#查询端口
+GET {{baseUrl}}/xlgl/queryDkByPage?page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据设备Id获取所有端口
+GET {{baseUrl}}/xlgl/queryDkBySbId?sbId=V202001060001
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据设备Id获取所有端口详情
+GET {{baseUrl}}/xlgl/queryDkDetailBySbIdPage?page=1&limit=10&sbId=V202001060001
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据设备Id获取所有板卡号
+GET {{baseUrl}}/xlgl/queryDkBkhBySbId?sbId=V202001060001
+Accept: */*
+Cache-Control: no-cache
+###
+
+#设备新增页面  根据设备编号 查询设备已经端口信息
+GET {{baseUrl}}/xlgl/querySbDkDetailBySbId?sbbh=V202001070003
+Accept: */*
+Cache-Control: no-cache
+###
+
+#新增端口批量
+POST {{baseUrl}}/xlgl/addDkBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[
+{
+  "sbId":"V202001070002",
+  "dklx":"G",
+  "bkh":"1",
+  "dks":"5",
+  "dkhqs":"0"
+},
+  {
+    "sbId":"V202001070002",
+    "dklx":"G",
+    "bkh":"2",
+    "dks":"5",
+    "dkhqs":"1"
+  }
+]
+###
+
+#修改端口
+POST {{baseUrl}}/xlgl/updateDk
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{
+  "id": 5,
+  "sbId":22,
+  "dklx":"C",
+  "bkh":"1",
+  "dkh":"22"
+}
+###
+
+#根据id批量删除端口
+POST {{baseUrl}}/xlgl/deleteDkBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[
+  {"sbId":"V202001070002"}
+]
+###
+
+
+#根据线路编号分页查询线路信息
+GET {{baseUrl}}/xlgl/queryXlByPage?page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+###
+
+#新增线路
+POST {{baseUrl}}/xlgl/addXl
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+
+  {
+    "slSbId":1244,
+    "xlSbId":1254,
+    "slDkId":1244,
+    "xlDkId":1254,
+    "ljlx":"Trunk",
+    "vlan":"2222"
+  }
+###
+
+#修改线路
+POST {{baseUrl}}/xlgl/updateXl
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+
+{
+  "id": 18,
+  "xlbh": "HPPP1231234",
+  "slSbId":14,
+  "xlSbId":15,
+  "slDkId": "18",
+  "xlDkId": "23",
+  "ljlx": "Trunk",
+  "vlan": "999999999"
+}
+###
+
+#根据id批量删除线路
+POST {{baseUrl}}/xlgl/deleteXlBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[
+  {"id":"11"}
+]
+###
+
+#根据线路编号查询线路上下接口/设备信息
+GET {{baseUrl}}/xlgl/queryXlInfo?xlbh=P001
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+#导出线路
+GET {{baseUrl}}/xlgl/exportXl?sbbh=xxx&xlbh=xxx
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+###
+
+#导出设备
+#查询条件 管理单位:gldw  设备类型:sblx 网络类型:wllx 设备编号/IP地址:sbbh
+GET {{baseUrl}}/xlgl/exportSbST?deptId=D0086
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+###
+
+#查询设备总数 正常数 报废数
+#查询条件 deptId
+GET {{baseUrl}}/xlgl/querySbCount?deptId=D0086
+Accept: */*
+Cache-Control: no-cache
+
+###

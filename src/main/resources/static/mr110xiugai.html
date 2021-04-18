@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-移动接处警</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-header .layui-table-cell {
+			height: auto;
+			line-height: 28px;
+			padding: 0 15px;
+			position: relative;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: normal;
+			box-sizing: border-box;
+		}
+		#yjjcjtb th{
+			background-color: #78BFD9;
+			color: white;
+			text-align: center;
+		}
+		#yjjcjtb tbody tr{
+			text-align: center;
+		}
+		#zbmjtable th,#zd5List th,#xtjList th,#yjdmtable th,#xsjqtb th,#shsetb th{
+			background-color: #78BFD9;
+			color: white;
+			text-align: center;
+		}
+		#zbmjtable tbody tr,#zd5List tbody tr,#xtjList tbody tr,#yjdmtable tr,#xsjqtb tr,#shsetb tr{
+			text-align: center;
+		}
+		.textleft{
+			text-align: left;
+		}
+		.layui-table-cell {
+		    font-size:14px;
+		    padding:0 5px;
+		    height:auto;
+		    overflow:visible;
+		    text-overflow:inherit;
+		    white-space:normal;
+		    word-break: break-all;
+		}
+	</style>
+</head>
+<body>
+	
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	
+	
+	
+	
+	
+	
+    <div class="zhibantable" style="margin-bottom: 150px;" >
+		  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+            <legend>每日110</legend>
+          </fieldset>
+			<div class="layui-container">
+				<div class="layui-row">
+					<div class="layui-col-lg12" style="text-align: center;">
+						<p style="font-size: 48px;font-family: 宋体;color: #FF0000;">邗江指挥中心每日情况通报</p>
+						<span style="font-size: 26px;">
+							第
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input" style="width: 70px;" id="qs">
+							</div>
+							期
+						</span>
+					</div>
+					<div class="layui-col-lg4">
+						<p style="font-size: 21px;">邗江分局指挥中心编</p>
+					</div>
+					<div class="layui-col-lg2 layui-col-md-offset6">
+						<div class="layui-input-inline" >
+							<input type="" name="" id="fbrq" value="" class="layui-input" placeholder="发布日期" />
+						</div>
+					</div>
+					<div class="layui-col-lg12">
+						<hr style="height: 2px; background-color: #FF0000;">
+					</div>
+				</div>
+				<div class="layui-row">
+					<!-- <div class="layui-col-lg12">
+						<p style="font-size: 21px;">
+							【接处警情况】
+						</p>
+					</div> -->
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;font-family: 黑体;margin-top: 37px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;一、警情概况
+						</p>
+					</div>
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;font-family: 仿宋_GB2312;line-height: 30px;text-indent: 2em;" id="jqStr">
+							<span id="tbrqStart"></span>7时至<span id="tbrqEnd"></span>7时，<span id="dxzt">全区共接各类警情<span id="totalnum"></span>起，其中刑事警情<span id="num01"></span>起（<span id="pcsxsjqone"></span>；<span id="pcsxsjqtwo"></span>），治安警情<span id="num02"></span>起，交通事故<span id="num03"></span>起，火灾事故<span id="num04"></span>起，举报投诉<span id="num06"></span>起，群众求助<span id="num05"></span>起，纠纷<span id="num08"></span>起，经济案件<span id="num11"></span>起，其他警情<span id="num99"></span>起。</span>
+							<input type="hidden" id="dxlr" value="" />
+						</p>
+					</div>
+					<div class="layui-col-lg12" style="margin-top: 25px;">
+						<button class="layui-btn" id="xiugaijqs">修改警情数</button>
+					</div>
+					<div class="layui-col-lg12" style="margin-top: 20px;">
+						<div id="jqs" style="width: 1000px;height: 410px;margin: 0 auto;"></div>
+					</div>
+					<div class="layui-col-lg12" style="margin-top: 25px;">
+						<button class="layui-btn" id="xiugaipcs">修改各派出所警情数</button>
+					</div>
+					<div class="layui-col-lg12">
+						<div id="pcsjqs" style="width: 1000px;height: 410px;margin: 0 auto;"></div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<!-- <div class="layui-col-lg12" style="margin-top: 25px;">
+						<button class="layui-btn" id="xiugaixsjq">修改刑事警情</button>
+					</div> -->
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;margin-top: 37px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;二、刑事警情
+						</p>							
+					</div>
+					<div class="layui-col-lg12">
+						<!-- <p style="font-size: 21px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;富文本
+						</p> -->
+						<!-- <div id="editor"></div> -->
+						<!-- <div id="xsjqtb">
+							<table class="layui-table">
+								<thead>
+								  <tr>
+									<th style="width: 35px;">序号</th>
+									<th style="width: 100px;">接警时间</th>
+									<th style="width: 100px;">接警单位</th>
+									<th style="width: 100px;">警情类别</th>
+									<th>简要案情</th>
+								  </tr> 
+								</thead>
+								<tbody id="xsjqbody">
+									<tr>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td id="jyaq"></td>
+									</tr>
+								</tbody>	
+							</table>
+						</div> -->
+						
+						<table class="layui-hide" id="mrtbList" lay-filter="demo"></table>
+						
+					</div>
+					
+					<div class="layui-col-lg12" style="margin-top: 25px;">
+						<button class="layui-btn" id="xiugaishsebtn">修改涉黑涉恶警情</button>
+					</div>
+					
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;margin-top: 37px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;三、涉黑涉恶警情
+						</p>							
+					</div>
+					<div class="layui-col-lg12">
+						<!-- <p style="font-size: 21px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;无
+						</p> -->
+						<div id="shsetb">
+							<span style="font-size:21px ;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;无</span>
+							<table class="layui-table">
+								<thead>
+								  <tr>
+									<th style="width: 35px;">序号</th>
+									<th style="width: 35px;">单位</th>
+									<th style="width: 100px;">接警编号</th>
+									<th style="width: 100px;">报警内容</th>
+									<th>处警内容</th>
+									<th style="width: 35px;">处警结果</th>
+									<th style="width: 35px;">警情属性</th>
+									<th style="width: 35px;">涉警人员</th>
+									<th style="width: 35px;">处警领导</th>
+								  </tr> 
+								</thead>
+								<tbody id="shsebody">
+									<tr>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>
+								</tbody>	
+							</table>
+						</div>
+						
+					</div>
+				</div>
+				<div class="layui-row" >
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;margin-top: 37px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;四、移动接处警应用
+						</p>
+						<p style="font-size: 21px;" id="tbrqmd">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						</p>
+					</div>
+					<div class="layui-col-lg12" id="mvp">
+						<table class="layui-table" id="yjjcjtb">
+							<thead>
+							      <tr>
+							        <th>序号</th>
+							        <th>单位名称</th>
+							        <th>总警情量</th>
+							        <th>新平台接警量</th>
+									<th>老平台接警量</th>
+									<th>新平台接警率</th>
+									<th>总处警登记</th>
+									<th>新平台桌面端处警登记</th>
+									<th>新平台移动端处警登记</th>
+									<th>移动平台处警率</th>
+									<th>新平台处警率</th>
+							      </tr> 
+							    </thead>
+								<tbody>
+									<tr v-for="(item,index) in message">
+										<td>{{index+1}}</td>
+										<td style="width: 235px;">{{item.dw}}</td>
+										<td>{{item.zjql}}</td>
+										<td>{{item.xptjjl}}</td>
+										<td>{{item.lptjjl}}</td>
+										<td>{{item.xptjjlv}}%</td>
+										<td>{{item.zcjdj}}</td>
+										<td>{{item.xptzmdcjdj}}</td>
+										<td>{{item.xptyddcjdj}}</td>
+										<td>{{item.xptcjlv}}%</td>
+										<td>{{item.xptcjlv}}%</td>
+									</tr>
+								</tbody>
+						</table>
+					</div>
+					<!-- <div class="layui-col-lg12">
+						<p style="font-size: 21px;padding-top: 25px;">
+							【综合指挥室运行情况】
+						</p>
+					</div>
+					<div class="layui-col-lg12">
+						
+						<div id="editor1"></div>
+						
+					</div> -->
+					<div class="layui-row" id="mvp1">
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;margin-top: 37px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;五、在岗人员点名
+						</p>
+						<p style="font-size: 21px;" id="zgrydm">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						</p>
+					</div>
+					<div class="layui-col-lg12" >
+						<table class="layui-table" id="zbmjtable">
+							<thead>
+							      <tr>
+							        <th>单位</th>
+							        <th>值班领导</th>
+							        <th>应答</th>
+							        <th>值班民警</th>
+									<th>应答</th>
+									<!-- <th>社区民警</th> -->
+									<!-- <th>应答</th> -->
+							      </tr> 
+							    </thead>
+								<tbody>
+									<tr v-for="(item,index) in zbmjdm">
+										<td>{{item.deptName}}</td>
+										<td>{{item.police}}</td>
+										<td>{{item.yd}}</td>
+										<td>{{item.zbPolice}}</td>
+										<td>{{item.zbYd}}</td>
+										<!-- <td>{{item.sqPolice}}</td> -->
+										<!-- <td>{{item.sqYd}}</td> -->
+									</tr>
+								</tbody>
+						</table>
+					</div>
+					<div class="layui-col-lg6">
+						<table class="layui-table" id="zd5List">
+							<thead>
+							      <tr>
+							        <th>单位</th>
+							        <th>值班民警</th>
+									<th>应答</th>
+							      </tr> 
+							    </thead>
+								<tbody>
+									<tr v-for="(item,index) in zd5list">
+										<td>{{item.deptName}}</td>
+										<td>{{item.police}}</td>
+										<td>{{item.yd}}</td>
+									</tr>
+								</tbody>
+						</table>
+					</div>
+					<div class="layui-col-lg6">
+						<table class="layui-table" id="xtjList">
+							<thead>
+							      <tr>
+							        <th>单位</th>
+							        <th>巡逻人员</th>
+									<th>应答</th>
+							      </tr> 
+							    </thead>
+								<tbody>
+									<tr v-for="(item,index) in xtjlist">
+										<td>{{item.deptName}}</td>
+										<td>{{item.police}}</td>
+										<td>{{item.yd}}</td>
+									</tr>
+								</tbody>
+						</table>
+					</div>
+					
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;margin-top: 37px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;六、应急点名
+						</p>
+						<p style="font-size: 21px;" id="yjrmdm">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						</p>
+					</div>
+					<div class="layui-col-lg12">
+						<table class="layui-table" id="yjdmtable">
+							      <tr>
+							        <th>单位</th>
+							        <th>邗上</th>
+							        <th>汊河</th>
+							        <th>四季园</th>
+									<th>念四桥</th>
+									<th>新盛</th>
+									<th>瓜洲</th>
+									<th>蒋王</th>
+									<th>甘泉</th>
+							      </tr> 
+									<tr>
+										<td style="background-color:#78BFD9;color: white;">应答情况</td>
+										<td>{{yjdm.D0059}}</td>
+										<td>{{yjdm.D0068}}</td>
+										<td>{{yjdm.D0181}}</td>
+										<td>{{yjdm.D0191}}</td>
+										<td>{{yjdm.D00003}}</td>
+										<td>{{yjdm.D0078}}</td>
+										<td>{{yjdm.D0086}}</td>
+										<td>{{yjdm.D0245}}</td>
+									</tr>
+									<tr>
+									  <th>单位</th>
+									  <th>杨庙</th>
+									  <th>槐泗</th>
+									  <th>方巷</th>
+									  <th>公道</th>
+									  <th>杨寿</th>
+									  <th>竹西</th>
+									  <th>江阳</th>
+									  <th>西湖</th>
+									</tr> 
+									<tr>
+										<td style="background-color:#78BFD9;color: white;">应答情况</td>
+										<td>{{yjdm.D0095}}</td>
+										<td>{{yjdm.D0102}}</td>
+										<td>{{yjdm.D0112}}</td>
+										<td>{{yjdm.D0122}}</td>
+										<td>{{yjdm.D0173}}</td>
+										<td>{{yjdm.D0209}}</td>
+										<td>{{yjdm.D0238}}</td>
+										<td>{{yjdm.D0220}}</td>
+									</tr>
+									<tr>
+									  <th>单位</th>
+									  <th>刑警</th>
+									  <th>巡特警</th>
+									  <th>交警</th>
+									  <th>汊河中队</th>
+									  <th>公道中队</th>
+									  <th>瓜洲中队</th>
+									  <th>甘泉中队</th>
+									  <th>方巷中队</th>
+									</tr> 
+									<tr>
+										<td style="background-color:#78BFD9;color: white;">应答情况</td>
+										<td>{{yjdm.D0018}}</td>
+										<td>{{yjdm.D0050}}</td>
+										<td>{{yjdm.D0032}}</td>
+										<td>{{yjdm.D0044}}</td>
+										<td>{{yjdm.D0038}}</td>
+										<td>{{yjdm.D0037}}</td>
+										<td>{{yjdm.D0039}}</td>
+										<td>{{yjdm.D0040}}</td>
+									</tr>
+						</table>
+					</div>
+					</div>
+					
+					<div class="layui-col-lg12" style="margin-top: 25px;">
+						<button class="layui-btn" id="xiugaigztsbtn">修改工作提示</button>
+					</div>
+					<div class="layui-col-lg12">
+						<div id="xggzts" style="line-height: 30px;">
+							<p style="font-size: 21px;padding-top: 25px;font-family: 黑体;margin-bottom: 15px;">
+								【工作提示】
+							</p>
+							<p style="font-size: 21px;font-family: 仿宋_GB2312;line-height: 30px; text-indent: 2em;">
+								请各单位进一步加大安
+								全防范宣传力度，加强对辖区内重点区域、路段、部位的巡逻盘查，提高见警率，全力维护社会治安稳定。
+								<strong>根据市局统一部署要求，全区实行战时勤务。</strong>
+							</p>
+							<p style="font-size: 21px;font-family: 仿宋_GB2312;line-height: 30px; text-indent: 2em;">
+								请各派出所对照《扬州市公安局邗江分局派出所综合指挥室工作规范》的要求，对综合指挥室运行质态进行自查整改，完善配套运作机制 ，严格执行实体化、实战化运作；要严格落实指挥员、警辅力量常态入驻综合指挥室制度。
+							</p>
+						</div>
+						
+					</div>
+					<div class="layui-col-lg12">
+						<hr style="height: 2px; background-color: #FF0000;">
+					</div>
+					
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-lg6">
+						<span style="font-size: 21px;">
+								<strong>承办人：</strong>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" style="width: 120px;" id="chenbanren">
+								</div>
+						</span>
+					</div>
+					<div class="layui-col-lg6">
+						<span style="font-size: 21px;float: right;">
+								<strong>审核人：</strong>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" style="width: 120px;" id="shenheren">
+								</div>
+						</span>
+					</div>
+					<div class="layui-col-lg12" style="text-align: center;margin-top: 30px;">
+						<button class="layui-btn" style="width: 120px;" id="baocun">
+							保存
+						</button>
+						<!-- <button class="layui-btn" style="width: 120px;" id="baocun1">
+							保存111
+						</button> -->
+					</div>
+				</div>
+				
+			</div>
+		  
+    </div>
+
+	<!-- 修改警情数 -->
+	<form class="layui-form" id="xiugaibox" style="display:none;width: 650px;padding: 10px;">
+			<div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="totalnum1" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="num011" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="num021" class="layui-input">
+				</div>
+			  </div>
+		 </div>
+		 <div style="margin-top: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">交通事故</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="num031" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">火灾事故</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="num041" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">举报投诉</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="num061" class="layui-input">
+				</div>
+			  </div>
+		 </div>
+		 <div style="margin-top: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">群众求助</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="num051" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">纠纷</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="num081" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">经济案件</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="num111" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline" style="margin-top: 10px;">
+					<label class="layui-form-label">其他警情</label>
+					<div class="layui-input-block" style="width: 100px;">
+					  <input type="text" id="num991" class="layui-input">
+					</div>
+			  </div>
+			  <input type="text" id="dataid" value="" hidden="hidden" />
+		 </div>
+	</form>
+	<!-- 修改总警情结束-->
+	
+	<!-- 修改派出所数据 -->
+	
+	<form class="layui-form" id="xgpcs" style="display:none;width: 650px;padding: 10px;">
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">交大总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="jd01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="jd02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="jd03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">邗上总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="hs01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="hs02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="hs03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">汊河总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="ch01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="ch02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="ch03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">瓜洲总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="gz01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="gz02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="gz03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">蒋王总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="jw01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="jw02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="jw03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">杨庙总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="ym01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="ym02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="ym03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">槐泗总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="hss01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="hss02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="hss03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">方巷总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="fx01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="fx02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="fx03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">公道总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="gd01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="gd02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="gd03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">杨寿总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="ys01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="ys02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="ys03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">四季园总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="sjy01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="sjy02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="sjy03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">念四桥总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="nsq01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="nsq02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="nsq03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">新盛总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="xs01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="xs02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="xs03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">竹西总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="zx01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="zx02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="zx03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">西湖总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="xh01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="xh02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="xh03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">江阳总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="jy01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="jy02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="jy03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<div style="margin-bottom: 10px;">
+			  <div class="layui-inline">
+				<label class="layui-form-label">甘泉总警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="gq01" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">刑事警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="gq02" class="layui-input">
+				</div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">治安警情</label>
+				<div class="layui-input-block" style="width: 100px;">
+				  <input type="text" id="gq03" class="layui-input">
+				</div>
+			  </div>
+		</div>
+		<input type="text" id="pcsid" value="" hidden="hidden" />
+	</form>
+	
+	<!-- 修改派出所数据 end-->
+	
+	<!-- 修改刑事警情案件 -->
+	<div id="xiugaixxjq" style="display:none;width: 1050px;padding: 10px;">
+		<div id="editor"></div>
+	</div>
+	
+	<!-- 修改刑事警情案件 end-->
+	
+	<!-- 修改涉黑涉恶 -->
+	<div id="xiugaishse" style="display:none;width: 1050px;padding: 10px;">
+		<div id="editor1"></div>
+	</div>
+	
+	<!-- 修改涉黑涉恶end -->
+	
+	<!-- 修改警情提示 -->
+	<div id="xiugaijqts" style="display:none;width: 1050px;padding: 10px;">
+		<div id="editor2"></div>
+	</div>
+	<!-- 修改警情提示 end-->
+
+    <!-- <div id="footer"></div> -->
+
+
+<!-- 新增刑事警情 -->
+	<form class="layui-form" id="xsjqbox1" style="display:none;padding: 10px;" lay-filter="xsjqbox1">
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label" style="width: auto;">警情类别</label>
+		<div class="layui-input-block">
+			<input type="text" class="layui-input" id="xsjqjqlb" autocomplete="off">
+		</div>
+	  </div>
+	  <div class="layui-form-item layui-form-text" style="margin-top: 20px;">
+	      <label class="layui-form-label" style="width: auto;">简要警情</label>
+	      <div class="layui-input-block">
+	        <textarea class="layui-textarea" style="width: 100%;" id="xsjqjyaq"></textarea>
+	      </div>
+	  </div>
+	  <div class="layui-form-item" style="margin-top: 20px;">
+	    <label class="layui-form-label" style="width: auto;">报警内容</label>
+		<div class="layui-input-block" style="line-height: 36px;">
+			<textarea class="layui-textarea" style="width: 100%;" id="xsbjnr" readonly=""></textarea>
+		</div>
+	  </div>
+	  <div class="layui-form-item" style="margin-bottom:0px;">
+	      <div class="layui-inline">
+	        <label class="layui-form-label">报警方式：</label>
+	        <div class="layui-input-inline" style="line-height: 36px;" id="xsbjxs">
+	        </div>
+	      </div>
+	      <div class="layui-inline">
+	        <label class="layui-form-label">报警类型：</label>
+	        <div class="layui-input-inline" style="line-height: 36px;" id="xsbjlx">
+	        </div>
+	      </div>
+	</div>
+	<div class="layui-form-item" style="margin-bottom: 0px;">
+	      <div class="layui-inline">
+	        <label class="layui-form-label">报警人：</label>
+	        <div class="layui-input-inline" style="line-height: 36px;" id="xsbjr">
+	        </div>
+	      </div>
+	      <div class="layui-inline">
+	        <label class="layui-form-label">联系电话：</label>
+	        <div class="layui-input-inline" style="line-height: 36px;" id="xslxdh">
+	        </div>
+	      </div>
+		  <div class="layui-inline">
+		    <label class="layui-form-label">报警电话：</label>
+		    <div class="layui-input-inline" style="line-height: 36px;" id="xsbjdh">
+		    </div>
+		  </div>
+		  <div class="layui-inline">
+		    <label class="layui-form-label">事发地点：</label>
+		    <div class="layui-input-inline" style="line-height: 36px;" id="xssfdd">
+		    </div>
+		  </div>
+		  <div class="layui-inline">
+		    <label class="layui-form-label">接警时间：</label>
+		    <div class="layui-input-inline" style="line-height: 36px;" id="xsjjsj">
+		    </div>
+		  </div>
+	</div>
+	  
+	</form>
+	<!-- 新增刑事警情end-->
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="change">修改</a>
+	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="echarts.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="wangEditor.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	$("#footer").load("public/footer.html");
+	// #更新10种警情
+	// POST http://localhost:8080/mrtb/updateMrtb
+	// Accept: */*
+	// Cache-Control: no-cache
+	// Content-Type: application/json
+	// token:{{token}}
+	
+	// {"id": 20,"totalnum": 268,"num01":8,"num02":23,"num03":27,"num04":0,"num05":59,"num06":17,"num08":68,"num11":0,"num99":66}
+	// ###
+	
+	// #更新各派出所
+	// POST http://localhost:8080/mrtb/updateMrtb
+	// Accept: */*
+	// Cache-Control: no-cache
+	// Content-Type: application/json
+	// token:{{token}}
+	
+	
+	
+	
+	var lohref = window.location.href;
+	var listId = lohref.substr(lohref.indexOf("=")+1);
+	var upload = layui.upload;
+	var laydate = layui.laydate;
+	var table = layui.table;
+	var mrtbtime = "";
+	
+	
+	// 修改警情数
+	$("#xiugaijqs").click(function(){
+		layer.open({
+		 type:1,
+		 area:['700px','450px'],
+		  title: '修改警情数据',
+		  content: $("#xiugaibox"),
+		  shade: 0,
+		  btn: ['提交', '取消']
+		  ,btn1: function(index, layero){
+				var load1 = layer.load(1);  
+				$.ajax({
+				    url:baseUrl+"/mrtb/updateMrtb",
+				    type:"post",
+				    cache:false,
+					data:JSON.stringify({
+						id:$("#dataid").val(),
+						totalnum:$("#totalnum1").val(),
+						num01:$("#num011").val(),
+						num02:$("#num021").val(),
+						num03:$("#num031").val(),
+						num04:$("#num041").val(),
+						num06:$("#num061").val(),
+						num05:$("#num051").val(),
+						num08:$("#num081").val(),
+						num11:$("#num111").val(),
+						num99:$("#num991").val(),
+						qs:$("#qs").val(),
+						fbrq:$("#fbrq").val()
+					}),
+					dataType : 'JSON',
+					contentType: "application/json",
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+				    success:function(data) {
+						if(data.code==0){
+							layer.close(load1);
+						    layer.msg("修改成功");
+							history.go(0) 
+						}else {
+							layer.close(load1);
+						    layer.msg(data.msg);
+						}
+				    },
+				    error : function (res) {
+						layer.close(load1);
+				        layer.msg('修改失败');
+				    }
+				})
+				layer.closeAll();
+				 $("#xiugaibox").hide();
+		  },
+		  btn2: function(index, layero){
+			    $("#xiugaibox").hide();
+				layer.closeAll();
+		  },
+		cancel: function(layero,index){ 
+			 $("#xiugaibox").hide();
+				layer.closeAll();
+		  }
+		});
+	})
+	
+	
+	// 修改派出所数据
+	$("#xiugaipcs").click(function(){
+		// alert(1)
+		layer.open({
+		 type:1,
+		 area:['700px','650px'],
+		  title: '修改各派出所警情数据',
+		  content: $("#xgpcs"),
+		  shade: 0,
+		  btn: ['提交', '取消']
+		  ,btn1: function(index, layero){
+				var load1 = layer.load(1);  
+				$.ajax({
+				    url:baseUrl+"/mrtb/updateMrtb",
+				    type:"post",
+				    cache:false,
+					data:JSON.stringify({
+						id:$("#pcsid").val(),
+						qs:$("#qs").val(),
+						fbrq:$("#fbrq").val(),
+						jd01:$("#jd01").val(),
+						jd02:$("#jd02").val(),
+						jd03:$("#jd03").val(),
+						
+						hs01:$("#hs01").val(),
+						hs02:$("#hs02").val(),
+						hs03:$("#hs03").val(),
+						
+						ch01:$("#ch01").val(),
+						ch02:$("#ch02").val(),
+						ch03:$("#ch03").val(),
+						
+						gz01:$("#gz01").val(),
+						gz02:$("#gz02").val(),
+						gz03:$("#gz03").val(),
+						
+						jw01:$("#jw01").val(),
+						jw02:$("#jw02").val(),
+						jw03:$("#jw03").val(),
+						
+						ym01:$("#ym01").val(),
+						ym02:$("#ym02").val(),
+						ym03:$("#ym03").val(),
+						
+						hss01:$("#hss01").val(),
+						hss02:$("#hss02").val(),
+						hss03:$("#hss03").val(),
+						
+						fx01:$("#fx01").val(),
+						fx02:$("#fx02").val(),
+						fx03:$("#fx03").val(),
+						
+						gd01:$("#gd01").val(),
+						gd02:$("#gd02").val(),
+						gd03:$("#gd03").val(),
+						
+						ys01:$("#ys01").val(),
+						ys02:$("#ys02").val(),
+						ys03:$("#ys03").val(),
+						
+						sjy01:$("#sjy01").val(),
+						sjy02:$("#sjy02").val(),
+						sjy03:$("#sjy03").val(),
+						
+						nsq01:$("#nsq01").val(),
+						nsq02:$("#nsq02").val(),
+						nsq03:$("#nsq03").val(),
+						
+						xs01:$("#xs01").val(),
+						xs02:$("#xs02").val(),
+						xs03:$("#xs03").val(),
+						
+						zx01:$("#zx01").val(),
+						zx02:$("#zx02").val(),
+						zx03:$("#zx03").val(),
+						
+						xh01:$("#xh01").val(),
+						xh02:$("#xh02").val(),
+						xh03:$("#xh03").val(),
+						
+						xh01:$("#xh01").val(),
+						xh02:$("#xh02").val(),
+						xh03:$("#xh03").val(),
+						
+						jy01:$("#jy01").val(),
+						jy02:$("#jy02").val(),
+						jy03:$("#jy03").val(),
+						
+						gq01:$("#gq01").val(),
+						gq02:$("#gq02").val(),
+						gq03:$("#gq03").val(),
+					}),
+					dataType : 'JSON',
+					contentType: "application/json",
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+				    success:function(data) {
+						if(data.code==0){
+							layer.close(load1);
+						    layer.msg("修改成功");
+							history.go(0) 
+						}else {
+							layer.close(load1);
+						    layer.msg(data.msg);
+						}
+				    },
+				    error : function (res) {
+						layer.close(load1);
+				        layer.msg('修改失败');
+				    }
+				})
+				layer.closeAll();
+				 $("#xgpcs").hide();
+		  },
+		  btn2: function(index, layero){
+			    $("#xgpcs").hide();
+				layer.closeAll();
+		  },
+		cancel: function(layero,index){ 
+			 $("#xgpcs").hide();
+				layer.closeAll();
+		  }
+		});
+		
+	})
+	
+	// 修改刑事警情
+	// $("#xiugaixsjq").click(function(){
+	// 	editor.txt.html($("#xsjqtb").html());
+	// 	$("#editor").show();
+	// 	console.log($("#xsjqtb").html());
+	// 	layer.open({
+	// 	 type:1,
+	// 	 area:['1100px','550px'],
+	// 	  title: '修改警情数据',
+	// 	  content: $("#xiugaixxjq"),
+	// 	  shade: 0,
+	// 	  btn: ['提交', '取消']
+	// 	  ,btn1: function(index, layero){
+	// 			var load1 = layer.load(1);  
+	// 			$.ajax({
+	// 			    url:baseUrl+"/mrtb/updateMrtb",
+	// 			    type:"post",
+	// 			    cache:false,
+	// 				data:JSON.stringify({
+	// 					// id:,
+	// 					id:$("#pcsid").val(),
+	// 					comment1:editor.txt.html(),
+	// 					qs:$("#qs").val(),
+	// 					fbrq:$("#fbrq").val(),
+	// 				}),
+	// 				dataType : 'JSON',
+	// 				contentType: "application/json",
+	// 				beforeSend: function (XMLHttpRequest) {
+	// 				   XMLHttpRequest.setRequestHeader("token", token);
+	// 				},
+	// 			    success:function(data) {
+	// 					if(data.code==0){
+	// 						layer.close(load1);
+	// 					    layer.msg("修改成功");
+	// 						history.go(0);
+	// 					}else {
+	// 						layer.close(load1);
+	// 					    layer.msg(data.msg);
+	// 					}
+	// 			    },
+	// 			    error : function (res) {
+	// 					layer.close(load1);
+	// 			        layer.msg('修改失败');
+	// 			    }
+	// 			})
+	// 			layer.closeAll();
+	// 			 $("#editor").hide();
+	// 	  },
+	// 	  btn2: function(index, layero){
+	// 			$("#editor").hide();
+	// 			layer.closeAll();
+	// 	  },
+	// 	cancel: function(layero,index){ 
+	// 			$("#editor").hide();
+	// 			layer.closeAll();
+	// 	  }
+	// 	});
+	// });
+	
+	$("#xiugaishsebtn").click(function(){
+		editor1.txt.html($("#shsetb").html());
+		$("#editor1").show();
+		layer.open({
+		 type:1,
+		 area:['1200px','550px'],
+		  title: '修改涉黑涉恶警情数据',
+		  content: $("#xiugaishse"),
+		  shade: 0,
+		  btn: ['提交', '取消']
+		  ,btn1: function(index, layero){
+				var load1 = layer.load(1);  
+				$.ajax({
+				    url:baseUrl+"/mrtb/updateMrtb",
+				    type:"post",
+				    cache:false,
+					data:JSON.stringify({
+						// id:,
+						id:$("#pcsid").val(),
+						comment2:editor1.txt.html(),
+						qs:$("#qs").val(),
+						fbrq:$("#fbrq").val()
+					}),
+					dataType : 'JSON',
+					contentType: "application/json",
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+				    success:function(data) {
+						if(data.code==0){
+							layer.close(load1);
+						    layer.msg("修改成功");
+							history.go(0);
+						}else {
+							layer.close(load1);
+						    layer.msg(data.msg);
+						}
+				    },
+				    error : function (res) {
+						layer.close(load1);
+				        layer.msg('修改失败');
+				    }
+				})
+				layer.closeAll();
+				 $("#editor1").hide();
+		  },
+		  btn2: function(index, layero){
+				$("#editor1").hide();
+				layer.closeAll();
+		  },
+		cancel: function(layero,index){ 
+				$("#editor1").hide();
+				layer.closeAll();
+		  }
+		});
+	})
+	
+	// 修改工作提示
+	$("#xiugaigztsbtn").click(function(){
+		editor2.txt.html($("#xggzts").html());
+		$("#editor2").show();
+		layer.open({
+		 type:1,
+		 area:['1200px','550px'],
+		  title: '修改工作提示',
+		  content: $("#xiugaijqts"),
+		  shade: 0,
+		  btn: ['提交', '取消']
+		  ,btn1: function(index, layero){
+				var load1 = layer.load(1);  
+				$.ajax({
+				    url:baseUrl+"/mrtb/updateMrtb",
+				    type:"post",
+				    cache:false,
+					data:JSON.stringify({
+						// id:,
+						id:$("#pcsid").val(),
+						comment3:editor2.txt.html(),
+						qs:$("#qs").val(),
+						fbrq:$("#fbrq").val()
+					}),
+					dataType : 'JSON',
+					contentType: "application/json",
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+				    success:function(data) {
+						if(data.code==0){
+							layer.close(load1);
+						    layer.msg("修改成功");
+							history.go(0);
+						}else {
+							layer.close(load1);
+						    layer.msg(data.msg);
+						}
+				    },
+				    error : function (res) {
+						layer.close(load1);
+				        layer.msg('修改失败');
+				    }
+				})
+				layer.closeAll();
+				 $("#editor2").hide();
+		  },
+		  btn2: function(index, layero){
+				$("#editor2").hide();
+				layer.closeAll();
+		  },
+		cancel: function(layero,index){ 
+				$("#editor2").hide();
+				layer.closeAll();
+		  }
+		});
+	})
+	
+	
+	// 富文本1
+	var E = window.wangEditor;
+	var editor = new E('#editor');
+	// 或者 var editor = new E( document.getElementById('editor') )
+	editor.create();
+	
+	// 富文本2
+	var editor1 = new E('#editor1')
+	editor1.create();
+	
+	// 富文本3
+	var editor2 = new E('#editor2')
+	editor2.create();
+	// $("#baocun1").click(function(){
+	// 	console.log(editor1.txt.html())
+	// })
+	// 获取详情
+	$.get(baseUrl+"/mrtb/queryById?id="+listId,function(res){
+		// console.log(res);
+		mrtbtime=res.data.mrtb.tbrq;
+		
+		$("#qs").val(res.data.mrtb.qs);
+		$("#fbrq").val(res.data.mrtb.fbrq);
+		$("#chenbanren").val(res.data.mrtb.chenbanren);
+		$("#shenheren").val(res.data.mrtb.shenheren);
+		
+		var pcsxsjq={};
+		var resmrtb = res.data.mrtb;
+		var title1 = "";
+		for(i in resmrtb){
+			if(i=="hs02"&&resmrtb.hs02>0){
+				pcsxsjq.邗上=resmrtb.hs02;
+			}else if(i=="ch02"&&resmrtb.ch02>0){
+				pcsxsjq.汊河=resmrtb.ch02;
+			}else if(i=="gz02"&&resmrtb.gz02>0){
+				pcsxsjq.瓜洲=resmrtb.gz02;
+			}else if(i=="jw02"&&resmrtb.jw02>0){
+				pcsxsjq.蒋王=resmrtb.jw02;
+			}else if(i=="ym02"&&resmrtb.ym02>0){
+				pcsxsjq.杨庙=resmrtb.ym02;
+			}else if(i=="hss02"&&resmrtb.hss02>0){
+				pcsxsjq.槐泗=resmrtb.hss02;
+			}else if(i=="fx02"&&resmrtb.fx02>0){
+				pcsxsjq.方巷=resmrtb.fx02;
+			}else if(i=="gd02"&&resmrtb.gd02>0){
+				pcsxsjq.公道=resmrtb.gd02;
+			}else if(i=="ys02"&&resmrtb.ys02>0){
+				pcsxsjq.杨寿=resmrtb.ys02;
+			}else if(i=="sjy02"&&resmrtb.sjy02>0){
+				pcsxsjq.四季园=resmrtb.sjy02;
+			}else if(i=="nsq02"&&resmrtb.nsq02>0){
+				pcsxsjq.念四桥=resmrtb.nsq02;
+			}else if(i=="zx02"&&resmrtb.zx02>0){
+				pcsxsjq.竹西=resmrtb.zx02;
+			}else if(i=="xh02"&&resmrtb.xh02>0){
+				pcsxsjq.西湖=resmrtb.xh02;
+			}else if(i=="jy02"&&resmrtb.jy02>0){
+				pcsxsjq.江阳=resmrtb.jy02;
+			}else if(i=="ch02"&&resmrtb.ch02>0){
+				pcsxsjq.汊河=resmrtb.ch02;
+			}else if(i=="gq02"&&resmrtb.gq02>0){
+				pcsxsjq.甘泉=resmrtb.gq02;
+			}else if(i=="xs02"&&resmrtb.xs02>0){
+				pcsxsjq.新盛=resmrtb.xs02;
+			}else if(i=="jd02"&&resmrtb.jd02>0){
+				pcsxsjq.交大=resmrtb.jd02;
+			}
+		}
+		// 倒叙对象
+		function sortObj(obj) {
+		        var arr = [];
+		        for (var i in obj) {
+		            arr.push([obj[i],i]);
+		        };
+		        arr.reverse();
+		        var len = arr.length;
+		        var obj = {};
+		        for (var i = 0; i < len; i++) {
+		            obj[arr[i][1]] = arr[i][0];
+		        }
+		        return obj;
+		}
+		// 排序值大小
+		function sortVal(obj) {
+		    var arr = [];
+		    for (var i in obj) {
+		        arr.push([obj[i],i]);
+		    };
+		    arr.sort(function (a,b) {
+		        return b[0] - a[0];
+		    });
+		    var len = arr.length,
+		        obj = {};
+		    for (var i = 0; i < len; i++) {
+		        obj[arr[i][1]] = arr[i][0];
+		    }
+		    return obj;
+		}
+		
+		for(k in sortVal(sortObj(pcsxsjq))){
+			title1+=k + sortVal(sortObj(pcsxsjq))[k] + "起、";
+		}
+		
+		title1 = title1.substring(0,title1.length-1);
+		
+		$("#pcsxsjqone").text(title1);
+		
+		// 设置入室盗窃
+		var xsjqdetail = {};
+		var title2 = "";
+		for(item in resmrtb){
+			if(item=="xsjq01"&&resmrtb.xsjq01>0){
+				xsjqdetail.入室盗窃=resmrtb.xsjq01;
+			}else if(item=="xsjq02"&&resmrtb.xsjq02>0){
+				xsjqdetail.诈骗=resmrtb.xsjq02;
+			}else if(item=="xsjq03"&&resmrtb.xsjq03>0){
+				xsjqdetail.盗窃非机动车=resmrtb.xsjq03;
+			}else if(item=="xsjq99"&&resmrtb.xsjq99>0){
+				xsjqdetail.其他=resmrtb.xsjq99;
+			}
+		}
+		title2+="其中";
+		for(p in xsjqdetail){
+			if(xsjqdetail != {}){
+				title2 += p + xsjqdetail[p] + "起、";
+			}else{
+				title2="";
+			}
+		}
+		
+		if(title2.indexOf("、") != -1 ){
+			title2 = title2.substring(0,title2.length-1);
+		}else{
+			title2="";
+		}
+		
+		
+		$("#pcsxsjqtwo").text(title2);
+		
+		
+		// 富文本赋值1
+		// comment1
+		if(res.data.mrtb.comment1 != null){
+			$("#xsjqtb").html(res.data.mrtb.comment1);
+		}
+		// comment2
+		if(res.data.mrtb.comment2 != null){
+			$("#shsetb").html(res.data.mrtb.comment2);
+		}
+		
+		if(res.data.mrtb.comment3 != null){
+			$("#xggzts").html(res.data.mrtb.comment3);
+		}
+		
+		
+		// 之前调取jsstr
+		// $("#jqStr").append(res.data.jqStr);\
+		// 短信内容赋值
+		
+		
+		// 新警情str
+		$("#tbrqStart").text(res.data.tbrqStart);
+		$("#tbrqEnd").text(res.data.tbrqEnd);
+		$("#totalnum").text(res.data.mrtb.totalnum);
+		$("#num01").text(res.data.mrtb.num01);
+		$("#num02").text(res.data.mrtb.num02);
+		$("#num03").text(res.data.mrtb.num03);
+		$("#num04").text(res.data.mrtb.num04);
+		$("#num06").text(res.data.mrtb.num06);
+		$("#num05").text(res.data.mrtb.num05);
+		$("#num08").text(res.data.mrtb.num08);
+		$("#num11").text(res.data.mrtb.num11);
+		$("#num99").text(res.data.mrtb.num99);
+		
+		$("#dataid").val(res.data.mrtb.id);
+		$("#totalnum1").val(res.data.mrtb.totalnum);
+		$("#num011").val(res.data.mrtb.num01);
+		$("#num021").val(res.data.mrtb.num02);
+		$("#num031").val(res.data.mrtb.num03);
+		$("#num041").val(res.data.mrtb.num04);
+		$("#num061").val(res.data.mrtb.num06);
+		$("#num051").val(res.data.mrtb.num05);
+		$("#num081").val(res.data.mrtb.num08);
+		$("#num111").val(res.data.mrtb.num11);
+		$("#num991").val(res.data.mrtb.num99);
+		
+		
+		// 渲染修改派出所警情
+		$("#pcsid").val(res.data.mrtb.id);
+		
+		$("#jd01").val(res.data.mrtb.jd01);
+		$("#jd02").val(res.data.mrtb.jd02);
+		$("#jd03").val(res.data.mrtb.jd03);
+		
+		$("#hs01").val(res.data.mrtb.hs01);
+		$("#hs02").val(res.data.mrtb.hs02);
+		$("#hs03").val(res.data.mrtb.hs03);
+		
+		$("#ch01").val(res.data.mrtb.ch01);
+		$("#ch02").val(res.data.mrtb.ch02);
+		$("#ch03").val(res.data.mrtb.ch03);
+		
+		$("#gz01").val(res.data.mrtb.gz01);
+		$("#gz02").val(res.data.mrtb.gz02);
+		$("#gz03").val(res.data.mrtb.gz03);
+		
+		$("#jw01").val(res.data.mrtb.jw01);
+		$("#jw02").val(res.data.mrtb.jw02);
+		$("#jw03").val(res.data.mrtb.jw03);
+		
+		$("#ym01").val(res.data.mrtb.ym01);
+		$("#ym02").val(res.data.mrtb.ym02);
+		$("#ym03").val(res.data.mrtb.ym03);
+		
+		$("#hss01").val(res.data.mrtb.hss01);
+		$("#hss02").val(res.data.mrtb.hss02);
+		$("#hss03").val(res.data.mrtb.hss03);
+		
+		$("#fx01").val(res.data.mrtb.fx01);
+		$("#fx02").val(res.data.mrtb.fx02);
+		$("#fx03").val(res.data.mrtb.fx03);
+		
+		$("#gd01").val(res.data.mrtb.gd01);
+		$("#gd02").val(res.data.mrtb.gd02);
+		$("#gd03").val(res.data.mrtb.gd03);
+		
+		$("#ys01").val(res.data.mrtb.ys01);
+		$("#ys02").val(res.data.mrtb.ys02);
+		$("#ys03").val(res.data.mrtb.ys03);
+		
+		$("#sjy01").val(res.data.mrtb.sjy01);
+		$("#sjy02").val(res.data.mrtb.sjy02);
+		$("#sjy03").val(res.data.mrtb.sjy03);
+		
+		$("#nsq01").val(res.data.mrtb.nsq01);
+		$("#nsq02").val(res.data.mrtb.nsq02);
+		$("#nsq03").val(res.data.mrtb.nsq03);
+		
+		$("#xs01").val(res.data.mrtb.xs01);
+		$("#xs02").val(res.data.mrtb.xs02);
+		$("#xs03").val(res.data.mrtb.xs03);
+		
+		$("#zx01").val(res.data.mrtb.zx01);
+		$("#zx02").val(res.data.mrtb.zx02);
+		$("#zx03").val(res.data.mrtb.zx03);
+		
+		$("#xh01").val(res.data.mrtb.xh01);
+		$("#xh02").val(res.data.mrtb.xh02);
+		$("#xh03").val(res.data.mrtb.xh03);
+		
+		$("#xh01").val(res.data.mrtb.xh01);
+		$("#xh02").val(res.data.mrtb.xh02);
+		$("#xh03").val(res.data.mrtb.xh03);
+		
+		$("#jy01").val(res.data.mrtb.jy01);
+		$("#jy02").val(res.data.mrtb.jy02);
+		$("#jy03").val(res.data.mrtb.jy03);
+		
+		$("#gq01").val(res.data.mrtb.gq01);
+		$("#gq02").val(res.data.mrtb.gq02);
+		$("#gq03").val(res.data.mrtb.gq03);
+		// 渲染修改派出所警情end
+		
+		$("#dxlr").val(res.data.tbrqStart+"，"+$("#dxzt").text());
+		
+		// 警情数第一个图表
+		var myChart = echarts.init(document.getElementById('jqs'));
+		option = {
+			color: ["#4F81BD"],
+			title:{
+				text:"警情数",
+				left: 'center',
+				align: 'right'
+			},
+			 tooltip: {
+			        // 触发方式
+			        trigger: 'axis'
+			 },
+		    xAxis: {
+		        type: 'category',
+		        data: res.data.jqxAxis
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+			 grid: {
+			     left: "0%",
+			     top: "30px",
+			     right: "0%",
+			     bottom: "4%",
+			     containLabel: true
+			   },
+		    series: [{
+		        data: res.data.jqseries,
+		        type: 'bar',
+		        // showBackground: true,
+		        backgroundStyle: {
+		            color: 'rgba(220, 220, 220, 0.8)'
+		        },
+				barWidth: "25%",
+		    }]
+		};
+		myChart.setOption(option);
+		// 警情数第二个图表
+		//jqDwArr
+		//pcsjqs
+		var myChart1 = echarts.init(document.getElementById('pcsjqs'));
+		option1 = {
+			color: ["#4F81BD","#C0504D","#9BBB59"],
+		    legend: {},
+		    tooltip: {},
+		    dataset: {
+		        source:res.data.jqDwArr
+		    },
+			grid: {
+			    left: "0%",
+			    top: "30px",
+			    right: "0%",
+			    bottom: "4%",
+			    containLabel: true
+			  },
+		    xAxis: {type: 'category'},
+		    yAxis: {},
+		    series: [
+		        {type: 'bar'},
+		        {type: 'bar'},
+		        {type: 'bar'}
+		    ]
+		};
+		myChart1.setOption(option1);
+		
+		// 通报日期
+		$("#tbrqmd").append(res.data.tbrqmd+"，各派出所、交警中队移动接处警应用情况如下：")
+		
+		// 移动接处警数据展示
+		var app1 = new Vue({
+		  el: '#mvp',
+		  data: {
+		    message: res.data.ydjcjList,
+			zbmjdm:res.data.pcs16List,
+			zd5list:res.data.zd5List,
+			xtjlist:res.data.xtjList,
+			yjdm:res.data.yjdm
+			
+		  }
+		})
+		
+		var app2 = new Vue({
+		  el: '#mvp1',
+		  data: {
+			zbmjdm:res.data.pcs16List,
+			zd5list:res.data.zd5List,
+			xtjlist:res.data.xtjList,
+			yjdm:res.data.yjdm
+		  }
+		})
+		
+		// 在岗人员点名标题
+		$("#zgrydm").append(res.data.dmtime+"，分局指挥中心通过350M电台系统对各单位在岗人员进行了点名，详细情况如下（说明：√为应答，○为代应答，×为未应答）：")
+		
+		// 应急人员点名
+		$("#yjrmdm").append(res.data.yjdmtime+"，分局指挥中心通过350M电台系统对各单位进行了应急点名，详细情况如下：")
+		
+		// 获取刑事警情
+		// if(res.data.mrtb.comment1==null){
+		// 	$.get(baseUrl+"/cj/queryYesterdayXSJQ?rq="+mrtbtime,function(res){
+		// 		var tbody="";
+		// 		for(i in res.data){
+		// 			console.log();
+					
+		// 			tbody += `<tr>
+		// 						<td>`+ (Number(i)+1) +`</td>
+		// 						<td>`+res.data[i].jjrqsj+`</td>
+		// 						<td>`+res.data[i].deptsname+`</td>
+		// 						<td>`+res.data[i].cjlb+`</td>
+		// 						<td class="textleft">`+res.data[i].cljgnr+`</td>
+		// 					 </tr>`
+		// 		}
+		// 		$("#xsjqbody").html(tbody);
+		// 	})
+		// }
+		
+		function getTabledata(url){
+			table.render({
+			  elem: '#mrtbList'
+			  ,url: url
+			  ,cols: [[
+			     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			    ,{field:'jjsj', title: '接警时间',  align:"center",width:150,}
+				,{field:'jjdw', title: '接警单位',  align:"center",width:90,}
+				,{field:'jqlb', title: '警情类别',  align:"center",width:100,}
+				,{field:'jyaq', title: '简要案情',  align:"left",}
+				,{title:'操作', toolbar: '#barDemo',align:"center",width:150}
+			  ]]
+			  ,id:"testReload"
+			});
+		}
+		
+		// http://127.0.0.1:8080
+		
+		getTabledata(baseUrl+"/mrtb/queryMrtbXsjqByTbid?id="+res.data.mrtb.id);
+		
+		function bjxsshow(item){
+			if(item == "01"){
+				return "110报警"
+			}else if(item == "02"){
+				return "112报警"
+			}else if(item == "05"){
+				return "其他电话报警"
+			}else if(item == "08"){
+				return "器材报警"
+			}else if(item == "17"){
+				return "其他部门移动"
+			}
+		}
+		
+		function bjlxshow(bitem){
+			var item = bitem.substr(0,2);
+			if(item == "20"){
+				return "违法犯罪警情"
+			}else if(item == "21"){
+				return "交通"
+			}else if(item == "22"){
+				return "火灾事故"
+			}else if(item == "23"){
+				return "群众求助"
+			}else if(item == "24"){
+				return "举报投诉"
+			}else if(item == "25"){
+				return "群体事件"
+			}else if(item == "26"){
+				return "纠纷"
+			}else if(item == "27"){
+				return "灾害事故"
+			}else if(item == "28"){
+				return "扬言"
+			}else if(item == "29"){
+				return "关注对象"
+			}else if(item == "30"){
+				return "警情备案"
+			}else if(item == "90"){
+				return "其他警情"
+			}else if(item=="97"){
+				return "涉林警情"
+			}
+		}
+		
+		// 修改
+		table.on('tool(demo)', function(obj){
+		  if(obj.event == "change"){
+			  console.log(obj.data);
+			  $("#xsbjnr").val(obj.data.jcjJjxx.bjnr);
+			  $("#xsbjxs").text(bjxsshow(obj.data.jcjJjxx.bjxs));
+			  $("#xsbjlx").text(bjlxshow(obj.data.jcjJjxx.bjlx));
+			  $("#xsbjr").text(obj.data.jcjJjxx.bjr);
+			  // $("#xsxb").text(obj.data.jcjJjxx.xb);
+			  $("#xsbjdh").text(obj.data.jcjJjxx.bjdh);
+			  $("#xslxdh").text(obj.data.jcjJjxx.lxdh);
+			  $("#xssfdd").text(obj.data.jcjJjxx.sfdd);
+			  $("#xsjqjyaq").val(obj.data.jyaq);
+			  $("#xsjqjqlb").val(obj.data.jqlb);
+			  $("#xsjjsj").text(obj.data.jjsj)
+			  layer.open({
+			   type:1,
+			  area:['800px','620px'],
+				title: '修改警情数据'
+				,content: $("#xsjqbox1"),
+				shade: 0,
+				btn: ['提交', '取消']
+				,btn1: function(index, layero){
+				  var dataSend = {
+						  "id":obj.data.id,
+						  "tbid":obj.data.tbid,
+						  "jqlb":$("#xsjqjqlb").val(),
+						  "jyaq":$("#xsjqjyaq").val()
+					  };
+				  var load1 = layer.load(1);  
+					$.ajax({
+						url:baseUrl + "/mrtb/updateMrtbXsjq",
+						type:"post",
+						cache:false,
+						data:JSON.stringify(dataSend),
+						dataType : 'JSON',
+						contentType: "application/json",
+						beforeSend: function (XMLHttpRequest) {
+						   XMLHttpRequest.setRequestHeader("token", token);
+						},
+						success:function(data) {
+							if(data.code==0){
+								layer.close(load1);
+								layer.msg("修改成功");
+								table.reload("testReload");
+								layer.closeAll();
+								$("#xsjqbox1").hide();
+							}else {
+								layer.close(load1);
+								layer.msg(data.msg);
+								$("#xsjqbox1").hide();
+							}
+						},
+						error : function (res) {
+							// layer.close(load1);
+							layer.msg('修改失败');
+							$("#xsjqbox1").hide();
+						}
+					})
+				},
+				btn2: function(index, layero){
+					layer.closeAll();
+					$("#xsjqbox1").hide();
+				},
+			  cancel: function(layero,index){ 
+				   layer.closeAll();
+				  $("#xsjqbox1").hide();
+				}
+			  }); 
+			}else if(obj.event=="del"){
+				layer.confirm('确认删除吗？', function(index){
+				       layer.close(index);
+				       //向服务端发送删除指令
+						var load1 = layer.load(1);
+						$.ajax({
+							url:baseUrl+"/mrtb/deleteMrtbXsjq?id="+obj.data.id+"&tbid="+obj.data.tbid,
+							type:"GET",
+							cache:false,
+							dataType : 'JSON',
+							contentType: "application/json",
+							beforeSend: function (XMLHttpRequest) {
+								XMLHttpRequest.setRequestHeader("token", token);
+							},
+							success:function(data) {
+								//取消遮罩
+								if(data.code==0){
+									layer.close(load1);
+									layer.msg("删除成功");
+									table.reload("testReload");
+									// history.go(0) 
+								}else {
+									layer.close(load1);
+									layer.msg(data.msg);
+								}
+							},
+							error : function (res) {
+								layer.close(load1);
+							}
+						})
+				     });
+			}
+		})	
+		
+		
+		
+		
+		// 获取涉黑恶
+		if(res.data.mrtb.comment2==null){
+			$.get(baseUrl+"/cj/queryYesterdaySHSE?rq="+mrtbtime,function(res){
+				// $("#shsebody")
+				var tbody1="";
+				for(i in res.data){
+					tbody1 += `<tr>
+								<td>`+(Number(i)+1)+`</td>
+								<td>`+res.data[i].deptsname+`</td>
+								<td>`+res.data[i].jjbh+`</td>
+								<td>`+res.data[i].bjnr+`</td>
+								<td class="textleft">`+res.data[i].cljgnr+`</td>
+								<td>`+res.data[i].bccljg+`</td>
+								<td>`+res.data[i].jqsx+`</td>
+								<td>有</td>
+								<td>有</td>
+							 </tr>`
+				}
+				// console.log(tbody);
+				$("#shsebody").html(tbody1);
+			})
+		}
+		
+	})
+	
+	
+	
+	
+	
+	
+	
+	// 发布时间
+	laydate.render({
+	    elem: '#fbrq'
+	});
+   
+   
+   
+   
+	
+ 
+ 
+	$("#baocun").click(function(){
+		var qs   = $("#qs").val();
+		var fbrq = $("#fbrq").val();
+		var chenbanren = $("#chenbanren").val();
+		var shenheren = $("#shenheren").val();
+		var comment1 = $("#xsjqtb").html();
+		var comment2 = $("#shsetb").html();
+		var comment3 = $("#xggzts").html();
+		var msg = $("#dxlr").val();
+		var publishContent = "";
+		var datasend = {
+			   id:listId,
+			   qs:qs,
+			   fbrq:fbrq,
+			   chenbanren:chenbanren,
+			   shenheren:shenheren,
+			   comment1:comment1,
+			   comment2:comment2,
+			   comment3:comment3,
+			   msg:msg
+		}
+		if(qs==""){
+			layer.msg("期数不能为空！");
+			return false;
+		}else if(fbrq==""){
+			layer.msg("发布日期不能为空！");
+			return false;
+		}else if(chenbanren==""){
+			layer.msg("承办人不能为空！");
+			return false;
+		}else if(shenheren==""){
+			layer.msg("审核人不能为空！");
+			return false;
+		}
+		
+		$.ajax({
+		    url:baseUrl + "/mrtb/updateMrtb",
+		    data:JSON.stringify(datasend),
+		    type:"POST",
+		    cache:false,
+		    dataType : 'JSON',
+		    contentType: "application/json",
+			beforeSend: function (XMLHttpRequest) {
+			   XMLHttpRequest.setRequestHeader("token", token);
+			},
+		    success:function(data) {
+		        if(data.code==0){
+		            layer.msg("保存成功");
+					// window.location="mr110detail.html?id="+listId;
+					window.location="mr110.html";
+		        }else {
+		            layer.msg(data.msg);
+		        }
+		    },
+		    error : function (res) {
+		        layer.msg('保存失败');
+		    }
+		})
+	})
+	
+	
+	
+</script>
+
+</body>
+</html>

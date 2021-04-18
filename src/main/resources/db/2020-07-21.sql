@@ -1,0 +1,1 @@
+ALTER TABLE `df_qbxx` ADD COLUMN `s8` varchar(50) AFTER `s7`, ADD COLUMN `s9` varchar(50) AFTER `s8`;

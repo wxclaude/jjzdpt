@@ -1,0 +1,33 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+//{  "username": "104722",   "password": "111111" }
+{  "username": "jw",   "password": "111" }
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+
+#分页获取每日台账
+#deptId 可选
+#startDate 可选
+#endDate 可选
+GET http://localhost:8080/mrtz/queryMrtzPage?page=1&limit=10&deptId=D0059&startDate=&endDate=
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#上传每日台账
+POST http://localhost:8080/mrtz/addMrtz?tzDate=2020-08-05&deptId=D0086
+Accept: */*
+Cache-Control: no-cache
+###
+
+#每日台账统计
+GET http://localhost:8080/mrtz/queryMrtzStat?startDate=2020-08-05&endDate=2020-08-14
+Accept: */*
+##Cache-Control: no-cache
+#####

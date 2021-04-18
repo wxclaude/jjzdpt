@@ -1,0 +1,1 @@
+ALTER TABLE `jq_cj_bhg` ADD COLUMN `createway` int DEFAULT 0 AFTER `xfsj`;

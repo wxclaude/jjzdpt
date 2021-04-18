@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.df.dao.DfDetailDao">
+
+    <select id="queryDfTheadByRecordId" resultType="java.util.Map">
+      select c.id as configId, CONCAT(c.dfx,'(', c.qzb, '%)') as configName, c.parent_id as parentId, c.qzb
+      from df_config c
+      where c.id in (select distinct config_id from df_detail d where d.record_id = #{recordId} )
+      order by c.parent_id,c.id
+    </select>
+
+    <update id="updateDfDetailForm" parameterType="io.renren.modules.df.entity.DfDetailForm">
+        update df_detail
+        set score = #{score},score_qzb = #{scoreQzb}
+        where record_id = #{recordId} and dept_id = #{deptId} and config_id = #{configId}
+    </update>
+
+    <select id="queryDfDetailByDeptIdAndDate" resultType="java.util.Map">
+
+        select
+          ifnull(sum(d.score_qzb),0) as totalScore,
+          c.id as configId, c.dfx as configName
+        from df_detail d
+        inner join df_record r on r.id = d.record_id
+        inner join df_config c on d.parent_config_id = c.id
+        where r.df_month = #{params.dfMonth}
+        and d.dept_id = #{params.deptId}
+        and r.isdel = 0 and d.isdel = 0
+        group by c.id,c.dfx
+        order by c.id
+
+    </select>
+
+
+
+</mapper>

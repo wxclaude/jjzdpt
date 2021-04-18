@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.jcj.dao.JjDao">
+
+
+    <select id="queryJjList" resultType="io.renren.modules.jcj.entity.JcjJjxx">
+        select j.* from JCJ_JJXX j
+        left join jcj_cjxx c on j.jjbh =c.jjbh
+		left join tdept d on left(j.djdw,8)+'0000' = d.deptcode
+		where 1=1
+		<if test="condition == '8HourNoPoliceDeal'">
+		and	substring (j.jjrqsj, 1, 8) > convert (
+				varchar,
+				dateadd(day ,-3, getdate()),
+				112
+			)
+		and j.jjdbh != ''
+		and j.jjrqsj!=''
+		and c.djsj is null
+		and datediff(
+				hour,
+				convert (
+					datetime,
+					substring (j.jjrqsj, 1, 4) + '-' + substring (j.jjrqsj, 5, 2) + '-' + substring (j.jjrqsj, 7, 2) + ' ' + substring (j.jjrqsj, 9, 2) + ':' + substring (j.jjrqsj, 11, 2) + ':' + substring (j.jjrqsj, 13, 2)
+				),
+				getdate()
+			) >8
+		and j.cjbs ='1'
+        </if>
+        order by j.jjrqsj desc
+    </select>
+
+    <select id="queryTotalByDate" resultType="io.renren.modules.jcj.entity.JcjJjxx">
+
+    </select>
+
+
+</mapper>

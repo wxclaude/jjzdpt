@@ -1,0 +1,87 @@
+POST http://localhost:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+> {% client.global.set("token", response.body.token); %}
+
+<> 2020-03-16T110533.200.json
+###
+
+#会议点名
+POST http://localhost:8080/hydm/addHydmBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:3926f085b381f430a6ab2b82bff3f64b
+
+{
+"title": "测试会议",
+  "dmTime": "2020-03-23 16:00:00",
+"data":[
+  {"deptId":"D0209","yd":"1","xg":"1","bz": ""},
+  {"deptId":"D0209","yd":"1","xg":"2","bz": "hhh"}
+]
+}
+<> 2020-03-16T110533.200.json
+###
+
+#分页查看会议点名
+GET http://localhost:8080/hydm/queryHydmPage?page=1&limit=1
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+#导出会议点名
+GET http://localhost:8080/hydm/exportHydmByDate?dmTime=2020-03-24 12:57:40&token=3926f085b381f430a6ab2b82bff3f64b
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:3926f085b381f430a6ab2b82bff3f64b
+
+###
+
+#会议点名报表接口
+GET http://localhost:8080/hydm/queryHydmReportDate
+Accept: */*
+Cache-Control: no-cache
+
+<> 2020-03-16T110533.200.json
+###
+
+
+#根据会议点名时间 查看会议点名详情
+GET http://localhost:8080/hydm/queryByDate?dmTime=2020-06-23 00:00:00
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+#修改会议点名
+POST http://localhost:8080/hydm/updateHydmBatch
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{
+  "title": "测试会议2",
+  "dmTime": "2020-06-24 00:00:00",
+  "data":[
+    {"id":66,"deptId":"D0209","yd":"0","xg":"0","bz": "123"}
+  ]
+}
+<> 2020-03-16T110533.200.json
+###
+
+#导出会议点名统计
+GET http://localhost:8080/hydm/exportHydmStatisticsByDate?startDate=2020-10-01&endDate=2020-11-01
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+<> 2020-03-16T110533.200.json
+###

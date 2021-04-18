@@ -1,0 +1,56 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "admin2",   "password": "admin" }
+> {% client.global.set("token", response.body.token); %}
+###
+
+//分页查询 新闻列表
+GET http://localhost:8080/myh/news/query?page=1&limit=10&frm=1
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#新增新闻数据
+POST http://localhost:8080/myh/news/add
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+#token:{{token}}
+
+{"title":"1好人好事111", "type":1, "img":"/uploadfile/1603357028680_2.png", "content":"2020-13123131231313110-07","mewsTime":"2020-10-25 10:00:00","s1":"s1"}
+###
+
+//删除 新闻数据
+GET http://localhost:8080/myh/news/delete?id=f4934f3a288140ac2d038d5844b64a9e
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+//修改 新闻轮播图 前获取数据
+GET http://localhost:8080/myh/news/queryById?id=f4934f3a288140ac2d038d5844b64a9e
+Accept: */*
+Cache-Control: no-cache
+###
+
+#修改 新闻数据
+POST http://localhost:8080/myh/news/update
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"id":"f4934f3a288140ac2d038d5844b64a9e","title":"1好人好事222", "type":1, "img":"/uploadfile/1603357028680_222.png", "content":"2222222","mewsTime":"2020-10-25 10:00:00"}
+###
+
+
+//首页 路面警情
+GET http://localhost:8080/myh/news/queryStatic
+Accept: */*
+Cache-Control: no-cache
+###

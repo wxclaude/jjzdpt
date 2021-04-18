@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.video.dao.JyVideoDao">
+
+
+    <select id="queryVideoDataByTypeAndDate" resultType="java.util.Map">
+        select t.XMID, ltrim(rtrim(t.XLZT)) as xlzt, isnull(t.BZ,'') as bz,
+        isnull(ltrim(rtrim(t.JKZS)),0) as total, isnull(ltrim(rtrim(t.ZXJKS)),0) as zxs, t.datetime1,
+        d.pointName ,d.linkContact,d.pointNo,d.powerinfo
+        from tXDJ_TWJK_XYJK t
+        left join tV_DW d on t.XMID = d.V_DWId
+        where 1=1
+        <if test="params.type == 3">
+            and d.BZs4='QJYJXYJR'
+        </if>
+        <if test="params.type == 4">
+            and d.BZs4='ZASQWKK'
+        </if>
+        <if test="params.type == 5">
+            and d.BZs4='DWNBJK'
+        </if>
+        <if test="params.type == 6">
+            and d.BZs4='SCCSJK'
+        </if>
+        and CONVERT(varchar(100), datetime1, 23)=#{params.date}
+        order by xlzt,d.powerinfo
+    </select>
+
+    <select id="queryVideoDataByTypeAndDateNew" resultType="java.util.Map">
+        select ltrim(rtrim(t.XMID)) as XMID, ltrim(rtrim(t.XLZT)) as xlzt, isnull(t.BZ,'') as bz,
+        isnull(ltrim(rtrim(t.JKZS)),0) as total, isnull(ltrim(rtrim(t.ZXJKS)),0) as zxs, t.datetime1,
+        d.pointName ,d.linkContact,d.pointNo,d.powerinfo
+        from tXDJ_TWJK_XYJK t
+        left join tV_DW d on t.XMID = d.V_DWId
+        left join tV_XM x on x.V_XMId = d.XMId
+        where x.V_XMID in (${params.xmIds})
+        and CONVERT(varchar(100), t.datetime1, 23)=#{params.date}
+        order by xlzt,d.powerinfo
+    </select>
+
+
+    <select id="queryLastVideoDataByType" resultType="java.util.Map">
+
+      select
+        d.pointName,d.V_DWId as xmid,d.pointNo,
+        isnull((select top 1 ltrim(rtrim(XLZT)) from tXDJ_TWJK_XYJK where XMID = d.V_DWId order by datetime1 desc),'') as xlzt,
+        isnull((select top 1 ltrim(rtrim(BZ)) from tXDJ_TWJK_XYJK where XMID = d.V_DWId order by datetime1 desc),'') as bz,
+        isnull((select top 1 ltrim(rtrim(JKZS)) from tXDJ_TWJK_XYJK where XMID = d.V_DWId order by datetime1 desc),'') as total,
+        isnull((select top 1 ltrim(rtrim(ZXJKS)) from tXDJ_TWJK_XYJK where XMID = d.V_DWId order by datetime1 desc),'') as zxs,
+        isnull((select top 1 datetime1 from tXDJ_TWJK_XYJK where XMID = d.V_DWId order by datetime1 desc),'') as xjsj
+      from tV_Dw d
+      left join tV_XM x on x.V_XMId = d.XMId
+      where x.V_XMID in (${params.xmIds})
+      order by d.powerinfo
+
+    </select>
+    <select id="queryVideoStatisticsByTypeAndDate" resultType="java.util.Map">
+        select d.pointName as dept, isnull(count(d.V_DWId),0) as xjcs,
+        isnull(sum(t.JKZS),0) as total,
+        isnull(sum(t.ZXJKS),0) as zxs
+        from tV_Dw d
+        left join tXDJ_TWJK_XYJK t on d.V_DWId = t.XMID
+        left join tV_XM x on x.V_XMId = d.XMId
+        where x.V_XMID in (${params.xmIds})
+
+        <if test="params.startDate != null and params.startDate != ''">
+            and CONVERT(varchar(100), t.datetime1, 23) &gt;= #{params.startDate}
+        </if>
+        <if test="params.endDate != null and params.endDate != ''">
+            and CONVERT(varchar(100), t.datetime1, 23) &lt;= #{params.endDate}
+        </if>
+        group by d.pointName
+--         order by d.powerinfo
+
+    </select>
+
+    <!--
+    <select id="queryLastVideoDateByType" resultType="java.lang.String">
+        select isnull(CONVERT(varchar(100), x.datetime1, 23),'') as lastDate
+        from tV_Dw d
+        inner join tXDJ_TWJK_XYJK x on d.V_DWId = x.XMID
+        where 1=1
+        <if test="params.type == 3">
+            and d.BZs4='QJYJXYJR'
+        </if>
+        <if test="params.type == 4">
+            and d.BZs4='ZASQWKK'
+        </if>
+        <if test="params.type == 5">
+            and d.BZs4='DWNBJK'
+        </if>
+        <if test="params.type == 6">
+            and d.BZs4='SCCSJK'
+        </if>
+        group by CONVERT(varchar(100), x.datetime1, 23)
+        order by CONVERT(varchar(100), x.datetime1, 23) desc
+
+    </select>
+    -->
+
+    <select id="queryLastVideoDateByType" resultType="java.lang.String">
+        select isnull(CONVERT(varchar(100), x.datetime1, 23),'') as lastDate
+        from tV_Dw d
+        inner join tXDJ_TWJK_XYJK x on d.V_DWId = x.XMID
+        where  d.XMID in (${params.xmIds})
+        group by CONVERT(varchar(100), x.datetime1, 23)
+        order by CONVERT(varchar(100), x.datetime1, 23) desc
+
+    </select>
+
+    <select id="getLastZxDate" resultType="java.lang.String">
+      select top 1 CONVERT(varchar(100), datetime1, 23)
+      from  tXDJ_TWJK_XYJK
+      where XMID like ltrim(rtrim(#{params.XMID}))+'%' and ltrim(rtrim(XLZT)) = '正常'
+      order by CONVERT(varchar(100), datetime1, 23) desc
+    </select>
+
+
+</mapper>

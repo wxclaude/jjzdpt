@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-移动接处警</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<script src="html2canvas.min.js" type="text/javascript" charset="utf-8"></script>
+	<script charset="utf-8" src="editor_config.js"></script>
+	  <script charset="utf-8" src="editor_all_min.js"></script>
+	<style type="text/css">
+		.layui-table-cell {
+		    font-size:14px;
+		    padding:0 5px;
+		    height:auto;
+		    overflow:visible;
+		    text-overflow:inherit;
+		    white-space:normal;
+		    word-break: break-all;
+		}
+		#xsjqList thead tr th{
+			background: #78BFD9;
+			color: white;
+		}
+		
+	</style>
+	<script type="text/javascript">
+		function isIE() {
+		    if(!!window.ActiveXObject || "ActiveXObject" in window){
+		      return true;
+		    }else{
+		      return false;
+		　　 }
+		}
+		if(isIE()){
+			    window.close();
+				//创建ActiveXObject实例，只在IE下有效，才可以创建
+				var objShell= new ActiveXObject("WScript.Shell");
+				//命令参数说明
+				//cmd.exe /c dir 是执行完dir命令后关闭命令窗口。
+				//cmd.exe /k dir 是执行完dir命令后不关闭命令窗口。
+				//cmd.exe /c start dir 会打开一个新窗口后执行dir指令，原窗口会关闭。
+				//cmd.exe /k start dir 会打开一个新窗口后执行dir指令，原窗口不会关闭。
+				//这里的dir是start chrome www.baidu.com//用谷歌浏览器打开百度
+				objShell.Run("cmd.exe /c start chrome"+window.location.href ,0,true);
+		}
+	</script>
+	<style type="text/css">
+		.layui-table-header .layui-table-cell {
+			height: auto;
+			line-height: 28px;
+			padding: 0 15px;
+			position: relative;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: normal;
+			box-sizing: border-box;
+		}
+		#yjjcjtb th{
+			background-color: #78BFD9;
+			color: white;
+			text-align: center;
+		}
+		#yjjcjtb tbody tr{
+			text-align: center;
+		}
+		#zbmjtable th,#zd5List th,#xtjList th,#yjdmtable th,#comment1 th,#comment2 th{
+			background-color: #78BFD9;
+			color: white;
+			text-align: center;
+		}
+		#zbmjtable tbody tr,#zd5List tbody tr,#xtjList tbody tr,#yjdmtable tr,#comment1 tr,#comment2 tr{
+			text-align: center;
+		}
+		.topImg{
+			background: url(images/mr110.jpg) no-repeat center center;
+			height: 150px;
+		}
+		.textleft{
+			text-align: left;
+		}
+		
+	</style>
+</head>
+<body>
+	<div class="topImg"></div>
+	
+	<!-- 导航栏 -->
+	<!-- 导航栏 -->
+	<div id="page-content">
+    <div class="zhibantable" style="margin-bottom: 150px;margin-top: 30px;" >
+			<div class="layui-container">
+				<div class="layui-row">
+					<div class="layui-col-lg12" >
+						<p style="font-size: 48px;font-family: 宋体;color: #FF0000;text-align: center;">邗江指挥中心每日情况通报</p>
+						<p style="text-align: center;">
+							<span style="font-size: 26px;">
+								第
+								<span id="qs"></span>
+								期
+							</span>
+						</p>
+					</div>
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;font-family: 楷体_GB2312;float: left;">邗江分局指挥中心编</p>
+						<span style="font-size: 21px;float: right;font-family: 楷体_GB2312;" id="fbrq"></span>
+					</div>
+					<!-- <div class="layui-col-lg2 layui-col-md-offset6">
+						<span style="font-size: 21px;float: right;font-family: 楷体_GB2312;" id="fbrq"></span>
+					</div> -->
+					<div class="layui-col-lg12">
+						<hr style="height: 2px; background-color: #FF0000;">
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;font-family: 黑体;margin-top: 37px;margin-bottom: 10px; text-indent: 2em;">
+							一、警情概况
+						</p>
+					</div>
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;font-family: 仿宋_GB2312;line-height: 30px;text-indent: 2em;" id="jqStr">
+							<span id="tbrqStart"></span>7时至<span id="tbrqEnd"></span>7时，<span id="dxzt">全区共接各类警情<span id="totalnum"></span>起，其中刑事警情<span id="num01"></span>起（<span id="pcsxsjqone"></span>；<span id="pcsxsjqtwo"></span>），治安警情<span id="num02"></span>起，交通事故<span id="num03"></span>起，火灾事故<span id="num04"></span>起，举报投诉<span id="num06"></span>起，群众求助<span id="num05"></span>起，纠纷<span id="num08"></span>起，经济案件<span id="num11"></span>起，其他警情<span id="num99"></span>起。</span>
+						</p>
+					</div>
+					<div class="layui-col-lg12" style="margin-top: 20px;">
+						<div id="jqs" style="width: 1000px;height: 410px;margin: 0 auto;"></div>
+					</div>
+					<div class="layui-col-lg12">
+						<div id="pcsjqs" style="width: 1000px;height: 410px;margin: 0 auto;"></div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;margin-top: 37px;font-family: 黑体;margin-bottom: 10px;text-indent: 2em;">
+							二、刑事警情
+						</p>							
+					</div>
+					<div class="layui-col-lg12">
+						<!-- <p style="font-size: 21px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;富文本
+						</p> -->
+						<div class="layui-col-lg12">
+							<!-- <p style="font-size: 21px;">
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;富文本
+							</p> -->
+							<table class="layui-hide" id="xsjqList"></table>
+							
+							
+						</div>
+					</div>
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;margin-top: 37px;font-family: 黑体;margin-bottom: 10px; text-indent: 2em;">
+							三、涉黑涉恶警情
+						</p>							
+					</div>
+					<div class="layui-col-lg12">
+						<!-- <p style="font-size: 21px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;无
+						</p> -->
+						<div class="layui-col-lg12" id="comment2">
+							<!-- <p style="font-size: 21px;">
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;富文本
+							</p> -->
+							
+						</div>
+					</div>
+				</div>
+				<div class="layui-row" >
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;margin-top: 37px;font-family: 黑体;margin-bottom: 10px; text-indent: 2em;">
+							四、移动接处警应用
+						</p>
+						<p style="font-size: 21px;font-family: 仿宋_GB2312; text-indent: 2em;" id="tbrqmd">
+						</p>
+					</div>
+					<div class="layui-col-lg12"  id="mvp">
+						<table class="layui-table" id="yjjcjtb">
+							<thead>
+							      <tr>
+							        <th>序号</th>
+							        <th>单位名称</th>
+							        <th>总警情量</th>
+							        <th>新平台接警量</th>
+									<th>老平台接警量</th>
+									<th>新平台接警率</th>
+									<th>总处警登记</th>
+									<th>新平台桌面端处警登记</th>
+									<th>新平台移动端处警登记</th>
+									<th>新平台处警率</th>
+									<th>移动端处警率</th>
+							      </tr> 
+							    </thead>
+								<tbody>
+									<tr v-for="(item,index) in message">
+										<td>{{index+1}}</td>
+										<td style="width: 235px;">{{item.dw}}</td>
+										<td>{{item.zjql}}</td>
+										<td>{{item.xptjjl}}</td>
+										<td>{{item.lptjjl}}</td>
+										<td>{{item.xptjjlv}}%</td>
+										<td>{{item.zcjdj}}</td>
+										<td>{{item.xptzmdcjdj}}</td>
+										<td>{{item.xptyddcjdj}}</td>
+										<td>{{item.xptcjlv}}%</td>
+										<td>{{item.yddcjlv}}%</td>
+									</tr>
+								</tbody>
+						</table>
+					</div>
+					<!-- <div class="layui-col-lg12">
+						<p style="font-size: 21px;padding-top: 25px;">
+							【综合指挥室运行情况】
+						</p>
+					</div>
+					<div class="layui-col-lg12" id="comment2">
+						
+						
+					</div> -->
+					<!-- 全局包裹 -->
+					<div id="mvp1">
+					<div class="layui-col-lg12" v-show="zbmjdm.length!==0">
+						<p style="font-size: 21px;margin-top:37px;font-family: 黑体;margin-bottom: 10px; text-indent: 2em;">
+							五、在岗人员点名
+						</p>
+						<p style="font-size: 21px;font-family: 仿宋_GB2312; text-indent: 2em;" id="zgrydm">
+						</p>
+					</div>
+					<div class="layui-row">
+						<!-- 值班民警数据为空 -->
+					<div class="layui-col-lg12" v-show="zbmjdm.length!==0">
+						<table class="layui-table" id="zbmjtable">
+							<thead>
+							      <tr>
+							        <th>单位</th>
+							        <th>值班领导</th>
+							        <th>应答</th>
+							        <th>值班民警</th>
+									<th>应答</th>
+									<!-- <th v-if="zbmjdm.sqPolice== '' ? false : true">社区民警</th> -->
+									<!-- <th v-if="zbmjdm.sqYd== '' ? false : true">应答</th> -->
+							      </tr> 
+							    </thead>
+								<tbody>
+									<tr v-for="(item,index) in zbmjdm">
+										<td>{{item.deptName}}</td>
+										<td>{{item.police}}</td>
+										<td style="font-size: 21px;">{{item.yd}}</td>
+										<td>{{item.zbPolice}}</td>
+										<td>{{item.zbYd}}</td>
+										<!-- <td v-if="item.sqPolice == '' ? false : true">{{item.sqPolice}}</td> -->
+										<!-- <td v-if="item.sqYd == '' ? false : true">{{item.sqYd}}</td> -->
+									</tr>
+								</tbody>
+						</table>
+					</div>
+					<div class="layui-col-lg6" v-show="zbmjdm.length!==0">
+						<table class="layui-table" id="zd5List">
+							<thead>
+							      <tr>
+							        <th>单位</th>
+							        <th>值班民警</th>
+									<th>应答</th>
+							      </tr> 
+							    </thead>
+								<tbody>
+									<tr v-for="(item,index) in zd5list">
+										<td>{{item.deptName}}</td>
+										<td>{{item.police}}</td>
+										<td style="font-size: 21px;">{{item.yd}}</td>
+									</tr>
+								</tbody>
+						</table>
+					</div>
+					<div class="layui-col-lg6" v-show="zbmjdm.length!==0">
+						<table class="layui-table" id="xtjList">
+							<thead>
+							      <tr>
+							        <th>单位</th>
+							        <th>巡逻人员</th>
+									<th>应答</th>
+							      </tr> 
+							    </thead>
+								<tbody>
+									<tr v-if="xtjlist.length>0">
+										<td>{{xtjlist[0].deptName}}</td>
+										<td>{{xtjlist[0].police}}</td>
+										<td style="font-size: 21px;">{{xtjlist[0].yd}}</td>
+									</tr>
+									<tr v-else>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr v-if="xtjlist.length>1">
+										<td>{{xtjlist[1].deptName}}</td>
+										<td>{{xtjlist[1].police}}</td>
+										<td style="font-size: 21px;">{{xtjlist[1].yd}}</td>
+									</tr>
+									<tr v-else>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr v-if="xtjlist.length>2">
+										<td>{{xtjlist[2].deptName}}</td>
+										<td>{{xtjlist[2].police}}</td>
+										<td style="font-size: 21px;">{{xtjlist[2].yd}}</td>
+									</tr>
+									<tr v-else>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr v-if="xtjlist.length>3">
+										<td>{{xtjlist[3].deptName}}</td>
+										<td>{{xtjlist[3].police}}</td>
+										<td style="font-size: 21px;">{{xtjlist[3].yd}}</td>
+									</tr>
+									<tr v-else>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr v-if="xtjlist.length>4">
+										<td>{{xtjlist[4].deptName}}</td>
+										<td>{{xtjlist[4].police}}</td>
+										<td style="font-size: 21px;">{{xtjlist[4].yd}}</td>
+									</tr>
+									<tr v-else>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+									</tr>
+									
+								</tbody>
+						</table>
+					</div>
+					<div class="layui-col-lg12">
+						<p style="font-size: 21px;margin-top: 37px;font-family: 黑体;margin-bottom: 10px; text-indent: 2em;" v-if="zbmjdm.length!==0">
+							六、应急点名
+						</p>
+						<p style="font-size: 21px;margin-top: 37px;font-family: 黑体;margin-bottom: 10px; text-indent: 2em;" v-else>
+							五、应急点名
+						</p>
+						<p style="font-size: 21px;font-family: 仿宋_GB2312; text-indent: 2em;" id="yjrmdm">
+						</p>
+					</div>
+					<div class="layui-col-lg12">
+						<table class="layui-table" id="yjdmtable">
+							      <tr>
+							        <th>单位</th>
+							        <th>邗上</th>
+							        <th>汊河</th>
+							        <th>四季园</th>
+									<th>念四桥</th>
+									<th>新盛</th>
+									<th>瓜洲</th>
+									<th>蒋王</th>
+									<th>甘泉</th>
+							      </tr> 
+									<tr>
+										<td style="background-color:#78BFD9;color: white;">应答情况</td>
+										<td>{{yjdm.D0059}}</td>
+										<td>{{yjdm.D0068}}</td>
+										<td>{{yjdm.D0181}}</td>
+										<td>{{yjdm.D0191}}</td>
+										<td>{{yjdm.D00003}}</td>
+										<td>{{yjdm.D0078}}</td>
+										<td>{{yjdm.D0086}}</td>
+										<td>{{yjdm.D0245}}</td>
+									</tr>
+									<tr>
+									  <th>单位</th>
+									  <th>杨庙</th>
+									  <th>槐泗</th>
+									  <th>方巷</th>
+									  <th>公道</th>
+									  <th>杨寿</th>
+									  <th>竹西</th>
+									  <th>江阳</th>
+									  <th>西湖</th>
+									</tr> 
+									<tr>
+										<td style="background-color:#78BFD9;color: white;">应答情况</td>
+										<td>{{yjdm.D0095}}</td>
+										<td>{{yjdm.D0102}}</td>
+										<td>{{yjdm.D0112}}</td>
+										<td>{{yjdm.D0122}}</td>
+										<td>{{yjdm.D0173}}</td>
+										<td>{{yjdm.D0209}}</td>
+										<td>{{yjdm.D0238}}</td>
+										<td>{{yjdm.D0220}}</td>
+									</tr>
+									<tr>
+									  <th>单位</th>
+									  <th>刑警</th>
+									  <th>巡特警</th>
+									  <th>交警</th>
+									  <th>汊河中队</th>
+									  <th>公道中队</th>
+									  <th>瓜洲中队</th>
+									  <th>甘泉中队</th>
+									  <th>方巷中队</th>
+									</tr> 
+									<tr>
+										<td style="background-color:#78BFD9;color: white;">应答情况</td>
+										<td>{{yjdm.D0018}}</td>
+										<td>{{yjdm.D0050}}</td>
+										<td>{{yjdm.D0032}}</td>
+										<td>{{yjdm.D0044}}</td>
+										<td>{{yjdm.D0038}}</td>
+										<td>{{yjdm.D0037}}</td>
+										<td>{{yjdm.D0039}}</td>
+										<td>{{yjdm.D0040}}</td>
+									</tr>
+						</table>
+					</div>
+					</div>
+					</div>
+					<div class="layui-col-lg12">
+						<div id="comment3" style="line-height: 30px;">
+							<!-- <p style="font-size: 21px;padding-top: 25px;font-family: 黑体;margin-bottom: 10px;">
+								【工作提示】
+							</p>
+							<p style="font-size: 21px;font-family: 仿宋_GB2312;line-height: 30px; text-indent: 2em;">
+								请各单位进一步加大安
+								全防范宣传力度，加强对辖区内重点区域、路段、部位的巡逻盘查，提高见警率，全力维护社会治安稳定。
+								<strong>根据市局统一部署要求，全区实行战时勤务。</strong>
+							</p>
+							<p style="font-size: 21px;font-family: 仿宋_GB2312;line-height: 30px; text-indent: 2em;">
+								请各派出所对照《扬州市公安局邗江分局派出所综合指挥室工作规范》的要求，对综合指挥室运行质态进行自查整改，完善配套运作机制 ，严格执行实体化、实战化运作；要严格落实指挥员、警辅力量常态入驻综合指挥室制度。
+							</p> -->
+						</div>
+					</div>
+					<div class="layui-col-lg12">
+						<hr style="height: 2px; background-color: #FF0000;">
+					</div>
+					<div class="layui-col-lg12">
+						<span style="font-size: 21px;float: left;">
+								<strong>承办人：</strong>
+								<span id="chenbanren"></span>
+						</span>
+						<span style="font-size: 21px;float: right;">
+								<strong>审核人：</strong>
+								<span id="shenheren"></span>
+						</span>
+					</div>
+				</div>
+				<!-- <div class="layui-row">
+					<div class="layui-col-lg12" style="text-align: center;margin-top: 30px;">
+						<button class="layui-btn" style="width: 120px;" id="screenshot">
+							截图
+						</button> 
+					</div>
+				</div> -->
+				
+			</div>
+		  
+		  <div class="layui-col-lg12" style="margin-top: 20px;">
+			  <script  id="editor" type="text/plain"  style="width:1140px;margin: 0 auto;">&nbsp;</script>
+		  </div>
+		  <div class="layui-col-lg12" style="text-align: right;margin:20px 0;">
+			  <button type="button" class="layui-btn layui-btn-normal" id="fbbtn">立即发布</button>
+		  </div>
+		  
+    </div>
+	
+	
+</div>	
+	
+	
+	<!-- <div id="screen" style="display:none;padding: 10px;">
+		
+	</div> -->
+	
+	
+    <!-- <div id="footer"></div>-->
+	
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="xiugai">修改</a>
+	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="del">删除</a>
+	<!-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="copy">复制地址</a> -->
+</script>
+<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+<!-- <script src="base.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="echarts.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+	
+	// $("#daochu1").click(function(){
+	// 	// alert(11)
+	// 	$("#page-content").wordExport();
+	// })
+	
+	var ue = UE.getEditor('editor');
+	
+	// $("#footer").load("public/footer.html");
+	var lohref = window.location.href;
+	
+	
+	var listId = getQueryStringRegExp("id");
+	var deptId = getQueryStringRegExp("deptId");
+	var upload = layui.upload;
+	var laydate = layui.laydate;
+	var table = layui.table;
+	
+	function getTabledata(url){
+		table.render({
+		  elem: '#xsjqList'
+		  ,url: url
+		  ,cols: [[
+		     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			,{field:'jjsj', title: '接警时间',  align:"center",width:200,}
+			,{field:'jjdw', title: '接警单位',  align:"center",width:100,}
+			,{field:'jqlb', title: '警情类别',  align:"center",width:100,}
+			,{field:'jyaq', title: '简要案情',  align:"left",}
+		  ]],
+		  done: function (res, curr, count) {
+			  $(".layui-table-header .layui-table thead tr th").css({"background":"#78BFD9","color":"white"});
+		  }
+		});
+	}
+	
+	
+	
+	
+	// 获取详情
+	$.get(baseUrl+"/mrtb/queryById?id="+listId+"&deptId="+deptId,function(res){
+		// console.log(res);
+		getTabledata(baseUrl+"/mrtb/queryMrtbXsjqByTbid?id="+res.data.mrtb.id)
+		// 设置期数
+		$("#qs").text(res.data.qs);
+		// 设置发布日期
+		$("#fbrq").text(res.data.fbrq);
+		// 刑事警情各单位期
+		
+		var pcsxsjq={};
+		var resmrtb = res.data.mrtb;
+		
+		var title1 = "";
+		for(i in resmrtb){
+			if(i=="hs02"&&resmrtb.hs02>0){
+				pcsxsjq.邗上=resmrtb.hs02;
+			}else if(i=="ch02"&&resmrtb.ch02>0){
+				pcsxsjq.汊河=resmrtb.ch02;
+			}else if(i=="gz02"&&resmrtb.gz02>0){
+				pcsxsjq.瓜洲=resmrtb.gz02;
+			}else if(i=="jw02"&&resmrtb.jw02>0){
+				pcsxsjq.蒋王=resmrtb.jw02;
+			}else if(i=="ym02"&&resmrtb.ym02>0){
+				pcsxsjq.杨庙=resmrtb.ym02;
+			}else if(i=="hss02"&&resmrtb.hss02>0){
+				pcsxsjq.槐泗=resmrtb.hss02;
+			}else if(i=="fx02"&&resmrtb.fx02>0){
+				pcsxsjq.方巷=resmrtb.fx02;
+			}else if(i=="gd02"&&resmrtb.gd02>0){
+				pcsxsjq.公道=resmrtb.gd02;
+			}else if(i=="ys02"&&resmrtb.ys02>0){
+				pcsxsjq.杨寿=resmrtb.ys02;
+			}else if(i=="sjy02"&&resmrtb.sjy02>0){
+				pcsxsjq.四季园=resmrtb.sjy02;
+			}else if(i=="nsq02"&&resmrtb.nsq02>0){
+				pcsxsjq.念四桥=resmrtb.nsq02;
+			}else if(i=="zx02"&&resmrtb.zx02>0){
+				pcsxsjq.竹西=resmrtb.zx02;
+			}else if(i=="xh02"&&resmrtb.xh02>0){
+				pcsxsjq.西湖=resmrtb.xh02;
+			}else if(i=="jy02"&&resmrtb.jy02>0){
+				pcsxsjq.江阳=resmrtb.jy02;
+			}else if(i=="ch02"&&resmrtb.ch02>0){
+				pcsxsjq.汊河=resmrtb.ch02;
+			}else if(i=="gq02"&&resmrtb.gq02>0){
+				pcsxsjq.甘泉=resmrtb.gq02;
+			}else if(i=="xs02"&&resmrtb.xs02>0){
+				pcsxsjq.新盛=resmrtb.xs02;
+			}else if(i=="jd02"&&resmrtb.jd02>0){
+				pcsxsjq.交大=resmrtb.jd02;
+			}
+		}
+		// 倒叙对象
+		function sortObj(obj) {
+		        var arr = [];
+		        for (var i in obj) {
+		            arr.push([obj[i],i]);
+		        };
+		        arr.reverse();
+		        var len = arr.length;
+		        var obj = {};
+		        for (var i = 0; i < len; i++) {
+		            obj[arr[i][1]] = arr[i][0];
+		        }
+		        return obj;
+		}
+		// 排序值大小
+		function sortVal(obj) {
+		    var arr = [];
+		    for (var i in obj) {
+		        arr.push([obj[i],i]);
+		    };
+		    arr.sort(function (a,b) {
+		        return b[0] - a[0];
+		    });
+		    var len = arr.length,
+		        obj = {};
+		    for (var i = 0; i < len; i++) {
+		        obj[arr[i][1]] = arr[i][0];
+		    }
+		    return obj;
+		}
+		
+		for(k in sortVal(sortObj(pcsxsjq))){
+			title1+=k + sortVal(sortObj(pcsxsjq))[k] + "起、";
+		}
+		
+		title1 = title1.substring(0,title1.length-1);
+		
+		$("#pcsxsjqone").text(title1);
+		
+		// 设置入室盗窃
+		var xsjqdetail = {};
+		var title2 = "";
+		for(item in resmrtb){
+			if(item=="xsjq01"&&resmrtb.xsjq01>0){
+				xsjqdetail.入室盗窃=resmrtb.xsjq01;
+			}else if(item=="xsjq02"&&resmrtb.xsjq02>0){
+				xsjqdetail.诈骗=resmrtb.xsjq02;
+			}else if(item=="xsjq03"&&resmrtb.xsjq03>0){
+				xsjqdetail.盗窃非机动车=resmrtb.xsjq03;
+			}else if(item=="xsjq99"&&resmrtb.xsjq99>0){
+				xsjqdetail.其他=resmrtb.xsjq99;
+			}
+		}
+		title2+="其中";
+		for(p in xsjqdetail){
+			if(xsjqdetail != {}){
+				title2 += p + xsjqdetail[p] + "起、";
+			}else{
+				title2="";
+			}
+		}
+		
+		if(title2.indexOf("、") != -1 ){
+			title2 = title2.substring(0,title2.length-1);
+		}else{
+			title2="";
+		}
+		$("#pcsxsjqtwo").text(title2);
+		
+		// 设置承办人
+		$("#chenbanren").text(res.data.mrtb.chenbanren);
+		// 设置审批人
+		$("#shenheren").text(res.data.mrtb.shenheren);
+		// 设置富文本1
+		// $("#comment1").html(res.data.mrtb.comment1);
+		// 设置富文本2
+		$("#comment2").html(res.data.mrtb.comment2);
+		// 设置富文本3
+		$("#comment3").html(res.data.mrtb.comment3);
+		
+		
+		// $("#jqStr").append(res.data.jqStr);
+		$("#tbrqStart").text(res.data.tbrqStart);
+		$("#tbrqEnd").text(res.data.tbrqEnd);
+		$("#totalnum").text(res.data.mrtb.totalnum);
+		$("#num01").text(res.data.mrtb.num01);
+		$("#num02").text(res.data.mrtb.num02);
+		$("#num03").text(res.data.mrtb.num03);
+		$("#num04").text(res.data.mrtb.num04);
+		$("#num06").text(res.data.mrtb.num06);
+		$("#num05").text(res.data.mrtb.num05);
+		$("#num08").text(res.data.mrtb.num08);
+		$("#num11").text(res.data.mrtb.num11);
+		$("#num99").text(res.data.mrtb.num99);
+		tbrqStart
+		// console.log($("#jqStr").text().indexOf("，"));
+		console.log(res.data.tbrqStart+"，"+$("#dxzt").text());
+		
+		// 警情数第一个图表
+		var myChart = echarts.init(document.getElementById('jqs'));
+		option = {
+			color: ["#4F81BD"],
+			title:{
+				text:"警情数",
+				left: 'center',
+				align: 'right'
+			},
+			 tooltip: {
+			        // 触发方式
+			        trigger: 'axis'
+			 },
+		    xAxis: {
+		        type: 'category',
+		        data: res.data.jqxAxis
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+			 grid: {
+			     left: "0%",
+			     top: "30px",
+			     right: "0%",
+			     bottom: "4%",
+			     containLabel: true
+			   },
+		    series: [{
+		        data: res.data.jqseries,
+		        type: 'bar',
+		        // showBackground: true,
+		        backgroundStyle: {
+		            color: 'rgba(220, 220, 220, 0.8)'
+		        },
+				barWidth: "25%",
+		    }]
+		};
+		myChart.setOption(option);
+		// 警情数第二个图表
+		//jqDwArr
+		//pcsjqs
+		var myChart1 = echarts.init(document.getElementById('pcsjqs'));
+		option1 = {
+			color: ["#4F81BD","#C0504D","#9BBB59"],
+		    legend: {},
+		    tooltip: {},
+		    dataset: {
+		        source:res.data.jqDwArr
+		    },
+			grid: {
+			    left: "0%",
+			    top: "30px",
+			    right: "0%",
+			    bottom: "4%",
+			    containLabel: true
+			  },
+		    xAxis: {type: 'category'},
+		    yAxis: {},
+		    series: [
+		        {type: 'bar'},
+		        {type: 'bar'},
+		        {type: 'bar'}
+		    ]
+		};
+		myChart1.setOption(option1);
+		
+		// 通报日期
+		$("#tbrqmd").append(res.data.tbrqmd+"，各派出所、交警中队移动接处警应用情况如下：")
+		
+		// 移动接处警数据展示
+		var app1 = new Vue({
+		  el: '#mvp',
+		  data: {
+		    message: res.data.ydjcjList,
+			zbmjdm:res.data.pcs16List,
+			zd5list:res.data.zd5List,
+			xtjlist:res.data.xtjList,
+			yjdm:res.data.yjdm
+		  }
+		})
+		
+		var app2 = new Vue({
+		  el: '#mvp1',
+		  data: {
+			zbmjdm:res.data.pcs16List,
+			zd5list:res.data.zd5List,
+			xtjlist:res.data.xtjList,
+			yjdm:res.data.yjdm,
+			acd :false
+		  }
+		})
+		
+		// 在岗人员点名标题
+		$("#zgrydm").append(res.data.dmtime+"，分局指挥中心通过350M电台系统对各单位在岗人员进行了点名，详细情况如下（说明：√为应答，○为代应答，×为未应答）：")
+		
+		// 应急人员点名
+		$("#yjrmdm").append(res.data.yjdmtime+"，分局指挥中心通过350M电台系统对各单位进行了应急点名，详细情况如下：")
+		
+		
+	})
+	
+	
+	
+	// 发布时间
+	laydate.render({
+	    elem: '#fbsj'
+	});
+	
+	
+	
+	
+	
+	
+	
+	
+	// $("#screenshot").click(function(){
+	// 	$(this).hide();
+	// 	html2canvas(document.body).then(function(canvas) {
+	// 	   var dataUrl = canvas.toDataURL();
+	// 	   var newImg = document.createElement("img");
+	// 	   newImg.src =  dataUrl;
+	// 	   document.body.appendChild(newImg);
+	// 	});
+	// 	$(this).show();
+	// })
+   var instorage = window.sessionStorage;
+   var token = instorage.token;
+   console.log(token);
+   
+   $("#fbbtn").click(function(){
+	    var publishContent = ue.getContent();
+		// console.log(html)
+		
+		$.ajax({
+		    url:baseUrl + "/mrtb/publishMrtb",
+		    type:"post",
+		    cache:false,
+			data:JSON.stringify({
+				 "mrtbId": listId, 
+				 "publishContent":publishContent,
+			}),
+			dataType : 'JSON',
+			contentType: "application/json",
+			beforeSend: function (XMLHttpRequest) {
+			   XMLHttpRequest.setRequestHeader("token", token);
+			},
+		    success:function(data) {
+				if(data.code==0){
+					layer.closeAll();
+					layer.msg("发布成功");
+					window.location="mr110.html";
+				}else {
+					layer.closeAll();
+					layer.msg(data.msg);
+					window.location="mr110.html";
+				}
+		    },
+		    error : function (res) {
+				layer.closeAll();
+		        layer.msg('提交失败');
+		    }
+		})
+		
+   })
+   
+	
+	
+</script>
+
+</body>
+</html>

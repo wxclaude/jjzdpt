@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.dm.dao.YjdmDao">
+
+    <select id="queryYjdmPage" resultType="java.util.Map">
+        SELECT
+            dm_time,COUNT(*) AS 'total',
+            SUM(CASE yd WHEN 1 THEN 1 ELSE 0 END) AS 'yd1Total',
+            SUM(CASE yd WHEN 2 THEN 1 ELSE 0 END) AS 'yd2Total'
+        FROM tyjdm
+        where 1=1
+        GROUP BY dm_time
+        ORDER BY dm_time DESC
+    </select>
+    <select id="queryYjdmReportDate" resultType="java.util.Map">
+
+        select
+        short_dept_name as shortDeptName, COUNT(t.id) AS 'total',
+        SUM(CASE t.yd WHEN 1 THEN 1 ELSE 0 END) AS 'yd1Total',
+        SUM(CASE t.yd WHEN 2 THEN 1 ELSE 0 END) AS 'yd2Total'
+        from
+        (select * from  tDept d  where yjdm =1) d
+        left join
+        (   select * from tyjdm
+            where 1=1
+            <if test="startDate != null and startDate != ''">
+                and date_format( dm_time, '%Y-%m-%d' ) &gt;= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and date_format( dm_time, '%Y-%m-%d' ) &lt;= #{endDate}
+            </if>
+        ) t
+        on t.dept_id = d.dept_id
+        where 1=1
+        GROUP BY d.short_dept_name
+        ORDER BY  LENGTH(d.dept_id),d.dept_id
+    </select>
+    <select id="queryYjdmStatisticsByDatePage" resultType="java.util.Map">
+        select
+        dept_id ,dept_name, COUNT(*) AS 'total',
+        SUM(CASE yd WHEN 1 THEN 1 ELSE 0 END) AS 'yd1Total',
+        SUM(CASE yd WHEN 2 THEN 1 ELSE 0 END) AS 'yd2Total'
+        FROM tyjdm
+        WHERE 1=1
+        <if test="startDate != null and startDate != ''">
+            and date_format( dm_time, '%Y-%m-%d' ) &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and date_format( dm_time, '%Y-%m-%d' ) &lt;= #{endDate}
+        </if>
+        GROUP BY dept_id,dept_name
+        order by length(dept_id),dept_id
+    </select>
+
+</mapper>

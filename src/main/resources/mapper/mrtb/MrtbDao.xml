@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.mrtb.dao.MrtbDao">
+
+    <select id="getYesterday" resultType="java.util.Map">
+        select * from tYestoday where YestodayId = #{params.yesterdayId}
+    </select>
+
+    <insert id="saveCC"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into zh_mrtb(
+      fbrq,tbrq, create_by,qs, comment3,
+      totalnum, Num01, Num02, Num03, Num04, Num05, Num06, Num08, Num11, Num99,
+      gq03, gq02, gq01,
+      jy03, jy02, jy01,
+      xh03, xh02, xh01,
+      zx03, zx02, zx01,
+      xs03, xs02, xs01,
+      nsq03, nsq02, nsq01,
+      sjy03, sjy02, sjy01,
+      ys03, ys02, ys01,
+      gd03, gd02, gd01,
+      fx03, fx02, fx01,
+      hss03, hss02, hss01,
+      ym03, ym02, ym01,
+      jw03, jw02, jw01,
+      gz03, gz02, gz01,
+      ch03, ch02, ch01,
+      hs03, hs02, hs01,
+      jd03, jd02, jd01,
+      xsjq01, xsjq02, xsjq03, xsjq04, xsjq05, xsjq06, xsjq07, xsjq08, xsjq09, xsjq99
+      )
+    values(
+      #{fbrq}, #{tbrq}, #{createBy}, #{qs},#{comment3},
+      #{totalnum}, #{num01}, #{num02}, #{num03}, #{num04}, #{num05}, #{num06}, #{num08}, #{num11}, #{num99},
+      #{gq03}, #{gq02}, #{gq01},
+      #{jy03}, #{jy02}, #{jy01},
+      #{xh03}, #{xh02}, #{xh01},
+      #{zx03}, #{zx02}, #{zx01},
+      #{xs03}, #{xs02}, #{xs01},
+      #{nsq03}, #{nsq02}, #{nsq01},
+      #{sjy03}, #{sjy02}, #{sjy01},
+      #{ys03}, #{ys02}, #{ys01},
+      #{gd03}, #{gd02}, #{gd01},
+      #{fx03}, #{fx02}, #{fx01},
+      #{hss03}, #{hss02}, #{hss01},
+      #{ym03}, #{ym02}, #{ym01},
+      #{jw03}, #{jw02}, #{jw01},
+      #{gz03}, #{gz02}, #{gz01},
+      #{ch03}, #{ch02}, #{ch01},
+      #{hs03}, #{hs02}, #{hs01},
+      #{jd03}, #{jd02}, #{jd01},
+      #{xsjq01}, #{xsjq02}, #{xsjq03}, #{xsjq04}, #{xsjq05}, #{xsjq06}, #{xsjq07}, #{xsjq08}, #{xsjq09}, #{xsjq99}
+    )
+    </insert>
+
+</mapper>
+

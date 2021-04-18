@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.shadow{
+			box-shadow: 2px 2px 2px #888888;;
+		}
+		.layuiadmin-badge{
+			float: right;
+			margin-top: 10px;
+		}
+		.cardFont{
+			font-size: 36px;
+			padding: 5px 0 10px;
+		}
+		.layui-col-lg4,.layui-col-lg6{
+			padding: 5px;
+		}
+		.layui-row{
+			margin-bottom: 15px;
+		}
+		.outerBox{
+			background-color: #F2F2F2;
+			/* margin-top: 5px; */
+			padding-top: 15px;
+			padding-bottom: 15px;
+		}
+	</style>
+</head>
+<body>
+	
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;" id="yidenglu">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+	
+    <div class="topBanner"></div>
+	
+	<!-- // window.location = 'pcsxl.html?userId='+data.userId; -->
+	
+	<!-- 导航栏 -->
+	<div class="wrap">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item mainPage"><a href="pcsindex.html">首页</a></li>
+	        <li class="layui-nav-item">
+	          <a href="pcsxl.html">设备管理</a>
+	        </li>
+			<li class="layui-nav-item">
+			  <a href="javascript:;">接处警模块</a>
+			  <dl class="layui-nav-child">
+			        <dd>
+						<a href="pcscjlist.html">处警信息</a>
+					</dd>
+			    </dl>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsmrtz.html">每日台帐报备</a>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsjszl.html">接收指令</a>
+			</li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+ 
+	<div class="outerBox">
+			
+		
+		<div class="zhibantable" style="margin-bottom: 150px;">
+			<div class="layui-container">
+				<div class="layui-row">
+					<div class="layui-col-lg4">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  当日警情
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">当日</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <p class="cardFont" style="color: #5FB878;" id="countOfDailyJj"></p>
+							<p>
+							  总计警情量 
+							</p>
+						  </div>
+						</div>
+					</div>
+					<div class="layui-col-lg4">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  当日处警
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">当日</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <p class="cardFont" style="color: #5FB878;" id="countOfDailyCj"></p>
+							<p>
+							  当日总计处警量 
+							</p>
+						  </div>
+						</div>
+					</div>
+					<!-- <div class="layui-col-lg3">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  不合格处警
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">当日</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <p class="cardFont" style="color: #FF5722;" id="countOfIllegalCjxx"></p>
+							<p>
+							  前日不合格处警量 
+							</p>
+						  </div>
+						</div>
+					</div> -->
+					<div class="layui-col-lg4" >
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring" style="height: 126px;">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  每日110
+							  <a href="mr110only.html" class="layui-badge layui-bg-gray layuiadmin-badge">更多</a>
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">当日</span>
+						  </div>
+						  <div class="layui-card-body" id="mrtb110">
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-lg6">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  当月警情类型
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">当月</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <div id="jqlx" style="width: 540px;height: 300px"></div>
+						  </div>
+						</div>
+					</div>
+					<div class="layui-col-lg6">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  当月警情走势
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">当月</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <div id="jqzs" style="width: 540px;height: 300px"></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+				
+				
+				<!-- 打分图标 -->
+				<div class="layui-row">
+					<div class="layui-col-lg12" style="width: 1130px;margin-left: 5px;">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  质效打分情况
+							  <!-- <a href="yidongjcj.html" class="layui-badge layui-bg-gray layuiadmin-badge">更多</a> -->
+							  <select id="zxmonth" class="layuiadmin-badge layui-bg-gray layuiadmin-badge" style="border: none;margin-left: 2px;">
+								<!-- <option value="2020-06">2020-06</option> -->
+							  </select>
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">选择月份</span>
+							  <input type="text" hidden="" id="bydate">
+						  </div>
+						  <div class="layui-card-body">
+						    <div id="zxdfqk" style="width: 1130px;height: 300px"></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-lg12" style="width: 1130px;margin-left: 5px;">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  情报信息情况
+						  </div>
+						  <div class="layui-card-body">
+						    <div id="qbxxqk" style="width: 1130px;height: 300px"></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-lg12" style="width: 1130px;margin-left: 5px;">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  每日台帐情况
+							  <select id="mrtzmonth" class="layuiadmin-badge layui-bg-gray layuiadmin-badge" style="border: none;margin-left: 2px;">
+							  		<!-- <option value="2020-06">2020-06</option> -->
+							  </select>
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">选择月份</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <div id="mrtzqk" style="width: 1130px;height: 300px"></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<!-- 三率 -->
+				<div class="layui-row">
+					<div class="layui-col-lg12" style="width: 1130px;margin-left: 5px;">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  接处警三率情况
+							  <!-- <a href="yidongjcj.html" class="layui-badge layui-bg-gray layuiadmin-badge">更多</a> -->
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">当月</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <div id="jcj3l" style="width: 1130px;height: 300px"></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-lg12" style="width: 1130px;margin-left: 5px;">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  350M点名情况
+							  <!-- <a href="zhiban4.html" class="layui-badge layui-bg-gray layuiadmin-badge">更多</a> -->
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">当月</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <div id="zbdm" style="width: 1130px;height: 300px"></div>
+						  </div>
+						</div>
+					</div>
+					<!-- <div class="layui-col-lg6">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  当月应急点名
+							  <a href="yingjichakan.html" class="layui-badge layui-bg-gray layuiadmin-badge">更多</a>
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">月</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <div id="yjdm" style="width: 540px;height: 300px"></div>
+						  </div>
+						</div>
+					</div> -->
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-lg12" style="width: 1130px;margin-left: 5px;">
+						<div class="layui-card shadow layui-anim layui-anim-scaleSpring">
+						  <div class="layui-card-header" style="font-size: 14px;">
+							  派出所自建巡查情况
+							  <!-- <span class="layui-badge layui-bg-blue layuiadmin-badge">当月</span> -->
+							  <select id="pcsmonth" class="layuiadmin-badge layui-bg-gray layuiadmin-badge" style="border: none;margin-left: 2px;">
+							  		<!-- <option value="2020-06">2020-06</option> -->
+							  </select>
+							  <span class="layui-badge layui-bg-blue layuiadmin-badge">选择月份</span>
+						  </div>
+						  <div class="layui-card-body">
+						    <div id="twxc" style="width: 1130px;height: 300px"></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+		
+	<div class="layui-form-item" id="showzxdfbox" style="padding: 10px;">
+		  <table id="showzxdf" lay-filter="showzxdf"></table>
+	</div>
+	
+	
+	
+	    <div id="footer"></div>
+	    
+	
+	
+	<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+	<script src="layui.all.js"></script>
+	<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+	<!-- <script src="base.js" type="text/javascript" charset="utf-8"></script> -->
+	<script src="echarts.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		
+		
+		// 获取当前时间日日日日
+			var date = new Date();
+			Y = date.getFullYear() + '-';
+			M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+			D = (date.getDate()< 10 ? '0'+(date.getDate()) : date.getDate());
+			var nowdate = Y+M+D;
+			//console.log(nowdate);
+			// 获取部门code
+			
+			// http://192.168.32.4:8888        
+			// 定义地址
+			
+			// 定义农历时间
+			var CalendarData=new Array(20);
+			var madd=new Array(12);
+			var TheDate=new Date();
+			var tgString="甲乙丙丁戊己庚辛壬癸";
+			var dzString="子丑寅卯辰巳午未申酉戌亥";
+			var numString="一二三四五六七八九十";
+			var monString="正二三四五六七八九十冬腊";
+			var weekString="日一二三四五六";
+			var sx="鼠牛虎兔龙蛇马羊猴鸡狗猪";
+			var cYear;
+			var cMonth;
+			var cDay;
+			var cHour;
+			var cDateString;
+			var DateString;
+			var Browser=navigator.appName;
+		
+			function init()
+			{
+				CalendarData[0]=0x41A95;
+				CalendarData[1]=0xD4A;
+				CalendarData[2]=0xDA5;
+				CalendarData[3]=0x20B55;
+				CalendarData[4]=0x56A;
+				CalendarData[5]=0x7155B;
+				CalendarData[6]=0x25D;
+				CalendarData[7]=0x92D;
+				CalendarData[8]=0x5192B;
+				CalendarData[9]=0xA95;
+				CalendarData[10]=0xB4A;
+				CalendarData[11]=0x416AA;
+				CalendarData[12]=0xAD5;
+				CalendarData[13]=0x90AB5;
+				CalendarData[14]=0x4BA;
+				CalendarData[15]=0xA5B;
+				CalendarData[16]=0x60A57;
+				CalendarData[17]=0x52B;
+				CalendarData[18]=0xA93;
+				CalendarData[19]=0x40E95;
+				madd[0]=0;
+				madd[1]=31;
+				madd[2]=59;
+				madd[3]=90;
+				madd[4]=120;
+				madd[5]=151;
+				madd[6]=181;
+				madd[7]=212;
+				madd[8]=243;
+				madd[9]=273;
+				madd[10]=304;
+				madd[11]=334;
+			}
+		
+			function GetBit(m,n)
+			{
+				return (m>>n)&1;
+			}
+		
+			function e2c()
+			{
+				var total,m,n,k;
+				var isEnd=false;
+				var tmp=TheDate.getYear();
+				if (tmp<1900) tmp+=1900;
+				total=(tmp-2001)*365
+					+Math.floor((tmp-2001)/4)
+					+madd[TheDate.getMonth()]
+					+TheDate.getDate()
+					-23;
+				if (TheDate.getYear()%4==0&&TheDate.getMonth()>1)
+					total++;
+				for(m=0;;m++)
+				{
+					k=(CalendarData[m]<0xfff)?11:12;
+					for(n=k;n>=0;n--)
+					{
+						if(total<=29+GetBit(CalendarData[m],n))
+						{
+							isEnd=true;
+							break;
+						}
+						total=total-29-GetBit(CalendarData[m],n);
+					}
+					if(isEnd)break;
+				}
+				cYear=2001 + m;
+				cMonth=k-n+1;
+				cDay=total;
+				if(k==12)
+				{
+					if(cMonth==Math.floor(CalendarData[m]/0x10000)+1)
+						cMonth=1-cMonth;
+					if(cMonth>Math.floor(CalendarData[m]/0x10000)+1)
+						cMonth--;
+				}
+				cHour=Math.floor((TheDate.getHours()+3)/2);
+			}
+		
+			function GetcDateString()
+			{ var tmp="";
+				tmp+=tgString.charAt((cYear-4)%10); //年干
+				tmp+=dzString.charAt((cYear-4)%12); //年支
+				tmp+="年(";
+				tmp+=sx.charAt((cYear-4)%12);
+				tmp+=") ";
+				if(cMonth<1)
+				{
+					tmp+="闰";
+					tmp+=monString.charAt(-cMonth-1);
+				}
+				else
+					tmp+=monString.charAt(cMonth-1);
+				tmp+="月";
+				tmp+=(cDay<11)?"初":((cDay<20)?"十":((cDay<30)?"廿":"卅"));
+				if(cDay%10!=0||cDay==10)
+					tmp+=numString.charAt((cDay-1)%10);
+				tmp+=" ";
+				cDateString=tmp;
+				return tmp;
+			}
+		
+			function GetDateString()
+			{
+				var tmp="";
+				var t1=TheDate.getYear();
+				if (t1<1900)t1+=1900;
+				tmp+=t1
+					+"年"
+					+(TheDate.getMonth()+1)+"月"
+					+TheDate.getDate()+"日 "
+					+" 星期"+weekString.charAt(TheDate.getDay());
+				DateString=tmp;
+				return tmp;
+			}
+		
+			init();
+			e2c();
+			GetDateString();
+			GetcDateString();
+			$("#nongli").html(DateString+"[农历]"+cDateString);
+			
+			// 退出
+			// var instorage = window.localstorage;
+			var instorage = window.sessionStorage;
+			var token = instorage.token;
+			var roles = instorage.roles;
+			var deptId = instorage.deptId;
+			var pcstype = instorage.type;
+			var deptCode = instorage.deptCode.substr(0,8);
+			// 检查token
+			
+			function testToken(){
+				var token = instorage.getItem("token");
+				if(token==""||token==undefined||token==null){
+					layer.msg('您还没有登陆',{time:2000}, function () {
+						window.location = 'login.html';
+					});
+				}
+			}
+			// testToken();
+			
+			
+			
+			// 显示登录
+			
+			showlogin();
+			
+			$("#out").click(function(){
+				console.log(token);
+				$.ajax({
+				    url:baseUrl+"/sys/logout",
+				    type:"post",
+				    cache:false,
+					beforeSend: function (XMLHttpRequest) {
+					   XMLHttpRequest.setRequestHeader("token", token);
+					},
+				    success:function(data) {
+						if(data.code==0){
+							instorage.clear();
+							window.location = 'login.html';
+						}else {
+						    layer.msg(data.msg);
+						}
+				    },
+				    error : function (res) {
+				        instorage.clear();
+				        window.location = 'login.html';
+				    }
+				})
+				
+			})
+			// 获取字符串
+			function getQueryString(name) {
+			    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+			    var r = window.location.search.substr(1).match(reg);
+			    if (r != null) {
+			        return unescape(r[2]);
+			    }
+			    return null;
+			}
+			// 判断非空
+			var form = layui.form;
+			form.verify({
+			    otherReq: function(value,item){
+			      var $ = layui.$;
+			      var verifyName=$(item).attr('name')
+			      , verifyType=$(item).attr('type')
+			      ,formElem=$(item).parents('.layui-form')//获取当前所在的form元素，如果存在的话
+					,verifyElem=formElem.find('input[name='+verifyName+']')//获取需要校验的元素
+					,isTrue= verifyElem.is(':checked')//是否命中校验
+					,focusElem = verifyElem.next().find('i.layui-icon');//焦点元素
+					if(!isTrue || !value){
+			        //定位焦点
+			        focusElem.css(verifyType=='radio'?{"color":"#FF5722"}:{"border-color":"#FF5722"});
+			        //对非输入框设置焦点
+			        focusElem.first().attr("tabIndex","1").css("outline","0").blur(function() {
+			            focusElem.css(verifyType=='radio'?{"color":""}:{"border-color":""});
+			         }).focus();
+			        return '必填项不能为空';
+			}
+			    }
+			  });
+		
+		
+			var Role0026 = 'ROLE0026';//网络线路管理
+			var Role0027 = 'ROLE0027';//网络线路查看
+			
+			
+			function checkRole(roles,targetRole) {
+		
+		        if (roles == null || roles == undefined || roles=='') {
+		            return false;
+		        }
+		
+				var roleArray = roles.split(",");
+		        var result = false;
+		
+				for(var i = 0;i<roleArray.length;i++){
+					if(roleArray[i] == targetRole){
+						result = true;
+						break;
+					}
+				}
+				// console.log("result=" + result);
+				return result;
+		
+			}
+		
+				// 弹窗方法开始
+				var isinter;
+				var millisec = 25;//定时器间隔执行时间/毫秒
+				var xflo = 0; //漂浮层x坐标
+				var yflo = 0; //漂浮层y坐标
+				var yistop = false;
+				var xisleft = true;
+				function floatadfun(){
+					kwidth = $(window).width();//可视区域宽度
+					kheight = $(window).height();//可视区域高度
+		 
+					divwidth = $('#floatdivids').width();//div漂浮层宽度
+					divheight = $('#floatdivids').height();//div漂浮层高度
+		 
+					hstop = jQuery(window).scrollTop();//滚动条距离顶部的高度
+					wsleft = jQuery(window).scrollLeft();//滚动条距离最左边的距离
+		 
+					offwidth = (kwidth-divwidth);//div偏移的宽度
+					offheight = (kheight-divheight);//div偏移的高度
+		 
+					if (!yistop) {
+						yflo++;
+						if (yflo >= offheight) {
+							yistop = true;
+						}
+					} else {
+						yflo--;
+						if (yflo <= 0) {
+							yistop = false;
+						}
+					}
+		 
+					if (xisleft) {
+						xflo++;
+						if (xflo >= offwidth) {
+							xisleft = false;
+						}
+					} else {
+						xflo--;
+						if (xflo <= 0) {
+							xisleft = true;
+						}
+					}
+		 
+					$('#floatdivids').css({'top':yflo+hstop,'left':xflo+wsleft}); /* 如果使用固定定位，请把加上滚动条的距离去掉即可 */
+				}
+				
+				$(function () {
+					isinter = setInterval("floatadfun()",millisec);
+					$('#floatdivids').mouseover(function () {
+						clearInterval(isinter);
+					}).mouseout(function () {
+						isinter = setInterval("floatadfun()",millisec);
+					});
+					$('#ClickRemoveFlo').click(function () {
+						$(this).parents("#floatdivids").slideUp(500,function(){
+							clearInterval(isinter);
+							$(this).remove();
+						});
+					});
+				});
+				
+				// 弹窗方法结束
+				
+				
+				// 获取浏览器字符串
+				 function getQueryStringRegExp(name)
+				{
+				 var reg = new RegExp("(^|\\?|&)"+ name +"=([^&]*)(\\s|&|$)", "i"); 
+				 if (reg.test(location.href)) return unescape(RegExp.$2.replace(/\+/g, " ")); return "";
+				}
+				
+				if (roles == null || roles == undefined || roles=='') {
+				    $(".mainPage").html("&nbsp");
+					deptId="";
+				}else{
+					$(".mainPage").children().html("首页");
+				}
+				
+	</script>
+	<script type="text/javascript">
+		
+		$("#footer").load("public/footer.html");
+		var table = layui.table;
+		// 获取十二月
+		var dataArr = [];
+	　　var data = new Date();
+	　　var year = data.getFullYear();
+	　　data.setMonth(data.getMonth(), 1);           //获取到当前月份,设置月份
+	　　for (var i = 0; i < 12; i++) {
+	　　　　data.setMonth(data.getMonth() - 1);     //每次循环一次 月份值减1
+	　　　　var m = data.getMonth() + 1;
+	　　　　m = m < 10 ? "0" + m : m;
+	　　　　dataArr.push(data.getFullYear() + "-" + (m));
+		}
+		
+		// 设置质效打分
+		for(var i in dataArr){
+			$("#zxmonth").append("<option value='"+dataArr[i]+"'>"+dataArr[i]+"</option>");  
+		}
+		
+		
+		// 获取当月前一年
+		var dataNewArr = [];
+	　　var data1 = new Date();
+	　　var year1 = data1.getFullYear();
+	　　data1.setMonth(data1.getMonth(), 1);           //获取到当前月份,设置月份
+	　　for (var i = 0; i < 12; i++) {
+	　　　　data1.setMonth(data1.getMonth() - 1);     //每次循环一次 月份值减1
+	　　　　var m = data1.getMonth() + 2;
+	　　　　m = m < 10 ? "0" + m : m;
+	　　　　dataNewArr.push(data1.getFullYear() + "-" + (m));
+		}
+		
+		
+		// 设置派出所自检部署
+		for(var i in dataNewArr){
+			$("#pcsmonth").append("<option value='"+dataNewArr[i]+"'>"+dataNewArr[i]+"</option>"); 
+		}
+		
+		// 设置派出所每日台帐月份
+		for(var i in dataNewArr){
+			$("#mrtzmonth").append("<option value='"+dataNewArr[i]+"'>"+dataNewArr[i]+"</option>"); 
+		}
+		
+		
+			
+		
+		$.get(baseUrl+"/cj/queryHintCount",function(res){
+			$("#countOf8HourNoPoliceDeal").text(res.countOf8HourNoPoliceDeal);
+			$("#countOf24HourNoApproval").text(res.countOf24HourNoApproval);
+			$("#countOfAddressIsEmpty").text(res.countOfAddressIsEmpty);
+			$("#countOfUpOrLowLimitIsEmpty").text(res.countOfUpOrLowLimitIsEmpty);
+			$("#countOfWeatherConditionIsEmptyWhileTraffic").text(res.countOfWeatherConditionIsEmptyWhileTraffic);
+		})
+		
+		
+		
+		//http://localhost:8080/cj/queryIllegalCjxx
+		//查询三天内不合格处警数据，
+		$.get(baseUrl+"/cj/queryIllegalCjxx",function(res){
+			// console.log();
+			$("#jsrbhg").text(res.count);
+		})
+		
+		
+		// 自动生成每日110
+		$.get(baseUrl+"/mrtb/queryPage?page=1&limit=2",function(res){
+			var html = "";
+			for(var i=0;i<res.data.length;i++){
+				html += `<p style="font-size: 15px;">
+								<a target="_blank" href="mr110detail.html?id=`+ res.data[i].id +`&deptId=`+deptId+ `"style="color: #5FB878;"> `+ res.data[i].tbrq +`每日110通报 </a>
+							</p>`
+			}
+			$("#mrtb110").append(html);
+		});
+		
+		// http://localhost:8080/cj/queryIndexInfo
+		
+		
+		// 当月值班点名
+		// http://127.0.0.1:8080/report/queryDmData
+			(function() {
+				$.get(baseUrl+"/report/queryDmData",function(res){
+					// console.log(res)
+			  // 实例化对象
+			  var myChart = echarts.init(document.getElementById('zbdm'));
+			  // 指定配置和数据
+			  option = {
+				  color: ["#6FBAE1","#E5323E"],
+			      legend: {},
+			      tooltip: {
+					  trigger: "axis",
+					  axisPointer: {
+						// 坐标轴指示器，坐标轴触发有效
+						type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+					  },
+				  },
+			      dataset: {
+			          dimensions: ['pcs', '值班点名', '应急点名'],
+			          source: res.data
+			      },
+					grid: {
+					  left: "0%",
+					  top: "10%",
+					  right: "3%",
+					  bottom: "4%",
+					  containLabel: true
+					},
+			      xAxis: {
+						  type: 'category',
+						  axisLabel: {
+							 interval:0,  
+							 rotate:40  
+						  },
+					  },
+			      yAxis: {},
+			      series: [
+			          {
+						  type: 'bar',
+						  barWidth: "25%",
+					  },
+					  {
+						  type: 'bar',
+						  barWidth: "25%",
+					  },
+					  
+			      ]
+			  };
+			  // 把配置给实例对象
+			  myChart.setOption(option);
+			  window.addEventListener("resize", function() {
+			    myChart.resize();
+			  });
+			});
+		})();
+		
+	
+		
+		// 天网在线率巡查
+		// http://127.0.0.1:8080/report/queryZjData
+		// /report/queryTwData  天网
+		// baseUrl+"/report/queryZjData"
+		function pcszj(url){
+			$.get(url,function(res){
+			 // 基于准备好的dom，初始化echarts实例
+			 var myChart = echarts.init(document.getElementById("twxc"));
+				
+			 // (1)准备数据
+			 var pcs = res.data.pcs;
+			 var per = res.data.onlinePer;
+				
+			 // 2. 指定配置和数据
+			 var option = {
+			   color: ["#6FBAE1"],
+			   tooltip: {
+			     // 通过坐标轴来触发
+			     trigger: "axis",
+					  formatter: '{a} <br/>{b} : {c} %'
+			   },
+			   legend: {
+			     // 距离容器10%
+			     right: "10%",
+			     // 修饰图例文字的颜色
+			     // 如果series 里面设置了name，此时图例组件的data可以省略
+			   },
+			   grid: {
+			     left: "0%",
+			     top: "10%",
+			     right: "3%",
+			     bottom: "4%",
+			     containLabel: true
+			   },
+			   xAxis: {
+			     type: "category",
+			     data: pcs,
+					  boundaryGap: false,
+					  axisPointer:{
+					  	show:true,
+					  	snap:true,
+					  },
+					  axisLabel: {
+						 interval:0,  
+						 rotate:60  
+					  },
+			   },
+			   yAxis: {
+			     type: "value",
+			     // 去除刻度
+			     splitLine: {
+			       lineStyle: {
+			         color: "#ccc"
+			       }
+			     }
+			   },
+			   series: [
+			     {
+			       name: "在线率",
+			       type: "line",
+			       stack: "总量",
+			       // 是否让线条圆滑显示
+			       smooth: false,
+			       data: per,
+						areaStyle: {}
+			     },
+			     
+			   ]
+			 };
+			 // 3. 把配置和数据给实例对象
+			 myChart.setOption(option);
+				
+			 // 重新把配置好的新数据给实例对象
+			 myChart.setOption(option);
+			 window.addEventListener("resize", function() {
+			   myChart.resize();
+			 });
+			});
+		}
+		
+		pcszj(baseUrl+"/report/queryZjData?date="+$("#pcsmonth").val());
+		 // queryZjData?date=2020-07
+		 $("#pcsmonth").change(function(){
+			 pcszj(baseUrl+"/report/queryZjData?date="+$(this).val());
+		 });
+		
+		
+		
+		// 接处警三滤
+		(function() {
+			// 老接口
+		  // $.get(baseUrl+"/report/queryYdjcjData",function(res){	
+		  $.get(baseUrl+"/report/queryYdjcjDataNew",function(res){	
+			 // console.log(res)
+		  // 基于准备好的dom，初始化echarts实例
+		  var myChart = echarts.init(document.getElementById("jcj3l"));
+			
+		  // (1)准备数据
+		  var pcs = res.pcs;	
+		  var xptcjlv = res.xptcjlv;
+		  var xptjjlv = res.xptjjlv;
+		  var yddcjlv = res.yddcjlv;
+		 
+		 option = {
+		 	 color: ["#99B954","#3971AE","#CB4D50"],
+		     legend: {},
+		     tooltip: {
+				  trigger: "axis",
+				  axisPointer: {
+					// 坐标轴指示器，坐标轴触发有效
+					type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+				  },
+			  },
+		     dataset: {
+		         dimensions: ['pcs', '新平台接警率', '新平台处警率', '移动端处警率'],
+		         source: res.data
+		     },
+				grid: {
+				  left: "0%",
+				  top: "10%",
+				  right: "3%",
+				  bottom: "4%",
+				  containLabel: true
+				},
+		     xAxis: {
+				  type: 'category',
+				  axisLabel: {
+					 interval:0,  
+					 rotate:40  
+				  },
+			  },
+		     yAxis: {},
+		     series: [
+		         {
+				  type: 'bar',
+				  barWidth: "18%",
+			  },
+			  {
+				  type: 'bar',
+				  barWidth: "18%",
+			  },
+			  {
+				  type: 'bar',
+				  barWidth: "18%",
+			  },
+		 				  
+		     ]
+		 };
+		 
+		 
+		  // 3. 把配置和数据给实例对象
+		  myChart.setOption(option);
+		
+		  // 重新把配置好的新数据给实例对象
+		  myChart.setOption(option);
+		  window.addEventListener("resize", function() {
+		    myChart.resize();
+		  });
+		 });
+		})();
+		
+		
+		// 质效打分
+		function getzxdf(url,month){
+			$.get(url,function(res){
+				// console.log(res);
+				var myChart = echarts.init(document.getElementById("zxdfqk"));
+				option = {
+				    color: ['#3398DB'],
+				    tooltip: {
+				        trigger: 'axis',
+				        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+				            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				        }
+				    },
+				    grid: {
+				      left: "0%",
+				      top: "10%",
+				      right: "3%",
+				      bottom: "4%",
+				      containLabel: true
+				    },
+				    xAxis: [
+				        {
+				            type: 'category',
+				            data: res.data.xAxis,
+				            axisTick: {
+				                alignWithLabel: true
+				            },
+							axisLabel: {
+								 interval:0,  
+								 rotate:40  
+							},
+				        }
+				    ],
+				    yAxis: [
+				        {
+				            type: 'value',
+							max:145
+				        }
+				    ],
+				    series: [
+				        {
+				            name: '质效得分',
+				            type: 'bar',
+				            barWidth: '25%',
+				            data: res.data.series,
+							itemStyle:{
+								normal:{
+									color:function(params){
+										var colorList = ["#CB4D50","#CB4D50","#CB4D50","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#dfdf00","#dfdf00","#dfdf00"];
+										return colorList[params.dataIndex];
+									}
+								}
+							}
+				        }
+				    ]
+				};
+				myChart.setOption(option);
+				myChart.on('click', function (params) {
+					 // layer.msg(params.data.deptId);
+						console.log(res);
+						// var zxmonth = $("#zxmonth").val();
+						$("#bydate").val(res.data.date);
+						var deptId = params.data.deptId;
+						// console.log(deptId)
+						 tableDf(baseUrl+"/df/queryDfDetailByDeptIdAndDateNew?dfMonth="+res.data.date+"&deptId="+params.data.deptId+"&type=1")
+						 layer.open({
+						  type:1,
+						  area:['900px','650px'],
+						   title: '查看打分详情'
+						   ,content: $("#showzxdfbox"),
+						   shade: 0,
+						   btn: ['确定']
+						   ,btn1: function(index, layero){
+								layer.closeAll();
+								$("#showzxdfbox").hide();
+						   },
+						   cancel:function(index, layero){
+							   layer.closeAll();
+							   $("#showzxdfbox").hide();
+						   }
+						 }); 
+				});
+				// console.log(res.data.date);
+				// $("#zxmonth").prepend("<option value='"+res.data.date+"'>"+res.data.date+"</option>");  
+			})
+		}
+		
+		
+		// 情报信息情况
+		 function getqbxxqk(url){
+			$.get(url,function(res){
+					 // console.log(res)
+			 // 基于准备好的dom，初始化echarts实例
+			 var myChart = echarts.init(document.getElementById("qbxxqk"));
+					
+			 // (1)准备数据
+			 var pcs = res.pcs;
+			 var s3 = res.s3;
+			 var s5 = res.s5;
+			 var s7 = res.s7;
+			 //2. 指定配置和数据
+			 var option = {
+			   color: ["#99B954","#3971AE","#CB4D50"],
+			   tooltip: {
+			     // 通过坐标轴来触发
+			     trigger: "axis",
+					  formatter: '{a} <br/>{b} : {c} %',
+					  axisPointer: {
+						  type: 'cross',
+						  label: {
+							  backgroundColor: '#6a7985'
+						  }
+					  }
+			   },
+					
+			   legend: {
+			     // 距离容器10%
+					  data: ['全警搜集', '互联网信息', '分局采用', ]
+			     // 修饰图例文字的颜色
+			     // 如果series 里面设置了name，此时图例组件的data可以省略
+			   },
+			   grid: {
+			     left: "0%",
+			     top: "10%",
+			     right: "3%",
+			     bottom: "4%",
+			     containLabel: true
+			   },
+			   xAxis: {
+			     type: "category",
+			     data: pcs,
+					  boundaryGap: false,
+					  axisPointer:{
+					  	show:true,
+					  	snap:true,
+					  },
+					  axisLabel: {
+						 interval:0,  
+						 rotate:60  
+					  },
+			   },
+			    yAxis: [
+			           {
+			               type: 'value'
+			           }
+			       ],
+			   series: [
+			     {
+						  name: '全警搜集',
+						  type: 'line',
+						  data: s3
+					   },
+					   {
+						  name: '互联网信息',
+						  type: 'line',
+						  data: s5
+					  },
+					  {
+						  name: '分局采用',
+						  type: 'line',
+						  data: s7
+					  },
+			     
+			   ]
+			 };
+			 // 3. 把配置和数据给实例对象
+			 myChart.setOption(option);
+		 })
+		 }
+		 
+		 // 调用方法
+		var zxmonth= $("#zxmonth").val();
+		 
+		// 修改显示月份日期
+		var opts = [];
+		$("#zxmonth option").each(function(){
+			var optval = $(this).val();
+			opts.push(optval);
+		})
+		
+		// 独立设置显示月份展示打分结果
+		// for(var i in opts){
+		// 	$.get(baseUrl+"/report/queryDfDataNew?dfMonth="+opts[i]+"&type=1",function(res){
+		// 		// console.log(res);
+		// 		if(res.data.series!=[]){
+		// 			$("#zxmonth").html("");
+		// 			// $("#zxmonth").val(res.data.date);
+		// 			$("#zxmonth").prepend("<option value='"+res.data.date+"'>"+res.data.date+"</option>");
+		// 			// 设置质效打分
+		// 			for(var k in dataArr){
+		// 				$("#zxmonth").append("<option value='"+dataArr[k]+"'>"+dataArr[k]+"</option>");  
+		// 			}
+		// 		}
+		// 	})
+		// 	break;
+		// }
+		
+		// getzxdf(baseUrl+"/report/queryDfDataNew?dfMonth="+zxmonth+"&type=1",zxmonth);
+		// getqbxxqk(baseUrl+"/report/queryQbxxData?dfMonth="+zxmonth);
+		
+		
+		$.get(baseUrl+"/report/queryDfDataNew?dfMonth="+opts[0]+"&type=1",function(res){
+			console.log(res.data.date);
+			$("#zxmonth").val(res.data.date);
+			// type=1派出所,type=2机关部门
+			getzxdf(baseUrl+"/report/queryDfDataNull?dfMonth="+$("#zxmonth").val()+"&type=1",zxmonth);
+			getqbxxqk(baseUrl+"/report/queryQbxxDataNull?dfMonth="+$("#zxmonth").val());
+		})
+		
+		
+		// http://127.0.0.1:8080/report/queryQbxxDataNull?dfMonth=2020-07 
+		
+		// 下拉更改数据
+		$("#zxmonth").change(function(){
+			getzxdf(baseUrl+"/report/queryDfDataNull?dfMonth="+$(this).val()+"&type=1");
+			getqbxxqk(baseUrl+"/report/queryQbxxDataNull?dfMonth="+$(this).val());
+		})
+		
+		function tableDf(url){
+		  table.render({
+			elem: '#showzxdf'
+			,url:  url//数据接口
+			,cols: [[ //表头
+			  {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			  ,{field: 'configName', title: '打分项目',event: 'dmx',style:'color: #083485;cursor: pointer;'}
+			  ,{field: 'totalScore', title: '绩效得分',}
+			]]
+			,id:"testReload"
+		  });
+		}
+		
+		
+		
+		table.on('tool(showzxdf)',function(obj){
+			// console.log(obj.data)
+			if(obj.event=="dmx"){
+				// var zxmonth= $("#zxmonth").val();
+				// 使用备用时间作为参数调取数据
+				var zxmonth = $("#bydate").val();
+				var category = "";
+				if(obj.data.configName=="情报信息"){
+					category=0;
+					window.open("dfxqlist.html?dfMonth="+zxmonth+"&type=1&category="+category+"&deptId="+deptId);
+				}else if(obj.data.configName=="数据赋能"){
+					category=1;
+					window.open("dfxqlist1.html?dfMonth="+zxmonth+"&type=1&category="+category+"&deptId="+deptId);
+				}else if(obj.data.configName=="综合指挥"){
+					category=2;
+					window.open("dfxqlist2.html?dfMonth="+zxmonth+"&type=1&category="+category+"&deptId="+deptId);
+				}else if(obj.data.configName=="警情质量考核"){
+					category=3;
+					window.open("dfxqlist3.html?dfMonth="+zxmonth+"&type=1&category="+category+"&deptId="+deptId);
+				}else if(obj.data.configName=="情报线索核查处置"){
+					category=4;
+					window.open("dfxqlist4.html?dfMonth="+zxmonth+"&type=1&category="+category+"&deptId="+deptId);
+				}else if(obj.data.configName=="重点目标基础信息采集"){
+					category=5;
+					window.open("dfxqlist5.html?dfMonth="+zxmonth+"&type=1&category="+category+"&deptId="+deptId);
+				}
+				else if(obj.data.configName=="科技信息化"){
+					category=6;
+					window.open("dfxqlist6.html?dfMonth="+zxmonth+"&type=1&category="+category+"&deptId="+deptId);
+				}
+				
+				
+				
+				// window.open("/df/queryDfDetailByDfMonthAndTypeAndCategory?dfMonth="+zxmonth+"&type=1&category="+category);
+				
+			}
+		})
+		
+		$.get(baseUrl+"/cj/queryIndexInfo",function(res){
+			// console.log(res);
+			$("#countOfIllegalCjxx").text(res.countOfIllegalCjxx);
+			$("#countOfDailyJj").text(res.countOfDailyJj);
+			$("#countOfDailyCj").text(res.countOfDailyCj);
+			// 警情类型
+			var myChart = echarts.init(document.getElementById('jqlx'));
+			option = {
+			    tooltip: {
+			        trigger: 'item',
+			        formatter: '{a} <br/>{b} : {c} ({d}%)'
+			    },
+				 legend: {
+				        orient: 'vertical',
+				        left: 10,
+				        data: res.xAxis2
+				    },
+			    series: [
+			        {
+			            name: '警情统计',
+			            type: 'pie',
+			            radius: '55%',
+			            center: ['50%', '60%'],
+			            data: res.yAxis2,
+			            emphasis: {
+			                itemStyle: {
+			                    shadowBlur: 10,
+			                    shadowOffsetX: 0,
+			                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+			                }
+			            }
+			        }
+			    ]
+			};
+			myChart.setOption(option);
+			
+			// 折现图 当月警情走势
+			var myChart1 = echarts.init(document.getElementById('jqzs'));
+			option2 = {
+				color:["#FF9F7F"],
+			    xAxis: {
+			        type: 'category',
+			        boundaryGap: false,
+			        data: res.xAxis1,
+					axisPointer:{
+						show:true,
+						snap:true,
+					}
+			    },
+			    yAxis: {
+			        type: 'value',
+					axisPointer:{
+						show:true
+					},
+					axisPointer:{
+						snap:true,
+						show:true
+					}
+					
+			    },
+			    series: [{
+			        data: res.yAxis1,
+			        type: 'line',
+			        areaStyle: {}
+			    }]
+			};
+			myChart1.setOption(option2);
+		});
+		
+		
+		function getmrtz(url){
+			$.get(url,function(res){
+				// console.log(res);
+				var myChart = echarts.init(document.getElementById("mrtzqk"));
+				option = {
+				    color: ['#3398DB'],
+				    tooltip: {
+				        trigger: 'axis',
+				        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+				            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				        }
+				    },
+				    grid: {
+				      left: "0%",
+				      top: "10%",
+				      right: "3%",
+				      bottom: "4%",
+				      containLabel: true
+				    },
+				    xAxis: [
+				        {
+				            type: 'category',
+				            data: res.data.xAxis,
+				            axisTick: {
+				                alignWithLabel: true
+				            },
+							axisLabel: {
+								 interval:0,  
+								 rotate:40  
+							},
+				        }
+				    ],
+				    yAxis: [
+				        {
+				            type: 'value',
+							// max:120
+				        }
+				    ],
+				    series: [
+				        {
+				            name: '每日台帐',
+				            type: 'bar',
+				            barWidth: '25%',
+				            data: res.data.series,
+							itemStyle:{
+								normal:{
+									color:function(params){
+										var colorList = ["#CB4D50","#CB4D50","#CB4D50","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#3398DB","#dfdf00","#dfdf00","#dfdf00"];
+										return colorList[params.dataIndex];
+									}
+								}
+							}
+				        }
+				    ]
+				};
+				myChart.setOption(option);
+			})
+		}
+		
+		var mrtzmonth = $("#mrtzmonth").val();
+		getmrtz(baseUrl+"/report/queryMrtzData?tzMonth="+mrtzmonth);
+		
+		$("#mrtzmonth").change(function(){
+			getmrtz(baseUrl+"/report/queryMrtzData?tzMonth="+$(this).val());
+		});
+		
+		
+		// 未读每日通报提示
+		// http://localhost:8080/mrtb/queryMrtbView?deptId=D0086
+		if(pcstype==1){
+			$.get(baseUrl+"/mrtb/queryMrtbView?deptId="+deptId,function(res){
+				if(res.result.id==""||res.result.id==undefined||res.result.id==null){
+					
+				}else{
+					//边缘弹出
+						layer.open({
+						  type: 1
+						  ,offset:  "rb"  //具体配置参考：offset参数项['79%', '74%']
+						  ,content: `<div style="padding: 10px">
+									<p style="color:red">您有未读通报！</p>
+									<a target="_blank" style="color: #5FB878;" href="mr110detail.html?id=`+ res.result.id +`&deptId=`+deptId+`">
+										`+ res.result.tbrq +`每日110通报
+									</a> 	
+						  </div>`
+						  ,btn: '关闭全部'
+						  ,btnAlign: 'c' //按钮居中
+						  ,shade: 0 //不显示遮罩
+						  ,yes: function(){
+						    layer.closeAll();
+						  }
+						});
+				}
+			});
+			
+			// 弹出下发指令
+			getWclzd();
+			// 弹出异常警情
+			getCjts();
+		}
+		
+		// 弹出下发指令
+		function getWclzd(){
+			$.get(baseUrl+"/xscz/queryCount?deptId="+deptId,function(res){
+				console.log(res);
+				if(res.data.count0!=0&&res.data.count1!=0){
+					// 都不等于0，count0污染 1为城管
+					layer.open({
+					  type: 1
+					  ,offset:  "lb"  //具体配置参考：offset参数项['79%', '74%']
+					  ,content: `<div style="padding: 10px">
+								<p style="color:red">您有`+ res.data.count0 +`条污染问题未处理！</p>
+								<p style="color:red">您有`+ res.data.count1 +`条城管问题未处理！</p>
+					  </div>`
+					  ,btn: '立即处理'
+					  ,btnAlign: 'c' //按钮居中
+					  ,shade: 0 //不显示遮罩
+					  ,yes: function(){
+						  window.location="pcsjszl.html"
+					    layer.closeAll();
+					  }
+					});
+				}else if(res.data.count0!=0&&res.data.count1==0){
+					layer.open({
+					  type: 1
+					  ,offset:  "lb"  //具体配置参考：offset参数项['79%', '74%']
+					  ,content: `<div style="padding: 10px">
+								<p style="color:red">您有`+ res.data.count0 +`条污染问题未处理！</p>
+					  </div>`
+					  ,btn: '立即处理'
+					  ,btnAlign: 'c' //按钮居中
+					  ,shade: 0 //不显示遮罩
+					  ,yes: function(){
+						  window.location="pcsjszl.html"
+					    layer.closeAll();
+					  }
+					});
+				}else if(res.data.count0==0&&res.data.count1!=0){
+					layer.open({
+					  type: 1
+					  ,offset:  "lb"  //具体配置参考：offset参数项['79%', '74%']
+					  ,content: `<div style="padding: 10px">
+								<p style="color:red">您有`+ res.data.count1 +`条城管问题未处理！</p>
+					  </div>`
+					  ,btn: '立即处理'
+					  ,btnAlign: 'c' //按钮居中
+					  ,shade: 0 //不显示遮罩
+					  ,yes: function(){
+						window.location="pcsjszl.html"
+					    layer.closeAll();
+					  }
+					});
+				}
+			});
+		}
+		
+		
+		// #派出所 703异常警情提醒 703 deptCode不传 state传1  派出所 deptCode传 state传0
+		// GET http://localhost:8080/cj/queryCjNotice?deptCode=&state=0
+		
+		
+		// 弹出处警情提示
+		function getCjts(){
+			$.get(baseUrl+"/cj/queryCjNotice?deptCode="+deptCode+"&state=0",function(res){
+				console.log(res);
+				if(res.data!=0){
+					layer.open({
+					  type: 1
+					  ,offset:  "lt"  //具体配置参考：offset参数项['79%', '74%']
+					  ,content: `<div style="padding: 10px">
+								<p style="color:red">您有`+ res.data +`条异常处警问题未处理！</p>
+					  </div>`
+					  ,btn: '立即处理'
+					  ,btnAlign: 'c' //按钮居中
+					  ,shade: 0 //不显示遮罩
+					  ,yes: function(){
+						 window.location="pcscjlist.html"
+					  }
+					});
+				}
+			});
+		}
+		
+		
+		
+	</script>
+	
+	</body>
+	</html>

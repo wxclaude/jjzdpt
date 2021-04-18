@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-应急点名</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.midd{
+			text-align: center;
+		}
+		.midd th{
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>应急点名</legend>
+	      </fieldset>  
+		<form class="layui-form">
+			<table class="layui-table midd">
+			  <colgroup>
+				<col width="100">
+				<col width="200">
+				<col width="100">
+				<col width="200">
+				<col width="100">
+				<col width="200">
+			  </colgroup>
+			  <thead>
+				<tr>
+				  <th>单位</th>
+				  <th>应答情况</th>
+				  <th>单位</th>
+				  <th>应答情况</th>
+				  <th>单位</th>
+				  <th>应答情况</th>
+				</tr> 
+			  </thead>
+				  <tbody>
+					<tr>
+					  <td>邗上</td>
+					  <td>
+						<input type="radio" name="D0059" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0059" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>汊河</td>
+					  <td>
+							<input type="radio" name="D0068" value="1" title="应答" lay-verify="otherReq">
+							<input type="radio" name="D0068" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>四季园</td>
+					  <td>
+							<input type="radio" name="D0181" value="1" title="应答" lay-verify="otherReq">
+							<input type="radio" name="D0181" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					</tr>
+					<tr>
+					  <td>念四桥</td>
+					  <td>
+						<input type="radio" name="D0191" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0191" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>新盛</td>
+					  <td>
+						<input type="radio" name="D00003" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D00003" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>瓜洲</td>
+					  <td>
+						<input type="radio" name="D0078" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0078" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					</tr>
+					<tr>
+					  <td>蒋王</td>
+					  <td>
+						<input type="radio" name="D0086" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0086" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>甘泉</td>
+					  <td>
+						<input type="radio" name="D0245" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0245" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>杨庙</td>
+					  <td>
+						<input type="radio" name="D0095" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0095" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					</tr>
+					<tr>
+					  <td>槐泗</td>
+					  <td>
+						<input type="radio" name="D0102" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0102" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>方巷</td>
+					  <td>
+						<input type="radio" name="D0112" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0112" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>公道</td>
+					  <td>
+						<input type="radio" name="D0122" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0122" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					</tr>
+					<tr>
+					  <td>杨寿</td>
+					  <td>
+						<input type="radio" name="D0173" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0173" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>竹西</td>
+					  <td>
+						<input type="radio" name="D0209" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0209" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>江阳</td>
+					  <td>
+						<input type="radio" name="D0238" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0238" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					</tr>
+					<tr>
+					  <td>西湖</td>
+					  <td>
+						<input type="radio" name="D0220" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0220" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>刑警</td>
+					  <td>
+						<input type="radio" name="D0018" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0018" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>巡特警</td>
+					  <td>
+						<input type="radio" name="D0050" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0050" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					</tr>
+					<tr>
+					  <td>交警</td>
+					  <td>
+						<input type="radio" name="D0032" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0032" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>汊河中队</td>
+					  <td>
+						<input type="radio" name="D0044" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0044" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>公道中队</td>
+					  <td>
+						<input type="radio" name="D0038" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0038" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					</tr>
+					<tr>
+					  <td>瓜洲中队</td>
+					  <td>
+						<input type="radio" name="D0037" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0037" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>甘泉中队</td>
+					  <td>
+						<input type="radio" name="D0039" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0039" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					  <td>方巷中队</td>
+					  <td>
+						<input type="radio" name="D0040" value="1" title="应答" lay-verify="otherReq">
+						<input type="radio" name="D0040" value="2" title="未应答" lay-verify="otherReq">
+					  </td>
+					</tr>
+				  </tbody>
+			</table>
+			<div class="midd">
+				<button class="layui-btn" style="width: 100px;"  lay-filter="tijiao" lay-submit="" id="tijiao">提交</button>
+			</div>
+		</form>
+		
+		
+	</div>
+	
+	
+<div id="footer"></div>
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	
+	var lohref = window.location.href;
+	var dmTime = lohref.substr(lohref.indexOf("=")+1);
+	//console.log(dmTime);
+	
+	// 获取点名情况
+	$.get(baseUrl+"/yjdm/queryYjdmByDmTime?dmTime="+ dmTime,function(res){
+		// console.log(res);
+		//console.log($(":radio"));
+		for(var i=0;i<res.data.length;i++){
+			var deptId = res.data[i].deptId;
+			//console.log(xgId)
+			$("input[name="+deptId+"][value=1]").attr("checked", res.data[i].yd == 1 ? true : false);
+			$("input[name="+deptId+"][value=2]").attr("checked", res.data[i].yd == 2 ? true : false);
+		}
+		form.render();
+		for(var i=0;i<res.data.length;i++){
+			var deptId = res.data[i].deptId;
+			var xgId = res.data[i].id;
+			$("input[name="+deptId+"][value=1]").attr("name", xgId);
+			$("input[name="+deptId+"][value=2]").attr("name", xgId);
+		}
+	})
+	
+	
+	
+	//监听提交
+	form.on('submit(tijiao)', function(data){
+		var load1 = layer.load(1); 
+		var radio = $(":radio").serializeArray();
+		// 修改key名字
+		var newfields = radio.map(o=>{return{id:o.name, yd:o.value}});
+		console.log(newfields);
+	    $.ajax({
+	        url:baseUrl + "/yjdm/upateYjdmBatch",
+	        data:JSON.stringify(newfields),
+	        type:"POST",
+	        cache:false,
+	        dataType : 'JSON',
+	        contentType: "application/json",
+	    	beforeSend: function (XMLHttpRequest) {
+	    	   XMLHttpRequest.setRequestHeader("token", token);
+	    	},
+	        success:function(data) {
+				layer.close(load1); 
+	            if(data.code==0){
+	                layer.msg("修改成功");
+					window.location="yingjichakan.html"
+	            }else {
+	                layer.msg(data.msg);
+	            }
+	        },
+	        error : function (res) {
+				layer.close(load1); 
+	            layer.msg('修改失败，请联系系统管理员');
+	        }
+	    })
+		
+	    return false;
+	  });
+	  
+	  
+
+	
+	
+	
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

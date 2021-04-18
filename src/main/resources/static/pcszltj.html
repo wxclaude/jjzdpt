@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-接收指令</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-tool{
+			z-index: 1;
+		}
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item mainPage"><a href="pcsindex.html">首页</a></li>
+	        <li class="layui-nav-item">
+	          <a href="pcsxl.html">设备管理</a>
+	        </li>
+			<li class="layui-nav-item">
+			  <a href="javascript:;">接处警模块</a>
+			  <dl class="layui-nav-child">
+			        <dd>
+						<a href="pcscjlist.html">处警信息</a>
+					</dd>
+			    </dl>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsmrtz.html">每日台帐报备</a>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsjszl.html">接收指令</a>
+			</li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+		  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>查看下发统计</legend>
+	      </fieldset>
+		  
+		  <div class="layui-tab">
+		    <ul class="layui-tab-title">
+		      <li class="layui-this">污染防治</li>
+		      <li>城管问题</li>
+		    </ul>
+		    <div class="layui-tab-content">
+		      <div class="layui-tab-item layui-show">
+				  <div class="layui-form demoTable">
+				    <div class="layui-form-item">
+				      <div class="layui-inline">
+				        <label class="layui-form-label">日期范围</label>
+				        <div class="layui-input-inline">
+				          <input type="text" class="layui-input" id="chooseTime" placeholder="请选择" autocomplete="off">
+				        </div>
+				  	  <button class="layui-btn" data-type="reload" id="chaxun">查询</button>
+				  	  <!-- <button class="layui-btn" id="daochu">导出到Excel</button> -->
+					  <input type="text" hidden="" id="sTime">
+					  <input type="text" hidden="" id="eTime">
+				      </div>
+				    </div>
+				  </div>
+				  
+				   <table class="layui-hide" id="wuran" lay-filter="wuran"></table> 
+			  </div>
+		      <div class="layui-tab-item" >
+				  <div class="layui-form demoTable">
+				    <div class="layui-form-item">
+				      <div class="layui-inline">
+				        <label class="layui-form-label">日期范围</label>
+				        <div class="layui-input-inline">
+				          <input type="text" class="layui-input" id="chooseTime1" placeholder="请选择" autocomplete="off">
+				        </div>
+				  	  <button class="layui-btn" data-type="reload" id="chaxun1">查询</button>
+				  	  <!-- <button class="layui-btn" id="daochu">导出到Excel</button> -->
+					  <input type="text" hidden="" id="csTime">
+					  <input type="text" hidden="" id="ceTime">
+					  
+				      </div>
+				    </div>
+				  </div>
+				  
+				   <table class="layui-hide" id="chenguan" lay-filter="chenguan"></table> 
+				  
+			  </div>
+		    </div>
+		  </div>
+		  
+	</div>
+
+	
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	var laydate = layui.laydate;
+	var table = layui.table;
+	//日期范围
+	  laydate.render({
+	    elem: '#chooseTime'
+	    ,range: true
+	  });
+	  //日期范围
+	    laydate.render({
+	      elem: '#chooseTime1'
+	      ,range: true
+	    });
+	
+	function getTabledata(url){
+		table.render({
+		  elem: '#wuran'
+		  ,url: url
+		  ,cols: [[
+		     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'deptName', title: '单位',  align:"center"}
+		    ,{field:'total', title: '下发总数',  align:"center",style:'color: #083485;cursor: pointer;',event:'wrxfzs',}
+			,{field:'zcTotal', title: '正常反馈',  align:"center",style:'color: #083485;cursor: pointer;',event:'wrzc',}
+		    ,{field:'csTotal', title: '超时反馈',  align:"center",style:'color: #083485;cursor: pointer;',event:'wrcs',}
+			,{field:'wfkTotal', title: '未反馈',  align:"center",style:'color: #083485;cursor: pointer;',event:'wrw',}
+			// ,{title:'操作', toolbar: '#wrbar',align:"center",width:90}
+		  ]]
+		  ,id: 'testReload'
+		  ,page: true
+		});
+	}
+	getTabledata(baseUrl+"/xscz/queryZhXsczStat?type=0&deptId="+deptId);
+	  $('#chaxun').on('click', function(){
+		 var checkTime = $("#chooseTime").val();
+		 var startDate = checkTime.slice(0,10);
+		 $("#sTime").val(startDate);
+		 var endDate = checkTime.slice(13);
+		 $("#eTime").val(endDate);
+		if(checkTime !=""){
+			var jiekou = baseUrl+"/xscz/queryZhXsczStat?startDate="+startDate+"&endDate="+endDate+"&type=0";
+			getTabledata(jiekou);
+		}else{
+			layer.msg("您还没有选择时间！");
+		}
+	  });
+	$("#daochu").click(function(){
+		var checkTime = $("#chooseTime").val();
+		var startDate = checkTime.slice(0,10);
+		var endDate = checkTime.slice(13);
+		if(checkTime !=""){
+			window.location.href = baseUrl+"/yjdm/exportYjdmStatisticsByDate?startDate="+startDate+"&endDate="+endDate+"&token="+token;
+			layer.msg("导出成功");
+		}else{
+			layer.msg("您还没有选择时间！");
+		}
+	})
+	
+	table.on('tool(wuran)', function(obj){
+		var data = obj.data;
+		console.log(data)
+		if(obj.event=="wrxfzs"){
+			layer.open({
+			  type: 1,
+			  scrollbar: false,
+			  area: ['1000px', '580px'],
+			  title:"查看详情",
+			  shadeClose: true, //点击遮罩关闭
+			  content: '<div style="padding:10px"><table id="history"></table></div>',
+			  success:function(layero, index){
+				table.render({
+				  elem: '#history'
+				  ,url:baseUrl + "/xscz/queryZhXsczStatDetail?type=0&deptId="+data.dept_id+"&kind=0&startDate="+$("#sTime").val()+"&endDate="+$("#eTime").val()
+				  ,page:true
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'czsd', title: '处置所队',}
+					,{field:'sjhdd', title: '事件或地点',}
+					,{field:'xfsj', title: '下发时间',}
+					,{field:'qssj', title: '签收时间',}
+					,{field:'sfcs',  title: '是否超时',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.sfcs==0)
+								   {return "否"}
+								else if(d.sfcs==1)
+								   {return "是"}
+								
+							}
+					}
+					,{field:'czzt', title: '状态',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.czzt==0)
+								   {return "未签收"}
+								else if(d.czzt==1)
+								   {return "已处理"}
+								else if(d.czzt==2)
+									{return "已签收"}
+								else if(d.czzt==3)
+									{return "已完结"}
+							}
+					}
+				  ]],
+				});	
+			   }
+			});
+		}else if(obj.event=="wrzc"){
+			layer.open({
+			  type: 1,
+			  scrollbar: false,
+			  area: ['1000px', '580px'],
+			  title:"查看详情",
+			  shadeClose: true, //点击遮罩关闭
+			  content: '<div style="padding:10px"><table id="history"></table></div>',
+			  success:function(layero, index){
+				table.render({
+				  elem: '#history'
+				  ,url:baseUrl + "/xscz/queryZhXsczStatDetail?type=0&deptId="+data.dept_id+"&kind=1&startDate="+$("#sTime").val()+"&endDate="+$("#eTime").val()
+				  ,page:true
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'czsd', title: '处置所队',}
+					,{field:'sjhdd', title: '事件或地点',}
+					,{field:'xfsj', title: '下发时间',}
+					,{field:'qssj', title: '签收时间',}
+					,{field:'sfcs',  title: '是否超时',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.sfcs==0)
+								   {return "否"}
+								else if(d.sfcs==1)
+								   {return "是"}
+								
+							}
+					}
+					,{field:'czzt', title: '状态',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.czzt==0)
+								   {return "未签收"}
+								else if(d.czzt==1)
+								   {return "已处理"}
+								else if(d.czzt==2)
+									{return "已签收"}
+								else if(d.czzt==3)
+									{return "已完结"}
+							}
+					}
+				  ]],
+				});	
+			   }
+			});
+		}else if(obj.event=="wrcs"){
+			layer.open({
+			  type: 1,
+			  scrollbar: false,
+			  area: ['1000px', '580px'],
+			  title:"查看详情",
+			  shadeClose: true, //点击遮罩关闭
+			  content: '<div style="padding:10px"><table id="history"></table></div>',
+			  success:function(layero, index){
+				table.render({
+				  elem: '#history'
+				  ,url:baseUrl + "/xscz/queryZhXsczStatDetail?type=0&deptId="+data.dept_id+"&kind=2&startDate="+$("#sTime").val()+"&endDate="+$("#eTime").val()
+				  ,page:true
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'czsd', title: '处置所队',}
+					,{field:'sjhdd', title: '事件或地点',}
+					,{field:'xfsj', title: '下发时间',}
+					,{field:'qssj', title: '签收时间',}
+					,{field:'sfcs',  title: '是否超时',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.sfcs==0)
+								   {return "否"}
+								else if(d.sfcs==1)
+								   {return "是"}
+								
+							}
+					}
+					,{field:'czzt', title: '状态',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.czzt==0)
+								   {return "未签收"}
+								else if(d.czzt==1)
+								   {return "已处理"}
+								else if(d.czzt==2)
+									{return "已签收"}
+								else if(d.czzt==3)
+									{return "已完结"}
+							}
+					}
+				  ]],
+				});	
+			   }
+			});
+		}else if(obj.event=="wrw"){
+			layer.open({
+			  type: 1,
+			  scrollbar: false,
+			  area: ['1000px', '580px'],
+			  title:"查看详情",
+			  shadeClose: true, //点击遮罩关闭
+			  content: '<div style="padding:10px"><table id="history"></table></div>',
+			  success:function(layero, index){
+				table.render({
+				  elem: '#history'
+				  ,url:baseUrl + "/xscz/queryZhXsczStatDetail?type=0&deptId="+data.dept_id+"&kind=3&startDate="+$("#sTime").val()+"&endDate="+$("#eTime").val()
+				  ,page:true
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'czsd', title: '处置所队',}
+					,{field:'sjhdd', title: '事件或地点',}
+					,{field:'xfsj', title: '下发时间',}
+					,{field:'qssj', title: '签收时间',}
+					,{field:'sfcs',  title: '是否超时',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.sfcs==0)
+								   {return "否"}
+								else if(d.sfcs==1)
+								   {return "是"}
+								
+							}
+					}
+					,{field:'czzt', title: '状态',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.czzt==0)
+								   {return "未签收"}
+								else if(d.czzt==1)
+								   {return "已处理"}
+								else if(d.czzt==2)
+									{return "已签收"}
+								else if(d.czzt==3)
+									{return "已完结"}
+							}
+					}
+				  ]],
+				});	
+			   }
+			});
+		}
+	})
+	
+	
+	// 城管
+	function cggetTabledata(url){
+		table.render({
+		  elem: '#chenguan'
+		  ,url: url
+		  ,cols: [[
+		     {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		    ,{field:'deptName', title: '单位',  align:"center"}
+		    ,{field:'total', title: '下发总数',  align:"center",style:'color: #083485;cursor: pointer;',event:'cgxfzs',}
+			,{field:'zcTotal', title: '正常反馈',  align:"center",style:'color: #083485;cursor: pointer;',event:'cgzc',}
+		    ,{field:'csTotal', title: '超时反馈',  align:"center",style:'color: #083485;cursor: pointer;',event:'cgcs',}
+			,{field:'wfkTotal', title: '未反馈',  align:"center",style:'color: #083485;cursor: pointer;',event:'cgw',}
+			// ,{title:'操作', toolbar: '#cgbar',align:"center", width:90}
+		  ]]
+		  ,id: 'testReload'
+		  ,page: true
+		  ,done: function (res, curr, count) {
+		    $('.layui-table').css("width","100%");
+		    $("th[data-field='bar']").css("border-right",'none');
+		  }
+		});
+	}
+	cggetTabledata(baseUrl+"/xscz/queryZhXsczStat?type=1&deptId="+deptId);
+	$('#chaxun1').on('click', function(){
+			 var checkTime = $("#chooseTime1").val();
+			 var startDate = checkTime.slice(0,10);
+			 $("#csTime").val(startDate);
+			 var endDate = checkTime.slice(13);
+			  $("#ceTime").val(endDate);
+			if(checkTime !=""){
+				var jiekou = baseUrl+"/xscz/queryZhXsczStat?startDate="+startDate+"&endDate="+endDate+"&type=1";
+				getTabledata(jiekou);
+			}else{
+				layer.msg("您还没有选择时间！");
+			}
+	});
+	
+	table.on('tool(chenguan)', function(obj){
+		var data = obj.data;
+		if(obj.event=="cgxfzs"){
+			layer.open({
+			  type: 1,
+			  scrollbar: false,
+			  area: ['1000px', '580px'],
+			  title:"查看详情",
+			  shadeClose: true, //点击遮罩关闭
+			  content: '<div style="padding:10px"><table id="history"></table></div>',
+			  success:function(layero, index){
+				table.render({
+				  elem: '#history'
+				  ,url:baseUrl + "/xscz/queryZhXsczStatDetail?type=1&deptId="+data.dept_id+"&kind=0&startDate="+$("#csTime").val()+"&endDate="+$("#ceTime").val()
+				  ,page:true
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'czsd', title: '处置所队',}
+					,{field:'sjhdd', title: '事件或地点',}
+					,{field:'xfsj', title: '下发时间',}
+					,{field:'qssj', title: '签收时间',}
+					,{field:'sfcs',  title: '是否超时',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.sfcs==0)
+								   {return "否"}
+								else if(d.sfcs==1)
+								   {return "是"}
+								
+							}
+					}
+					,{field:'czzt', title: '状态',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.czzt==0)
+								   {return "未签收"}
+								else if(d.czzt==1)
+								   {return "已处理"}
+								else if(d.czzt==2)
+									{return "已签收"}
+								else if(d.czzt==3)
+									{return "已完结"}
+							}
+					}
+				  ]],
+				});	
+			   }
+			});
+		}else if(obj.event=="cgzc"){
+			layer.open({
+			  type: 1,
+			  scrollbar: false,
+			  area: ['1000px', '580px'],
+			  title:"查看详情",
+			  shadeClose: true, //点击遮罩关闭
+			  content: '<div style="padding:10px"><table id="history"></table></div>',
+			  success:function(layero, index){
+				table.render({
+				  elem: '#history'
+				  ,url:baseUrl + "/xscz/queryZhXsczStatDetail?type=1&deptId="+data.dept_id+"&kind=1&startDate="+$("#csTime").val()+"&endDate="+$("#ceTime").val()
+				  ,page:true
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'czsd', title: '处置所队',}
+					,{field:'sjhdd', title: '事件或地点',}
+					,{field:'xfsj', title: '下发时间',}
+					,{field:'qssj', title: '签收时间',}
+					,{field:'sfcs',  title: '是否超时',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.sfcs==0)
+								   {return "否"}
+								else if(d.sfcs==1)
+								   {return "是"}
+								
+							}
+					}
+					,{field:'czzt', title: '状态',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.czzt==0)
+								   {return "未签收"}
+								else if(d.czzt==1)
+								   {return "已处理"}
+								else if(d.czzt==2)
+									{return "已签收"}
+								else if(d.czzt==3)
+									{return "已完结"}
+							}
+					}
+				  ]],
+				});	
+			   }
+			});
+		}else if(obj.event=="cgcs"){
+			layer.open({
+			  type: 1,
+			  scrollbar: false,
+			  area: ['1000px', '580px'],
+			  title:"查看详情",
+			  shadeClose: true, //点击遮罩关闭
+			  content: '<div style="padding:10px"><table id="history"></table></div>',
+			  success:function(layero, index){
+				table.render({
+				  elem: '#history'
+				  ,url:baseUrl + "/xscz/queryZhXsczStatDetail?type=1&deptId="+data.dept_id+"&kind=2&startDate="+$("#csTime").val()+"&endDate="+$("#ceTime").val()
+				  ,page:true
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'czsd', title: '处置所队',}
+					,{field:'sjhdd', title: '事件或地点',}
+					,{field:'xfsj', title: '下发时间',}
+					,{field:'qssj', title: '签收时间',}
+					,{field:'sfcs',  title: '是否超时',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.sfcs==0)
+								   {return "否"}
+								else if(d.sfcs==1)
+								   {return "是"}
+								
+							}
+					}
+					,{field:'czzt', title: '状态',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.czzt==0)
+								   {return "未签收"}
+								else if(d.czzt==1)
+								   {return "已处理"}
+								else if(d.czzt==2)
+									{return "已签收"}
+								else if(d.czzt==3)
+									{return "已完结"}
+							}
+					}
+				  ]],
+				});	
+			   }
+			});
+		}else if(obj.event=="cgw"){
+			layer.open({
+			  type: 1,
+			  scrollbar: false,
+			  area: ['1000px', '580px'],
+			  title:"查看详情",
+			  shadeClose: true, //点击遮罩关闭
+			  content: '<div style="padding:10px"><table id="history"></table></div>',
+			  success:function(layero, index){
+				table.render({
+				  elem: '#history'
+				  ,url:baseUrl + "/xscz/queryZhXsczStatDetail?type=1&deptId="+data.dept_id+"&kind=3&startDate="+$("#csTime").val()+"&endDate="+$("#ceTime").val()
+				  ,page:true
+				  ,cols: [[
+					{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+					,{field:'czsd', title: '处置所队',}
+					,{field:'sjhdd', title: '事件或地点',}
+					,{field:'xfsj', title: '下发时间',}
+					,{field:'qssj', title: '签收时间',}
+					,{field:'sfcs',  title: '是否超时',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.sfcs==0)
+								   {return "否"}
+								else if(d.sfcs==1)
+								   {return "是"}
+								
+							}
+					}
+					,{field:'czzt', title: '状态',align:"center",width:90,
+						templet:function(d)
+							{
+								if(d.czzt==0)
+								   {return "未签收"}
+								else if(d.czzt==1)
+								   {return "已处理"}
+								else if(d.czzt==2)
+									{return "已签收"}
+							}
+					}
+				  ]],
+				});	
+			   }
+			});
+		}
+	})
+	
+</script>
+	
+
+
+</body>
+</html>

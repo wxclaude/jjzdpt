@@ -1,0 +1,18 @@
+POST http://localhost:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+#根据时间段和deptId分页查询登录日志
+GET {{baseUrl}}/sys/loginlog/list?beginTime=2020-07-26&endTime=2020-07-26&deptId=D0059&page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+
+###
+

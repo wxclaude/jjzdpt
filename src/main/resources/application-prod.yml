@@ -1,0 +1,107 @@
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        druid:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            url: jdbc:mysql://50.97.130.81:3306/renrenfast2?useUnicode=true&allowMultiQueries=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+            username: root
+            password: dahuacloud
+            initial-size: 2
+            max-active: 10
+            min-idle: 5
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            #Oracle需要打开注释
+            #validation-query: SELECT 1 FROM DUAL
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+##多数据源的配置
+dynamic:
+    datasource:
+        slave2:
+            driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+            url: jdbc:sqlserver://10.36.182.178:1433;DatabaseName=HJZAFKYJ
+            username: weirenjie
+            password: wrj2020
+#        slave3:
+#            driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#            url: jdbc:sqlserver://50.97.130.11:1433;DatabaseName=hjgaweb2019
+#            username: hj2020
+#            password: hj*2020
+
+
+renren:
+    model:
+        # 综合指挥父菜单
+        ZHZH_ID: 1000083
+        DLRZ_NAME: 登录日志
+        MRTZ_NAME: 每日台账
+        XSCZ_NAME: 线索处置
+        NAME1: ----值班点名
+        NAME1_1: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点名'
+        NAME1_2: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;查看'
+        NAME1_3: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;统计'
+        NAME2: ----应急点名
+        NAME2_1: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点名'
+        NAME2_2: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;查看'
+        NAME2_3: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;统计'
+        NAME3: ----会议点名
+        NAME3_1: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点名'
+        NAME3_2: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;统计'
+        FILE_PATH_MRTZ: C:\dahua\zxpt-upload\mrtz\
+        FILE_PATH_XSCZ: C:\dahua\zxpt-upload\xscz\
+    df:
+        SJFN: 1
+        ZHZH: 1
+        JQZLKH: 1
+        QBXX: 0.55
+        KJXX: 1
+        QBXS: 1
+        ZDMB: 1
+    mrtb:
+        ACCOUNT: hjzhzx
+        PASSWORD: 123456
+        VIEWSTATE: /wEPDwUKMTM2NDY5Njk5OGRkbwuJIcwqQ8m4iuFeakADvT7HWuhRPYDTYOgkHfBeWd8=
+        EVENTVALIDATION: /wEWBgKO/7DuDwK2p6qQBAKbntHjAwKUj8fhDAK1qbSRCwKC3IeGDESPeBWwABtK7Fw8+2JDdk0IKF0HXxMQQbeHkeOozgHr
+
+    myh:
+        #        upload_dir: /Users/tomchen/Downloads
+        upload_dir: C:\dahua\tomcat-renren-fast\webapps\uploadfile
+        file_prefix: /uploadfile/
+        dwNumMap:
+            hs: 27
+            sjy: 11
+            xs: 10
+            nsq: 10
+            ch: 8
+            xh: 7
+            jw: 6
+            jy: 10
+            zx: 11
+            hss: 6
+            fx: 5
+            ym: 8
+            gq: 4
+            gz: 4
+            ys: 4
+            gd: 4
+            xtj: 10
+            total: 145

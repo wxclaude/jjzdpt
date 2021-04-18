@@ -1,0 +1,152 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+#新增打分项
+POST {{baseUrl}}/df/addDfConfig
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{
+  "dfx": "值班点名",
+  "qzb": "50",
+  "type": 0,
+  "parentId": 2
+}
+
+#type 0为父项 1为子项目  type为1时需要传递parentId
+###
+
+#修改打分项
+POST {{baseUrl}}/df/updateDfConfig
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"id": 20,"dfx":"值班点名5","qzb":"50","type": 1,"parentId": 2}
+
+#type 0为父项 1为子项目  type为1时需要传递parentId
+###
+
+
+
+#查询打分项
+GET {{baseUrl}}/df/queryDfConfig?page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+###
+
+#新增打分配置前 获取所有打分项目 传递type=0时只查询打分父项
+GET {{baseUrl}}/df/queryParentDfConfig?type=0
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#新增打分配置前 获取所有单位
+GET {{baseUrl}}/df/queryAllDept
+Accept: */*
+Cache-Control: no-cache
+###
+
+#获取打分配置列表
+GET {{baseUrl}}/df/queryDfRule
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据id获取打分配置列表
+GET {{baseUrl}}/df/queryDfRuleById?id=1
+Accept: */*
+Cache-Control: no-cache
+###
+
+#新增或修改打分配置
+POST {{baseUrl}}/df/addOrUpdateDfRule
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"deptIds":"D0245,D0238,D0209","configIds":"16,7,8","title":"日常打分"}
+
+###
+
+#新增打分详情
+POST {{baseUrl}}/df/generateDfRecordAndDetail
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"dfMonth":"2020-06","ruleId": 1}
+
+###
+
+#分页查看打分记录
+GET {{baseUrl}}/df/queryDfRecord?page=1&limit=10&date=2020-04
+Accept: */*
+Cache-Control: no-cache
+###
+
+#进入打分详情页，获取打分详情
+GET {{baseUrl}}/df/queryDfDetailByRecordId?recordId=7
+Accept: */*
+Cache-Control: no-cache
+###
+
+#保存打分详情
+#state 0未完成  1完成
+POST {{baseUrl}}/df/saveDfDetail?recordId=7&dfMonth=2020-05&state=1
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+[
+  {"recordId":7,"deptId": "D0245","configId": 7,"score": 95},
+  {"recordId":7,"deptId": "D0238","configId": 7,"score": 95},
+  {"recordId":7,"deptId": "D0209","configId": 7,"score": 95}
+]
+
+###
+
+#删除打分记录和详情
+GET {{baseUrl}}/df/deleteDfRecordAndDetail?recordId=23
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+
+###
+
+#根据年月和一级打分项id查看该一级打分项所有单位打分详情
+GET {{baseUrl}}/df/queryDfDetailByDfMonthAndParentConfigId?dfMonth=2020-06&parentConfigId=16
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据deptId，type和年月获取当月该单位打分一级项目的分数 new
+#type 1为派出所 2为机关
+GET {{baseUrl}}/df/queryDfDetailByDeptIdAndDateNew?dfMonth=2020-06&type=1&deptId=D0059
+Accept: */*
+Cache-Control: no-cache
+###
+
+#根据年月和category/type查看该category打分项所有单位打分详情
+#type 1为派出所 2为机关
+#0情报信息 1数据赋能 2综合指挥 3警情质量考核 4情报线索 5重点目标 6科技信息化
+GET {{baseUrl}}/df/queryDfDetailByDfMonthAndTypeAndCategory?dfMonth=2020-07&type=1&category=6
+Accept: */*
+Cache-Control: no-cache
+###

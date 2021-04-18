@@ -1,0 +1,122 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+//{  "username": "104722",   "password": "111111" }
+{  "username": "jw",   "password": "111" }
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+
+#分页获取线索处置
+#deptId 可选(703使用选填)  派出所登录时必传
+#type 必传 0污染防治 1城管
+GET http://localhost:8080/xscz/queryZhXsczPage?page=1&limit=10&deptId=D0059&type=0&startDate=2020-08-05&endDate=2020-08-12
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#下发线索处置
+#type 0污染防治 1城管
+#dept_id
+#zhXsczFjList 为使用uploadZhXsczFj接口上传附件成功后返回的附件id，这里预留多附件上传，所以是数组格式
+POST http://localhost:8080/xscz/addZhXscz
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"type":1, "deptId":"D0059", "xsnr":"城管线索内容", "fwdx":"服务对象", "fwdxdh":"87878787", "czsj": "2020-08-10 10:00:00", "zhXsczFjList":[{"id":"ac9778efb1fb42d3a27ac64aaa23b7ce"}]}
+###
+
+#反馈线索处置
+#type 0污染防治 1城管
+#dept_id
+#zhXsczFjList 为使用uploadZhXsczFj接口上传附件成功后返回的附件id，这里预留多附件上传，所以是数组格式
+
+POST http://localhost:8080/xscz/updateZhXscz
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"id":"8a890ebcfeff4427bbfd5ef0cbbab975", "type":0, "jcmj":"王警", "jcsj":"7月15号晚上", "jcdz":"胡老板家", "bjcdx":"胡老板", "sffxsxhjwfxw":0, "xcfzr":"胡老板", "xcfzrdh":"88888888", "sfydzf":0, "sfsyzfjyl":0, "xcjcnr":"发现假冒001若干", "jcjl":"胡老板sx", "jcjg":0, "lxsj":"今天下午", "fwdxsfmy":1, "fwdxgtxxqk":"陈老板满意", "fkFjList":[{"id":"8b0c1bb547c247c9a6a5b33babe74d9e"}]}
+###
+
+#根据id删除
+GET http://localhost:8080/xscz/deleteZhXscz?id=3
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#修改线索处置
+#type 0污染防治 1城管
+#dept_id
+#zhXsczFjList 为使用uploadZhXsczFj接口上传附件成功后返回的附件id，这里预留多附件上传，所以是数组格式
+POST http://localhost:8080/xscz/modifyZhXscz
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"type":1, "deptId":"D0059", "xsnr":"城管线索内容", "fwdx":"服务对象", "fwdxdh":"87878787", "czsj": "2020-08-10 10:00:00", "zhXsczFjList":[{"id":"ac9778efb1fb42d3a27ac64aaa23b7ce"}]}
+###
+
+#签收线索处置
+#type 0污染防治 1城管
+POST http://localhost:8080/xscz/qsZhXscz
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"id":"3220b80dbd9f4cb1bb3058007b56e8ca", "type":1}
+###
+
+#下载线索处置附件
+#id 为queryZhXsczPage接口中获取的zhXsczFjList数组中的第一个id
+GET http://localhost:8080/xscz/exportZhXscz?id=ac9778efb1fb42d3a27ac64aaa23b7ce
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#下载线索处置word
+GET http://localhost:8080/xscz/exportWord?id=
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#获取线索处置统计 派出所
+#type 必传 0污染防治 1城管
+#
+GET http://localhost:8080/xscz/queryZhXsczStat?page=1&limit=10&type=0&startDate=2020-08-05&endDate=2020-08-14&deptId=D0059
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#获取线索处置统计详情
+#type 必传 0污染防治 1城管
+#kind 0下发总数  1正常反馈 2超时反馈 3未反馈
+GET http://localhost:8080/xscz/queryZhXsczStatDetail?type=0&startDate=2020-08-05&endDate=2020-08-14&deptId=D0059&kind=1
+Accept: */*
+Cache-Control: no-cache
+###
+
+
+#统计派出所未签收
+#count0 污染  count1 成功
+GET http://localhost:8080/xscz/queryCount?deptId=D0059
+Accept: */*
+Cache-Control: no-cache
+###
+

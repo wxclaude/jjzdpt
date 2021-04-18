@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邗江分局视频监控运行质态平台</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<script type="text/javascript">
+		function isIE() {
+		    if(!!window.ActiveXObject || "ActiveXObject" in window){
+		      return true;
+		    }else{
+		      return false;
+		　　 }
+		}
+		if(isIE()){
+				window.close();
+				//创建ActiveXObject实例，只在IE下有效，才可以创建
+				var objShell= new ActiveXObject("WScript.Shell");
+				//命令参数说明
+				//cmd.exe /c dir 是执行完dir命令后关闭命令窗口。
+				//cmd.exe /k dir 是执行完dir命令后不关闭命令窗口。
+				//cmd.exe /c start dir 会打开一个新窗口后执行dir指令，原窗口会关闭。
+				//cmd.exe /k start dir 会打开一个新窗口后执行dir指令，原窗口不会关闭。
+				//这里的dir是start chrome www.baidu.com//用谷歌浏览器打开百度
+				objShell.Run("cmd.exe /c start chrome"+window.location.href ,0,true);
+		}
+	</script>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner" style="background-image: url(images/dwgzbx.png);"></div>
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+	    <div class="layui-tab">
+	      <ul class="layui-tab-title">
+	        <li class="layui-this">故障报修</li>
+	        <li>报修清单</li>
+	      </ul>
+		  <div class="layui-tab-content">
+		      <div class="layui-tab-item layui-show">
+				<div class="layui-form">
+				  <div class="layui-inline">
+						<label class="layui-form-label" style="width: auto;">设备名称</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" id="name" autocomplete="off">
+						</div>
+				  </div>
+					  <div class="layui-inline">
+						  <button class="layui-btn" style="margin-left: 10px;" id="cx" lay-filter="cx">查询</button>
+					  </div>
+				</div>
+				<table id="sbDetail" lay-filter="sbDetail"></table>
+			  </div>
+		      <div class="layui-tab-item">
+				  <table id="myDetail" lay-filter="myDetail"></table>
+			  </div>
+		    </div>
+		</div>  
+	</div>
+	
+	<div class="layui-form" style="display: none;padding: 10px;" id="newBzbox">
+		<div class="layui-form-item">
+		    <label class="layui-form-label">报修人：</label>
+		    <div class="layui-input-inline">
+				<input type="text" value="" class="layui-input" id="bxr">
+		    </div>
+			<label class="layui-form-label">联系电话：</label>
+			<div class="layui-input-inline">
+				<input type="text" value="" class="layui-input" id="lxdh">
+			</div>
+		</div>
+		<div class="layui-form-item">
+		    <label class="layui-form-label">故障：</label>
+		    <div class="layui-input-block">
+		      <input type="radio" name="category" value="0" title="画面树木遮挡">
+		      <input type="radio" name="category" value="1" title="监控角度异常">
+			  <input type="radio" name="category" value="2" title="设备离线">
+			  <input type="radio" name="category" value="3" title="画面异常">
+			  <input type="radio" name="category" value="4" title="录像异常">
+			  <input type="radio" name="category" value="6" title="人脸抓拍异常">
+			  <input type="radio" name="category" value="5" title="其它">
+		    </div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">备注：</label>
+		    <div class="layui-input-block">
+		      <textarea id="newbztext" placeholder="请输入内容" class="layui-textarea" ></textarea>
+		    </div>
+		</div>
+	</div>
+	
+	
+	<div class="layui-form" style="display: none;padding: 10px;" id="dwBox">
+		<table class="layui-table">
+		  <colgroup>
+		    <col width="60">
+		    <col width="200">
+		    <col>
+		  </colgroup>
+		  <tbody>
+			  <tr>
+			    <td>通道名称</td>
+			    <td id="dwtdmc"></td>
+			  </tr>
+			  <!-- <tr>
+			    <td>所属项目</td>
+			    <td id="dwssxm"></td>
+			  </tr> -->
+			  <!-- <tr>
+			  	<td>最后在线时间</td>
+			  	<td id="dwzhzxsj"></td>
+			  </tr> -->
+			  <tr>
+			    <td>故障类型</td>
+			    <td id="dwgzlx"></td>
+			  </tr>
+			  <tr>
+			    <td>报修时间</td>
+			    <td id="dwbxsj"></td>
+			  </tr>
+			<tr>
+				<td>报修人</td>
+				<td id="dwbxr"></td>
+			</tr>
+			<tr>
+				<td>联系电话</td>
+				<td id="dwdh"></td>
+			</tr>
+			<tr>
+				<td>报修人IP</td>
+				<td id="dwbxrip"></td>
+			</tr>
+			<tr>
+				<td>详细描述</td>
+				<td id="dwxxms"></td>
+			</tr>
+			<tr>
+			  <td>处置情况</td>
+			  <td id="dwczqk"></td>
+			</tr>
+		  </tbody>
+		</table>
+	</div>
+	
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script type="text/html" id="barDemo">
+		  {{#  if(d.current.length!=0){ }}
+		    <a class="layui-btn  layui-btn-danger layui-btn-xs" lay-event="baoxiu">报修</a>
+			<a class="layui-btn layui-btn-xs" lay-event="qrxf">修复</a>
+		  {{#  } else { }}
+		    <a class="layui-btn  layui-btn-danger layui-btn-xs" lay-event="baoxiu">报修</a>
+		  {{#  } }}
+</script>
+<script type="text/html" id="lsjl">
+		<a  lay-event="cklsbxjl" style="color: #006699;cursor: pointer;">历史报修</a>
+</script>
+<script type="text/html" id="myBar">
+		<a class="layui-btn  layui-btn-normal layui-btn-xs" lay-event="ckbxqk">查看</a>
+		<a class="layui-btn layui-btn-xs" lay-event="qrxfqd">修复</a>
+</script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	var form = layui.form;
+	// 监听提交事件
+	  function tableGz(url){
+		  table.render({
+		    elem: '#sbDetail'
+		    ,url:  url//数据接口
+		    ,page: true //开启分页
+		    ,cols: [[ //表头
+		      {field: '', title: '序号',width:90,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		      ,{field: 'name', title: '设备名称',event:'checkCur',style:'color: #083485;cursor: pointer;',}
+			  ,{field: 'deptName', title: '辖区',width:180,align:"center"}
+		  	  ,{field: 'projectName', title: '所属项目',width:180,align:"center"}
+			  ,{field: '', title: '历史报修记录',width:150,align:"center",toolbar: '#lsjl',}
+			  ,{title:'操作', toolbar: '#barDemo',align:"left" ,width:120}
+		    ]]
+			,id:"testReload"
+			,done:function(res){
+			}
+		  });
+	  }
+	  tableGz(baseUrl+'/video/queryDwOrTd?kind=0&name=');
+	  
+	  $("#cx").click(function(){
+		  // var sblx = $("#sblx").val();
+		  var name = $("#name").val();
+		  tableGz(baseUrl+'/video/queryDwOrTd?kind=0&name='+name);
+	  })
+	
+      table.on("tool(sbDetail)",function(obj){
+		  var data = obj.data;
+		  console.log(data);
+		  if(obj.event=="baoxiu"){
+			  console.log(data)
+			  $(":radio[name='category']").prop("checked",false);
+			  form.render('radio');
+			  $("#newbztext").val("");
+			  $("#bxr").val(data.lastBxr);
+			  $("#lxdh").val(data.lastBxdh);
+			  layer.open({
+			   type:1,
+			   area:['800px','450px'],
+			    title: '备注',
+			    content: $("#newBzbox"),
+			    shade: 0,
+			    btn: ['提交', '取消']
+			    ,btn1: function(index, layero){
+					if($(":radio[name=category]:checked").val()==null){
+						layer.msg("故障类型还未选择");
+						return
+					}
+					
+			  		var load1 = layer.load(1);  
+			  		$.ajax({
+			  		    url:baseUrl + "/video/queryUpdateVideoBz",
+			  		    type:"post",
+			  		    cache:false,
+			  			data:JSON.stringify({
+			  				 "bh": data.bh, 
+			  				 "bz": $("#newbztext").val(), 
+			  				 "type": -1, 
+			  				 "category": $(":radio[name=category]:checked").val(),
+							 "userId":$("#bxr").val(),
+							 "dh":$("#lxdh").val(),
+							 "dwortd": 1
+			  			}),
+			  			dataType : 'JSON',
+			  			contentType: "application/json",
+			  		    success:function(data) {
+			  				if(data.code==0){
+			  					layer.close(load1);
+			  					table.reload("testReload");
+								table.reload("testReloadqd");
+								layer.msg("报修成功");
+			  				}else {
+			  					layer.close(load1);
+			  				    layer.msg(data.msg);
+			  				}
+			  		    },
+			  		    error : function (res) {
+			  				layer.close(load1);
+			  		        layer.msg('报修失败');
+			  		    }
+			  		})
+			  		layer.closeAll();
+			  		 $("#newBzbox").hide();
+			    },
+			  	  btn2: function(index, layero){
+			  			$("#newBzbox").hide();
+			  			layer.closeAll();
+			  	  },
+			  	cancel: function(layero,index){ 
+			  		 $("#newBzbox").hide();
+			  			layer.closeAll();
+			  	  }
+			  });
+		  }else if(obj.event=="cklsbxjl"){
+			  layer.open({
+			        type: 1,
+					scrollbar: false,
+			        area: ['900px', '580px'],
+					title:"查看历史报修记录",
+			        shadeClose: true, //点击遮罩关闭
+			        content: '<div style="padding:10px"><table id="history"></table></div>',
+					success:function(layero, index){
+			  			table.render({
+			  			  elem: '#history'
+			  			  ,page:true
+			  			  ,cols: [[
+			  				{field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			  				,{field:'userId', title: '报修人',}
+							,{field:'category',  title: '故障类型',align:"center",
+								templet:function(d){
+									if(d.category=="0"){return "画面树木遮挡"}
+									else if(d.category==""){return " "}
+									else if(d.category==null){return " "}
+									else if(d.category=="1"){return "监控角度异常"}
+									else if(d.category=="2"){ return "设备离线" }
+									else if(d.category=="3"){return "画面异常"}
+									else if(d.category=="4"){return "录像异常"}
+									else if(d.category=="5"){return "其他"}
+									else if(d.category=="6"){return "人脸抓拍异常"}
+								}
+							}
+			  				,{field:'dh', title: '报修电话',}
+							,{field:'createTime', title: '报修时间',width:160}
+			  				,{field:'ip',  title: '报修ip',}
+							,{field:'state', title: '报修状态',
+								templet:function(d){
+									if(d.state==0){return "未修复"}
+									else if(d.state==1){return "修复"}
+								}
+							}
+			  			  ]],
+						  data:data.history
+			  			});	
+			  	   }
+			      });
+		  }else if(obj.event=="qrxf"){
+			  // console.log(data.current[0].id);
+			  layer.confirm('是否确认修复？', function(index){
+					  var sendData = [{"id": data.current[0].id, "state": 1}];
+					  $.ajax({
+					      url:baseUrl + "/video/queryUpdateBxById",
+					      data:JSON.stringify(sendData),
+					      type:"POST",
+					      cache:false,
+					      dataType : 'JSON',
+					      contentType: "application/json",
+					      success:function(data) {
+					          if(data.code==0){
+					              layer.msg("修复成功");
+					  						  table.reload("testReload");
+					  						  table.reload("testReloadqd");
+					          }else {
+					              layer.msg(data.msg);
+					          }
+					      },
+					      error : function (res) {
+					          layer.msg('修复失败');
+					      }
+					  })	
+			          layer.close(index);
+			        });
+		  }else if(obj.event=="checkCur"){
+			  tip_index = layer.tips(
+			  	"<span style='color:#FFF'>报修人:"+data.current[0].userId+"<br/>联系电话:"+data.current[0].dh+"<br/>报修时间:"+data.current[0].createTime+"</span>", 
+			  	this,
+			  	{
+			  		tips:[1,'#0FA6D8'],
+			  		time: 2000,
+			  	});
+		  }
+	  })
+	 
+	
+	// 保修清单
+	function tableMy(url){
+	  table.render({
+		elem: '#myDetail'
+		,url:  url//数据接口
+		,page: true //开启分页
+		,cols: [[ //表头
+		  {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+		  ,{field: 's1', title: '通道名称',width:300}
+		  ,{field:'createTime',  title: '报修时间',align:"center"}
+		  ,{field:'category',  title: '故障类型',align:"center",
+		  	templet:function(d){
+		  		if(d.category=="0"){return "画面树木遮挡"}
+		  		else if(d.category==""){return " "}
+		  		else if(d.category==null){return " "}
+		  		else if(d.category=="1"){return "监控角度异常"}
+		  		else if(d.category=="2"){ return "设备离线" }
+		  		else if(d.category=="3"){return "画面异常"}
+		  		else if(d.category=="4"){return "录像异常"}
+		  		else if(d.category=="5"){return "其他"}
+				else if(d.category=="6"){return "人脸抓拍异常"}
+		  	}
+		  }
+		  ,{field:'state',  title: '处置情况',align:"center",
+		  	templet:function(d){
+		  		if(d.state==0){
+		  			return "未修复"
+		  		}else{
+		  			return "已修复"
+		  		}
+		  	}
+		  }
+		  ,{title:'操作', toolbar: '#myBar',align:"center",}
+		]]
+		,id:"testReloadqd"
+	  });
+	}
+	
+	tableMy(baseUrl+"/video/queryDwOrTdByIp");
+	
+	table.on('tool(myDetail)', function(obj){
+		var data = obj.data;
+		if(obj.event=="ckbxqk"){
+			console.log(data)
+			$("#dwtdmc").text(data.s1);
+			$("#dwbxsj").text(data.createTime);
+			$("#dwgzlx").text(getSbgz(data));
+			// $("#tdgzlx").text(data.category);
+			$("#dwbxrip").text(data.ip);
+			$("#dwczqk").text(getCzqk(data));
+			// $("#dwssxm").text(data.s2);
+			$("#dwbxr").text(data.userId);
+			// $("#dwzhzxsj").text(data.s3);
+			$("#dwxxms").text(data.bz);
+			$("#dwdh").text(data.dh);
+			layer.open({
+			 type:1,
+			 area:['800px','550px'],
+			  title: '详情',
+			  content: $("#dwBox"),
+			  shade: 0,
+			  btn: ['确定']
+			  ,btn1: function(index, layero){
+					var load1 = layer.load(1);  
+					layer.closeAll();
+					 $("#dwBox").hide();
+			  },
+				cancel: function(layero,index){ 
+					 $("#dwBox").hide();
+						layer.closeAll();
+				  }
+			});
+		}else if(obj.event=="qrxfqd"){
+			layer.confirm('是否确认修复？', function(index){
+				var sendData = [{"id": data.id, "state": 1}];
+				$.ajax({
+				    url:baseUrl + "/video/queryUpdateBxById",
+				    data:JSON.stringify(sendData),
+				    type:"POST",
+				    cache:false,
+				    dataType : 'JSON',
+				    contentType: "application/json",
+				    success:function(data) {
+				        if(data.code==0){
+				            layer.msg("修复成功");
+							table.reload("testReload");
+							table.reload("testReloadqd");
+				        }else {
+				            layer.msg(data.msg);
+				        }
+				    },
+				    error : function (res) {
+				        layer.msg('修复失败');
+				    }
+				})
+				layer.close(index);
+			  });
+		}
+	})
+	
+	
+	function getSbgz(d){
+		if(d.category=="0"){return "画面树木遮挡"}
+		else if(d.category==""){return " "}
+		else if(d.category==null){return " "}
+		else if(d.category=="1"){return "监控角度异常"}
+		else if(d.category=="2"){ return "设备离线" }
+		else if(d.category=="3"){return "画面异常"}
+		else if(d.category=="4"){return "录像异常"}
+		else if(d.category=="5"){return "其他"}
+		else if(d.category=="6"){return "人脸抓拍异常"}
+	}
+	function getCzqk(d){
+		if(d.state==0){
+			return "未修复"
+		}else{
+			return "已修复"
+		}
+	}
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-接收指令</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.layui-table-tool{
+			z-index: 1;
+		}
+	</style>
+</head>
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item mainPage"><a href="pcsindex.html">首页</a></li>
+	        <li class="layui-nav-item">
+	          <a href="pcsxl.html">设备管理</a>
+	        </li>
+			<li class="layui-nav-item">
+			  <a href="javascript:;">接处警模块</a>
+			  <dl class="layui-nav-child">
+			        <dd>
+						<a href="pcscjlist.html">处警信息</a>
+					</dd>
+			    </dl>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsmrtz.html">每日台帐报备</a>
+			</li>
+			<li class="layui-nav-item">
+			  <a href="pcsjszl.html">接收指令</a>
+			</li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	
+	<div class="zhibantable" style="margin-bottom: 100px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>接收指令</legend>
+	      </fieldset>  
+		
+		<div class="layui-tab">
+		  <ul class="layui-tab-title">
+		    <li class="layui-this">污染防治</li>
+		    <li>城管问题</li>
+		  </ul>
+		  <div class="layui-tab-content">
+		    <div class="layui-tab-item layui-show">
+				
+				<div class="demoTable">
+				  <div class="layui-form">
+					   日期范围
+					   <div class="layui-input-inline">
+						 <input type="text" class="layui-input" id="chooseTime" placeholder="请选择" autocomplete="off">
+					   </div>
+					   签收状态：
+					   <div class="layui-input-inline">
+						   <select id="wrczzt" >
+							 <option value="">请选择</option>
+							 <option value="0">未签收</option>
+							  <option value="2">已签收</option>
+							 <option value="1">已处理</option>
+							 <option value="3">已完结</option>
+						   </select>
+					   </div>
+					   <button class="layui-btn" id="search" type="button">查询</button>
+					   <a href="pcszltj.html" class="layui-btn">查看统计</a>
+					</div>
+				 </div>
+				
+				<table class="layui-hide" id="wuran" lay-filter="wuran"></table>
+				
+				
+			</div>
+		    <div class="layui-tab-item">
+				<div class="demoTable">
+				  <div class="layui-form">
+					   日期范围
+					   <div class="layui-input-inline">
+						 <input type="text" class="layui-input" id="cgchooseTime" placeholder="请选择" autocomplete="off">
+					   </div>
+					   签收状态：
+					   <div class="layui-input-inline">
+						   <select id="cgczzt" >
+							 <option value="">请选择</option>
+							 <option value="0">未签收</option>
+							  <option value="2">已签收</option>
+							 <option value="1">已处理</option>
+							 <option value="3">已完结</option>
+						   </select>
+					   </div>
+					   <button class="layui-btn" id="cgsearch" type="button">查询</button>
+					   <a href="pcszltj.html" class="layui-btn">查看统计</a>
+					</div>
+				 </div>
+				
+				<table class="layui-hide" id="chenguan" lay-filter="chenguan"></table>
+				
+				
+			</div>
+		  </div>
+		</div>  
+		  
+		  
+	</div>
+	
+	
+	<div class="layui-form" style="display: none;padding: 10px;" id="addWrbox">
+		
+		<!-- <div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">时间或地点：</label>
+		    <div class="layui-input-inline">
+		      <input id="wrsjhdd" class="layui-input" readonly></input>
+		    </div>
+		</div> -->
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">线索内容：</label>
+		    <div class="layui-input-block">
+		      <textarea id="xsnr" placeholder="" class="layui-textarea" rows="8" readonly=""></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">服务对象：</label>
+		    <div class="layui-input-inline">
+		      <input id="fwdx" class="layui-input" readonly></input>
+		    </div>
+			<label class="layui-form-label">联系电话：</label>
+			<div class="layui-input-inline">
+			  <input id="lxdh" class="layui-input" readonly></input>
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text" id="downBox">
+		    <label class="layui-form-label">下载附件：</label>
+		    <div class="layui-input-inline">
+		      <!-- <input class="layui-input" type="button"></input> -->
+			  <button type="button" class="layui-btn" id="downLoad">立即下载</button>
+		    </div>
+		</div>
+		
+		<hr style="margin-bottom: 15px;background-color: #ccc;height: 2px;">
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*检查民警：</label>
+		    <div class="layui-input-inline">
+		      <input id="jcmj" class="layui-input" autocomplete="off"></input>
+		    </div>
+			<label class="layui-form-label">*检查时间：</label>
+			<div class="layui-input-inline">
+			  <input id="jcsj" class="layui-input" placeholder="请选择" autocomplete="off"></input>
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*检查地址：</label>
+		    <div class="layui-input-inline">
+		      <input id="jcdz" class="layui-input" autocomplete="off"></input>
+		    </div>
+			<label class="layui-form-label" style="width: 90px;">*被检查对象：</label>
+			<div class="layui-input-inline">
+			  <input id="jcdx" class="layui-input" autocomplete="off"></input>
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label" style="width: 90px;">*现场负责人：</label>
+			<div class="layui-input-inline">
+			  <input id="xcfzr" class="layui-input" autocomplete="off"></input>
+			</div>
+		    <label class="layui-form-label" style="width: 90px;">*负责人电话：</label>
+		    <div class="layui-input-inline">
+		      <input id="fzrdh" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label" style="width: 195px;">*是否发现涉嫌环境违法行为：</label>
+			<div class="layui-input-inline" style="width: 120px;">
+			  <select id="wfxw" >
+					 <option value="">请选择</option>
+					 <option value="1">是</option>
+					 <option value="0">否</option>
+			  </select> 
+			</div>
+			<label class="layui-form-label" style="width: 110px;">*是否移动执法：</label>
+			<div class="layui-input-inline" style="width: 120px;">
+			  <select  id="ydzf">
+					 <option value="">请选择</option>
+					 <option value="1">是</option>
+					 <option value="0">否</option>
+			  </select> 
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label" style="width: 195px;">*是否使用执法记录仪：</label>
+			<div class="layui-input-inline" style="width: 120px;">
+			  <select id="zfy" >
+					 <option value="">请选择</option>
+					 <option value="1">是</option>
+					 <option value="0">否</option>
+			  </select> 
+			</div>
+			<label class="layui-form-label" style="width: 110px;">*检查结果：</label>
+			<div class="layui-input-inline" style="width: 130px;">
+			  <select lay-filter="pid" id="jcjg">
+					 <option value="">请选择</option>
+					 <option value="0">已解决</option>
+					 <option value="1">不属实</option>
+					 <option value="2">受理行政案件</option>
+			  </select> 
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*现场检查内容：</label>
+		    <div class="layui-input-block">
+		      <textarea id="xcjcnr" placeholder="" class="layui-textarea"></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*检查结论：</label>
+		    <div class="layui-input-block">
+		      <textarea id="jcjl" placeholder="" class="layui-textarea"></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">*与服务对象联系时间：</label>
+			<div class="layui-input-inline">
+			  <input id="lxsj" class="layui-input" autocomplete="off"></input>
+			</div>
+		    <label class="layui-form-label">*服务对象是否满意：</label>
+		    <div class="layui-input-inline">
+		      <select id="wrsfmy">
+				 <option value="">请选择</option>
+				 <option value="1">满意</option>
+				 <option value="0">不满意</option>
+				 <option value="2">一般</option>
+				 <option value="3">未接通</option>
+		      </select> 
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*与服务对象沟通详细情况：</label>
+		    <div class="layui-input-block">
+		      <textarea id="xxqk" placeholder="" class="layui-textarea"></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">
+				<button type="button" class="layui-btn layui-btn-primary" id="test4">
+					<i class="layui-icon"></i>
+					上传压缩文件（*至少包含2张图片）提示：显示上传成功后再提交
+				</button>
+			</label>
+		</div>
+		
+		<input type="text" hidden="" id="fileId">
+		
+		<input type="text" hidden="" id="downId">
+		
+	</div>
+	
+	
+	<div class="layui-form" style="display: none;padding: 10px;" id="wrxgBox">
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">线索内容：</label>
+		    <div class="layui-input-block">
+		      <textarea id="xsnr1" placeholder="" class="layui-textarea" rows="8" readonly=""></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">服务对象：</label>
+		    <div class="layui-input-inline">
+		      <input id="fwdx1" class="layui-input" readonly></input>
+		    </div>
+			<label class="layui-form-label">联系电话：</label>
+			<div class="layui-input-inline">
+			  <input id="lxdh1" class="layui-input" readonly></input>
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text" id="downBox1">
+		    <label class="layui-form-label">下载附件：</label>
+		    <div class="layui-input-inline">
+		      <!-- <input class="layui-input" type="button"></input> -->
+			  <button type="button" class="layui-btn" id="downLoad1">立即下载</button>
+		    </div>
+		</div>
+		
+		<hr style="margin-bottom: 15px;background-color: #ccc;height: 2px;">
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*检查民警：</label>
+		    <div class="layui-input-inline">
+		      <input id="jcmj1" class="layui-input" autocomplete="off"></input>
+		    </div>
+			<label class="layui-form-label">*检查时间：</label>
+			<div class="layui-input-inline">
+			  <input id="jcsj1" class="layui-input" autocomplete="off"></input>
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*检查地址：</label>
+		    <div class="layui-input-inline">
+		      <input id="jcdz1" class="layui-input" autocomplete="off"></input>
+		    </div>
+			<label class="layui-form-label" style="width: 90px;">*被检查对象：</label>
+			<div class="layui-input-inline">
+			  <input id="jcdx1" class="layui-input" autocomplete="off"></input>
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label" style="width: 90px;">*现场负责人：</label>
+			<div class="layui-input-inline">
+			  <input id="xcfzr1" class="layui-input" autocomplete="off"></input>
+			</div>
+		    <label class="layui-form-label" style="width: 90px;">*负责人电话：</label>
+		    <div class="layui-input-inline">
+		      <input id="fzrdh1" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label" style="width: 195px;">*是否发现涉嫌环境违法行为：</label>
+			<div class="layui-input-inline" style="width: 120px;">
+			  <select id="wfxw1" >
+					 <option value="">请选择</option>
+					 <option value="1">是</option>
+					 <option value="0">否</option>
+			  </select> 
+			</div>
+			<label class="layui-form-label" style="width: 110px;">*是否移动执法：</label>
+			<div class="layui-input-inline" style="width: 120px;">
+			  <select  id="ydzf1">
+					 <option value="">请选择</option>
+					 <option value="1">是</option>
+					 <option value="0">否</option>
+			  </select> 
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label" style="width: 195px;">*是否使用执法记录仪：</label>
+			<div class="layui-input-inline" style="width: 120px;">
+			  <select id="zfy1" >
+					 <option value="">请选择</option>
+					 <option value="1">是</option>
+					 <option value="0">否</option>
+			  </select> 
+			</div>
+			<label class="layui-form-label" style="width: 110px;">*检查结果：</label>
+			<div class="layui-input-inline" style="width: 130px;">
+			  <select id="jcjg1">
+					 <option value="">请选择</option>
+					 <option value="0">不属实</option>
+					 <option value="1">已解决</option>
+					 <option value="2">受理行政案件</option>
+			  </select> 
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*现场检查内容：</label>
+		    <div class="layui-input-block">
+		      <textarea id="xcjcnr1" placeholder="" class="layui-textarea"></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*检查结论：</label>
+		    <div class="layui-input-block">
+		      <textarea id="jcjl1" placeholder="" class="layui-textarea"></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">与服务对象联系时间：</label>
+			<div class="layui-input-inline">
+			  <input id="lxsj1" class="layui-input" autocomplete="off"></input>
+			</div>
+		    <label class="layui-form-label">服务对象是否满意：</label>
+		    <div class="layui-input-inline">
+		      <select id="wrsfmy1">
+				 <option value="">请选择</option>
+				 <option value="1">满意</option>
+				 <option value="0">不满意</option>
+				 <option value="2">一般</option>
+				 <option value="3">未接通</option>
+		      </select> 
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*与服务对象沟通详细情况：</label>
+		    <div class="layui-input-block">
+		      <textarea id="xxqk1" placeholder="" class="layui-textarea"></textarea>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">
+				<button type="button" class="layui-btn layui-btn-primary" id="xgtest4">
+					<i class="layui-icon"></i>
+					上传压缩文件（*至少包含2张图片）提示：显示上传成功后再提交
+				</button>
+			</label>
+		</div>
+		
+		
+		<!-- <div class="layui-form-item layui-form-text" id="pcsDownBox">
+		    <label class="layui-form-label">下载附件：</label>
+		    <div class="layui-input-inline">
+			  <button type="button" class="layui-btn" id="pcsDown">立即下载</button>
+		    </div>
+		</div> -->
+		
+		<input type="text" hidden="" id="fileId1">
+		
+		<input type="text" hidden="" id="fkFjList1">
+		
+	</div>
+	
+	
+	<div class="layui-form" style="display: none;padding: 10px;" id="cgdetailBox">
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">服务对象：</label>
+		    <div class="layui-input-inline">
+		      <input id="cgfwdx" class="layui-input" readonly></input>
+		    </div>
+			<label class="layui-form-label">联系电话：</label>
+			<div class="layui-input-inline">
+			  <input id="cglxdh" class="layui-input" readonly></input>
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">处置时间：</label>
+		    <div class="layui-input-inline">
+		      <input id="cgczsj" class="layui-input" readonly></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text" id="cgdownBox">
+		    <label class="layui-form-label">下载附件：</label>
+		    <div class="layui-input-inline">
+		      <!-- <input class="layui-input" type="button"></input> -->
+			  <button type="button" class="layui-btn" id="cgdownLoad">立即下载</button>
+		    </div>
+		</div>
+		
+		<hr style="margin-bottom: 15px;background-color: #ccc;height: 2px;">
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*检查民警：</label>
+		    <div class="layui-input-inline">
+		      <input id="cgjcmj" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*检查结论：</label>
+		    <div class="layui-input-block">
+		      <textarea id="cgjcjl" placeholder="" class="layui-textarea" rows="4"></textarea>
+		    </div>
+		</div>
+		
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">
+				<button type="button" class="layui-btn layui-btn-primary" id="cgtest4">
+					<i class="layui-icon"></i>
+					上传压缩文件（*至少包含3张图片）提示：显示上传成功后再提交
+				</button>
+			</label>
+		</div>
+		
+		<input type="text" hidden="" id="cgfileId">
+		
+		<input type="text" hidden="" id="cgdownId">
+		
+	</div>
+	
+	
+	<div class="layui-form" style="display: none;padding: 10px;" id="cgxgBox">
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">服务对象：</label>
+		    <div class="layui-input-inline">
+		      <input id="cgfwdx1" class="layui-input" readonly></input>
+		    </div>
+			<label class="layui-form-label">联系电话：</label>
+			<div class="layui-input-inline">
+			  <input id="cglxdh1" class="layui-input" readonly></input>
+			</div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">处置时间：</label>
+		    <div class="layui-input-inline">
+		      <input id="cgczsj1" class="layui-input" readonly></input>
+		    </div>
+		</div>
+		
+		<div class="layui-form-item layui-form-text" id="cgdownBox1">
+		    <label class="layui-form-label">下载附件：</label>
+		    <div class="layui-input-inline">
+		      <!-- <input class="layui-input" type="button"></input> -->
+			  <button type="button" class="layui-btn" id="cgdownLoad1">立即下载</button>
+		    </div>
+		</div>
+		
+		<hr style="margin-bottom: 15px;background-color: #ccc;height: 2px;">
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*检查民警：</label>
+		    <div class="layui-input-inline">
+		      <input id="cgjcmj1" class="layui-input" autocomplete="off"></input>
+		    </div>
+		</div>
+		
+		
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">*处置结论：</label>
+		    <div class="layui-input-block">
+		      <textarea id="cgjcjl1" placeholder="" class="layui-textarea" rows="4"></textarea>
+		    </div>
+		</div>
+		
+		
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">
+				<button type="button" class="layui-btn layui-btn-primary" id="xgcgtest4">
+					<i class="layui-icon"></i>
+					上传压缩文件（*至少包含3张图片）提示：显示上传成功后再提交
+				</button>
+			</label>
+		</div>
+		
+		<input type="text" hidden="" id="cgfileId1">
+		
+		<input type="text" hidden="" id="cgdownId1">
+		
+	</div>
+	
+	
+	
+<div id="footer">
+	
+</div>
+    
+
+
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script src="base.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/multiDownload.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery.media.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id="barWr">
+  
+    {{#  if(d.czzt==0){ }}
+	   <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="wrqs">签收</a>
+    {{# } else if(d.czzt==1) { }}
+	   <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDet">查看详情</a>
+	   <a class="layui-btn layui-btn-xs" lay-event="wrxg">修改</a>
+    {{# } else if(d.czzt ==2) { }}
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="deal">立即处理</a>
+	{{# } else if(d.czzt ==3) { }}
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="checkDet">查看详情</a>
+	{{# } }}	
+	
+</script>
+
+<script type="text/html" id="barCg">
+  
+  {{#  if(d.czzt==0){ }}
+     <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="cgqs">签收</a>
+  {{# } else if(d.czzt==1) { }}
+     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="cgcheckDet">查看详情</a>
+	 <a class="layui-btn layui-btn-xs" lay-event="cgxg">修改</a>
+  {{# } else if(d.czzt ==2) { }}
+  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="cgdeal">立即处理</a>
+  {{# } else if(d.czzt ==3) { }}
+	 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="cgcheckDet">查看详情</a>
+  {{# } }}
+  
+</script>
+
+<script type="text/javascript">
+	
+	// $('a.media').media({width:800, height:600});  
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	var laydate = layui.laydate;
+	var upload = layui.upload;
+	var form = layui.form;
+	var xgcgfjlist=[];
+	var xgwrfjlist=[];
+	
+	//日期范围
+	  laydate.render({
+	    elem: '#chooseTime'
+	    ,range: true
+	  });
+	  // 污染检查时间
+	  laydate.render({
+	     elem: '#jcsj'
+	     ,type: 'datetime'
+	   }); 
+	   laydate.render({
+	      elem: '#jcsj1'
+	      ,type: 'datetime'
+	    }); 
+	  
+	  laydate.render({
+	    elem: '#cgchooseTime'
+	    ,range: true
+	  });
+	  
+	 laydate.render({
+	    elem: '#wcsj'
+	    ,type: 'datetime'
+	  }); 
+	  
+	  laydate.render({
+	     elem: '#cglxsj'
+	     ,type: 'datetime'
+	   }); 
+	   laydate.render({
+	      elem: '#cglxsj1'
+	      ,type: 'datetime'
+	    }); 
+	  laydate.render({
+	     elem: '#lxsj'
+	     ,type: 'datetime'
+	   });
+	   laydate.render({
+	      elem: '#lxsj1'
+	      ,type: 'datetime'
+	    });
+	  
+	 // 搜按时间区间搜索
+	$("#search").click(function(){
+		// getWuran(baseUrl+"/xscz/queryZhXsczPage?type=0&deptId="+deptId);
+		var checkTime = $("#chooseTime").val();
+		var startDate = checkTime.slice(0,10);
+		var endDate = checkTime.slice(13);
+		var cgczzt = $("#wrczzt").val();
+		getWuran(baseUrl+"/xscz/queryZhXsczPage?deptId="+deptId+"&type=0&startDate="+startDate+"&endDate="+endDate+"&czzt="+cgczzt);
+	})  
+	  
+	
+	
+	
+	// 获取污染数据
+	function getWuran(url){
+		table.render({
+		  elem: '#wuran'
+		  // ,toolbar: '#toolbarWr'
+		  ,url:url
+		  ,defaultToolbar: []
+		  ,page:true
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			 ,{field:'deptName',  title: '单位',align:"center",width:120}
+			,{field:'sjhdd',  title: '事件或地点',align:"center"}
+			,{field:'xfsj',  title: '下发时间',align:"center",width:160}
+			,{field:'czsj',  title: '反馈时限',align:"center",width:160}
+			,{field:'fksj',  title: '反馈时间',align:"center",width:160}
+			 ,{field:'sfcs',  title: '是否超时',align:"center",width:120,
+				templet:function(d)
+					{
+						if(d.sfcs==0)
+						   {return "否"}
+						else if(d.sfcs==1)
+						   {return "是"}
+						
+					}
+			 }
+			 ,{field:'czzt', title: '状态',align:"center",width:100,
+			 	templet:function(d)
+			 		{
+			 			if(d.czzt==0)
+			 			   {return "未签收"}
+			 			else if(d.czzt==1)
+			 			   {return "已处理"}
+			 			else if(d.czzt==2)
+			 				{return "已签收"}
+						else if(d.czzt==3)
+							{return "已完结"}
+			 		}
+			 }
+			,{title:'操作', toolbar: '#barWr',align:"center",width:140}
+		  ]]
+		  ,id: 'testReload'
+		});
+	}
+	
+	getWuran(baseUrl+"/xscz/queryZhXsczPage?type=0&deptId="+deptId);
+	
+	// 立即处理上传文件
+	upload.render({ //允许上传的文件后缀
+	    elem: '#test4'
+	    ,url: baseUrl +'/xscz/uploadZhXsczFj?token='+token+"&type=1" //改成您自己的上传接口
+	    ,accept: 'file' //普通文件
+	    ,exts: 'zip|rar|7z' //只允许上传压缩文件
+		,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+		    layer.load(); //上传loading
+		}
+	    ,done: function(res){
+	      // console.log(res);
+		  $("#fileId").val(res.data.fjId);
+		  layer.closeAll('loading'); //关闭loading
+		   layer.msg('上传成功');
+	    }
+	  });
+	  
+	  // 修改上传文件
+	  upload.render({ //允许上传的文件后缀
+	      elem: '#xgtest4'
+	      ,url: baseUrl +'/xscz/uploadZhXsczFj?token='+token+"&type=1" //改成您自己的上传接口
+	      ,accept: 'file' //普通文件
+	      ,exts: 'zip|rar|7z' //只允许上传压缩文件
+	  	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+	  	    layer.load(); //上传loading
+	  	}
+	      ,done: function(res){
+	        
+	  	  $("#fileId1").val(res.data.fjId);
+		  console.log($("#fileId1").val());
+		  xgwrfjlist.push({"id":$("#fileId1").val()});
+	  	  layer.closeAll('loading'); //关闭loading
+	  	   layer.msg('上传成功');
+	      }
+	    });
+	  
+	  
+	  
+	  $("#downLoad").click(function(){
+		  // http://localhost:8080/xscz/exportZhXscz?id=ac9778efb1fb42d3a27ac64aaa23b7ce
+		  // console.log($("#downId").val());
+		  window.location.href=baseUrl+"/xscz/exportZhXscz?id="+$("#downId").val()+"&token="+token;
+	  })
+	  
+	  $("#downLoad1").click(function(){
+		  window.location.href=baseUrl+"/xscz/exportZhXscz?id="+$("#fileId1").val()+"&token="+token;
+	  })
+	  
+	  table.on('tool(wuran)', function(obj){
+		  var data= obj.data;
+		  if(obj.event=="deal"){
+				// console.log(data);
+				// 判断是否有附件
+				if(data.zhXsczFjList.length==0){
+					$("#downBox").hide();
+				}else{
+					$("#downBox").show();
+					// 设置下载id
+					$("#downId").val(data.zhXsczFjList[0].id);
+				}
+				
+			  	$("#xsnr").val(data.xsnr);
+			  	$("#fwdx").val(data.fwdx);
+			  	$("#lxdh").val(data.fwdxdh);
+				
+				$("#jcmj").val("");
+				$("#jcsj").val("");
+				$("#jcdz").val("");
+				$("#jcdx").val("");
+				$("#xcfzr").val("");
+				$("#fzrdh").val("");
+				$("#wfxw").val("");
+				$("#ydzf").val("");
+				$("#zfy").val("");
+				$("#jcjg").val("");
+				$("#xcjcnr").val("");
+				$("#jcjl").val("");
+				$("#fileId").val("");
+				$("#lxsj").val("");
+				$("#wrsfmy").val("");
+				$("#xxqk").val("");
+				form.render('select');
+			  	layer.open({
+			  	 type:1,
+			  	 area:['800px','550px'],
+			  	  title: '处理指令',
+			  	  content: $("#addWrbox"),
+			  	  shade: 0,
+			  	  btn: ['提交', '取消']
+			  	  ,btn1: function(index, layero){
+					  if($("#jcmj").val()==""){
+					  	layer.msg("检查民警还未填写！")
+					  	return
+					  }
+					  if($("#jcsj").val()==""){
+					  	layer.msg("检查时间还未填写！")
+					  	return
+					  }
+					  
+					  if($("#xcfzr").val()==""){
+					  	layer.msg("现场负责人还未填写！")
+					  	return
+					  }
+					  if($("#fzrdh").val()==""){
+					  	layer.msg("现场负责人电话还未填写！")
+					  	return
+					  }
+					  
+					  if($("#jcdz").val()==""){
+					  	layer.msg("检查地址还未填写！")
+					  	return
+					  }
+					  if($("#jcdx").val()==""){
+					  	layer.msg("被检查对象还未填写！")
+					  	return
+					  }
+					  if($("#wfxw").val()==""){
+					  	layer.msg("是否发现涉嫌环境违法行为还未选择！")
+					  	return
+					  }
+					  if($("#ydzf").val()==""){
+					  	layer.msg("是否移动执法还未选择！")
+					  	return
+					  }
+					  if($("#zfy").val()==""){
+					  	layer.msg("是否使用执法记录仪还未选择！")
+					  	return
+					  }
+					  if($("#jcjg").val()==""){
+					  	layer.msg("检查结果还未填写！")
+					  	return
+					  }
+					  if($("#xcjcnr").val()==""){
+					  	layer.msg("现场检查内容还未填写！")
+					  	return
+					  }
+					  if($("#jcjl").val()==""){
+					  	layer.msg("检查结论还未填写！")
+					  	return
+					  }
+					  
+					  if($("#fileId").val()==""){
+					  	layer.msg("至少包含两张照片的压缩附件未上传")
+					  	return
+					  }
+					  
+					  if($("#lxsj").val()==""){
+					  	layer.msg("联系时间还未填写")
+					  	return
+					  }
+					  if($("#wrsfmy").val()==""){
+					  	layer.msg("满意情况还未填写")
+					  	return
+					  }
+					  if($("#xxqk").val()==""){
+					  	layer.msg("反馈详细情况还未填写")
+					  	return
+					  }
+					  
+					  
+			  			var load1 = layer.load(1);
+			  			$.ajax({
+			  			    url:baseUrl + "/xscz/updateZhXscz",
+			  			    type:"post",
+			  			    cache:false,
+			  				data:JSON.stringify({
+								"id":data.id,
+								"type":0, 
+								"jcmj":$("#jcmj").val(),
+								"jcsj":$("#jcsj").val(),
+								"jcdz":$("#jcdz").val(),
+								"bjcdx":$("#jcdx").val(),
+								"xcfzr":$("#xcfzr").val(),
+								"xcfzrdh":$("#fzrdh").val(),
+								"sffxsxhjwfxw":$("#wfxw").val(),
+								"sfydzf":$("#ydzf").val(),
+								"sfsyzfjyl":$("#zfy").val(),
+								"jcjg":$("#jcjg").val(),
+								"xcjcnr":$("#xcjcnr").val(),
+								"jcjl":$("#jcjl").val(),
+								"fkFjList":[{"id":$("#fileId").val()}],
+								"lxsj":$("#lxsj").val(),
+								"fwdxsfmy":$("#wrsfmy").val(),
+								"fwdxgtxxqk":$("#xxqk").val(),
+								
+							}),
+			  				dataType : 'JSON',
+			  				contentType: "application/json",
+			  				beforeSend: function (XMLHttpRequest) {
+			  				   XMLHttpRequest.setRequestHeader("token", token);
+			  				},
+			  			    success:function(data) {
+			  					if(data.code==0){
+			  						layer.close(load1);
+			  					    layer.msg("处理成功");
+			  						table.reload("testReload");
+			  					}else {
+			  						layer.close(load1);
+			  					    layer.msg(data.msg);
+			  					}
+			  			    },
+			  			    error : function (res) {
+			  					layer.close(load1);
+			  			        layer.msg('处理失败');
+			  			    }
+			  			})
+			  			layer.closeAll();
+			  			 $("#addWrbox").hide();
+			  	  },
+			  		  btn2: function(index, layero){
+			  				$("#addWrbox").hide();
+			  				layer.closeAll();
+			  		  },
+			  		cancel: function(layero,index){ 
+			  			 $("#addWrbox").hide();
+			  				layer.closeAll();
+			  		  }
+			  	});
+			  	
+		  }else if(obj.event=="checkDet"){
+			  console.log(data)
+			layer.open({
+			  type: 1,
+			  // skin: 'layui-layer-rim', //加上边框
+			  area: ['80%', '80%'], //宽高
+			  content:`
+			  <div style="margin:10px">
+				<table class="layui-table" >
+				<colgroup>
+				  <col width="150">
+				  <col width="">
+				  <col width="150">
+				  <col width="">
+				</colgroup>
+				  <tbody>
+					 <tr>
+						<td>
+							事件或地点
+						</td>
+						<td id="tbsjhdd" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>
+					 		线索内容
+					 	</td>
+						<td id="tbxsln" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>服务对象</td>
+					 	<td id="tbfwdx"></td>
+						<td>服务对象电话</td>
+						<td id="fwdxdh"></td>
+					 </tr>
+					 <tr>
+					 	<td>处置时间</td>
+					 	<td id="tbczsj" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>处置所队</td>
+					 	<td id="tbczsd"></td>
+						<td>检查民警</td>
+						<td id="tbjcmj"></td>
+					 </tr>
+					 <tr>
+					 	<td>检查时间</td>
+					 	<td id="tbjcsj"></td>
+						<td>检查地址</td>
+						<td id="tbjcdz"></td>
+					 </tr>
+					 <tr>
+					 	<td>被检查对象</td>
+					 	<td id="tbjcdx"></td>
+						<td>是否发现涉嫌环境违法行为</td>
+						<td id="tbwfxw"></td>
+					 </tr>
+					 <tr>
+					 	<td>现场负责人</td>
+					 	<td id="tbxcfzr"></td>
+						<td>现场负责人电话</td>
+						<td id="tbxcfzrdh"></td>
+					 </tr>
+					 <tr>
+					 	<td>是否移动执法</td>
+					 	<td id="tbydzf"></td>
+						<td>是否使用执法记录仪</td>
+						<td id="tbzfy"></td>
+					 </tr>
+					 <tr>
+					 	<td>现场检查内容</td>
+					 	<td id="tbjcnr" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>检查结论</td>
+					 	<td id="tbjcjl" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>检查结果</td>
+					 	<td id="tbjcjg" colspan="3"></td>
+					 </tr>
+					 <tr>
+					 	<td>与服务对象联系时间</td>
+					 	<td id="tblxsj"></td>
+						<td>服务对象是否满意</td>
+						<td id="tbsfmy"></td>
+					 </tr>
+					 <tr>
+					 	<td>与服务对象沟通详细情况</td>
+					 	<td id="tbxxqk" colspan="3"></td>
+					 </tr>
+				  </tbody>
+				</table>
+			   </div>
+			  `
+			});
+			$("#fwdxdh").text(data.fwdxdh);
+			$("#tbsjhdd").text(data.sjhdd);
+			$("#tbfwdx").text(data.fwdx);
+			$("#tbczsj").text(data.czsj);
+			$("#tbxsln").text(data.xsnr);
+			$("#tbczsd").text(data.czsd);
+			$("#tbjcmj").text(data.jcmj);
+			$("#tbjcsj").text(data.jcsj);
+			$("#tbjcdz").text(data.jcdz)
+			$("#tbjcdx").text(data.bjcdx);
+			if(data.sffxsxhjwfxw==null){
+				$("#tbwfxw").text("");
+			}else if(data.sffxsxhjwfxw==0){
+				$("#tbwfxw").text("否");
+			}else if(data.sffxsxhjwfxw==1){
+				$("#tbwfxw").text("是");
+			}
+			$("#tbxcfzr").text(data.xcfzr);
+			$("#tbxcfzrdh").text(data.xcfzrdh);
+			if(data.sfydzf==null){
+				$("#tbydzf").text("");
+			}else if(data.sfydzf==0){
+				$("#tbydzf").text("否");
+			}else if(data.sfydzf==1){
+				$("#tbydzf").text("是");
+			}
+			if(data.sfsyzfjyl==null){
+				$("#tbzfy").text("");
+			}else if(data.sfsyzfjyl==0){
+				$("#tbzfy").text("否");
+			}else if(data.sfsyzfjyl==1){
+				$("#tbzfy").text("是");
+			}
+			$("#tbjcnr").text(data.xcjcnr);
+			$("#tbjcjl").text(data.jcjl);
+			if(data.jcjg==null){
+				$("#tbjcjg").text("");
+			}else if(data.jcjg==1){
+				$("#tbjcjg").text("已解决");
+			}else if(data.jcjg==2){
+				$("#tbjcjg").text("受理行政案件");
+			}else if(data.jcjg==0){
+				$("#tbjcjg").text("不属实");
+			}
+			$("#tblxsj").text(data.lxsj);
+			if(data.fwdxsfmy==null){
+				$("#tbsfmy").text();
+			}else if(data.fwdxsfmy==0){
+				$("#tbsfmy").text("不满意");
+			}else if(data.fwdxsfmy==1){
+				$("#tbsfmy").text("满意");
+			}else if(data.fwdxsfmy==2){
+				$("#tbsfmy").text("一般");
+			}else if(data.fwdxsfmy==3){
+				$("#tbsfmy").text("未接通");
+			}
+			$("#tbxxqk").text(data.fwdxgtxxqk);
+				
+			  // // 判断是否有附件
+			  // if(data.zhXsczFjList.length==0){
+			  // 	$("#downBox1").hide();
+			  // }else{
+			  // 	$("#downBox1").show();
+			  // 	// 设置下载id
+			  // 	$("#fileId1").val(data.zhXsczFjList[0].id);
+			  // }
+		  }else if(obj.event=="wrqs"){
+			  // 签收过程
+			  // 1调用签收接口qsZhXscz
+			  // 2调用下载word接口exportWord
+			  // 3调用下载附件接口exportZhXscz
+			  // console.log(data);
+			  var load1 = layer.load(1);
+			  $.ajax({
+			      url:baseUrl + "/xscz/qsZhXscz",
+			      type:"post",
+			      cache:false,
+			  	data:JSON.stringify({
+			  		"id":data.id,
+			  		"type":0, 
+					"czzt":2
+			  	}),
+			  	dataType : 'JSON',
+			  	contentType: "application/json",
+			  	beforeSend: function (XMLHttpRequest) {
+			  	   XMLHttpRequest.setRequestHeader("token", token);
+			  	},
+			      success:function(data) {
+			  		if(data.code==0){
+			  			layer.close(load1);
+			  		    layer.msg("签收成功");
+			  			table.reload("testReload");
+			  		}else {
+			  			layer.close(load1);
+			  		    layer.msg(data.msg);
+			  		}
+			      },
+			      error : function (res) {
+			  		layer.close(load1);
+			          layer.msg('签收失败');
+			      }
+			  });
+			  if(data.zhXsczFjList.length==0){
+				  window.location.href=baseUrl+"/xscz/exportWord?id="+data.id+"&token="+token;
+			  }else{
+				  var url1 = baseUrl+"/xscz/exportWord?id="+data.id+"&token="+token;
+				  var url2 = baseUrl+"/xscz/exportZhXscz?id="+data.zhXsczFjList[0].id+"&token="+token;
+				  var downloadUrl=[url1,url2];
+				  $(downloadUrl).multiDownload();
+			  }
+		  }else if(obj.event=="wrxg"){
+			  console.log(data)
+			  // 判断是否有附件
+			  if(data.zhXsczFjList.length==0){
+			  	$("#downBox1").hide();
+			  }else{
+			  	$("#downBox1").show();
+			  	// 设置下载id
+			  	// $("#fileId1").val(data.zhXsczFjList[0].id);
+			  }
+			  // $("#fkFjList").val(data.fkFjList[0].id);
+			  
+			  $("#xsnr1").val(data.xsnr);
+			  $("#fwdx1").val(data.fwdx);
+			  $("#lxdh1").val(data.fwdxdh);
+			  
+			  $("#jcmj1").val(data.jcmj);
+			  $("#jcsj1").val(data.jcsj);
+			  $("#jcdz1").val(data.jcdz);
+			  $("#jcdx1").val(data.bjcdx);
+			  $("#xcfzr1").val(data.xcfzr);
+			  $("#fzrdh1").val(data.xcfzrdh);
+			  $("#wfxw1").val(data.sffxsxhjwfxw);
+			  $("#ydzf1").val(data.sfydzf);
+			  $("#zfy1").val(data.sfsyzfjyl);
+			  $("#jcjg1").val(data.jcjg);
+			  $("#xcjcnr1").val(data.xcjcnr);
+			  $("#jcjl1").val(data.jcjl);
+			  $("#lxsj1").val(data.lxsj);
+			  $("#wrsfmy1").val(data.fwdxsfmy);
+			  $("#xxqk1").val(data.fwdxgtxxqk);
+			  // $("#fileId1").val(data.fkFjList[0].id);
+			  
+			  console.log(data.fkFjList[0].id);
+			  
+			  form.render('select');
+			  layer.open({
+			   type:1,
+			   area:['800px','550px'],
+			    title: '修改',
+			    content: $("#wrxgBox"),
+			    shade: 0,
+			    btn: ['确定','取消']
+			    ,btn1: function(index, layero){
+			  			  if($("#jcmj1").val()==""){
+			  			  	layer.msg("检查民警还未填写！")
+			  			  	return
+			  			  }
+			  			  if($("#jcsj1").val()==""){
+			  			  	layer.msg("检查时间还未填写！")
+			  			  	return
+			  			  }
+			  			  
+			  			  if($("#xcfzr1").val()==""){
+			  			  	layer.msg("现场负责人还未填写！")
+			  			  	return
+			  			  }
+			  			  if($("#fzrdh1").val()==""){
+			  			  	layer.msg("现场负责人电话还未填写！")
+			  			  	return
+			  			  }
+			  			  
+			  			  if($("#jcdz1").val()==""){
+			  			  	layer.msg("检查地址还未填写！")
+			  			  	return
+			  			  }
+			  			  if($("#jcdx1").val()==""){
+			  			  	layer.msg("被检查对象还未填写！")
+			  			  	return
+			  			  }
+			  			  if($("#wfxw1").val()==""){
+			  			  	layer.msg("是否发现涉嫌环境违法行为还未选择！")
+			  			  	return
+			  			  }
+			  			  if($("#ydzf1").val()==""){
+			  			  	layer.msg("是否移动执法还未选择！")
+			  			  	return
+			  			  }
+			  			  if($("#zfy1").val()==""){
+			  			  	layer.msg("是否使用执法记录仪还未选择！")
+			  			  	return
+			  			  }
+			  			  if($("#jcjg1").val()==""){
+			  			  	layer.msg("检查结果还未填写！")
+			  			  	return
+			  			  }
+			  			  if($("#xcjcnr1").val()==""){
+			  			  	layer.msg("现场检查内容还未填写！")
+			  			  	return
+			  			  }
+			  			  if($("#jcjl1").val()==""){
+			  			  	layer.msg("检查结论还未填写！")
+			  			  	return
+			  			  }
+			  			  
+			  			  // if($("#fileId1").val()==""){
+			  			  // 	layer.msg("至少包含两张照片的压缩附件未上传")
+			  			  // 	return
+			  			  // }
+			  			  
+			  			  if($("#lxsj1").val()==""){
+			  			  	layer.msg("联系时间还未填写")
+			  			  	return
+			  			  }
+			  			  if($("#wrsfmy1").val()==""){
+			  			  	layer.msg("满意情况还未填写")
+			  			  	return
+			  			  }
+			  			  if($("#xxqk1").val()==""){
+			  			  	layer.msg("反馈详细情况还未填写")
+			  			  	return
+			  			  }
+			  				var load1 = layer.load(1);
+			  				$.ajax({
+			  				    url:baseUrl + "/xscz/modifyZhXscz",
+			  				    type:"post",
+			  				    cache:false,
+			  					data:JSON.stringify({
+			  						"id":data.id,
+			  						"type":0, 
+			  						"jcmj":$("#jcmj1").val(),
+			  						"jcsj":$("#jcsj1").val(),
+			  						"jcdz":$("#jcdz1").val(),
+			  						"bjcdx":$("#jcdx1").val(),
+			  						"xcfzr":$("#xcfzr1").val(),
+			  						"xcfzrdh":$("#fzrdh1").val(),
+			  						"sffxsxhjwfxw":$("#wfxw1").val(),
+			  						"sfydzf":$("#ydzf1").val(),
+			  						"sfsyzfjyl":$("#zfy1").val(),
+			  						"jcjg":$("#jcjg1").val(),
+			  						"xcjcnr":$("#xcjcnr1").val(),
+			  						"jcjl":$("#jcjl1").val(),
+			  						"fkFjList":xgwrfjlist,
+			  						"lxsj":$("#lxsj1").val(),
+			  						"fwdxsfmy":$("#wrsfmy1").val(),
+			  						"fwdxgtxxqk":$("#xxqk1").val(),
+			  						
+			  					}),
+			  					dataType : 'JSON',
+			  					contentType: "application/json",
+			  					beforeSend: function (XMLHttpRequest) {
+			  					   XMLHttpRequest.setRequestHeader("token", token);
+			  					},
+			  				    success:function(data) {
+			  						if(data.code==0){
+			  							layer.close(load1);
+			  						    layer.msg("处理成功");
+			  							table.reload("testReload");
+			  						}else {
+			  							layer.close(load1);
+			  						    layer.msg(data.msg);
+			  						}
+			  				    },
+			  				    error : function (res) {
+			  						layer.close(load1);
+			  				        layer.msg('处理失败');
+			  				    }
+			  				})
+			  				layer.closeAll();
+			  				 $("#wrxgBox").hide();
+			    }
+				,btn2: function(index, layero){
+					$("#wrxgBox").hide();
+					layer.closeAll();
+				},
+			  	cancel: function(layero,index){ 
+			  		 $("#wrxgBox").hide();
+			  			layer.closeAll();
+			  	  }
+			  });
+			  
+			  
+			  
+		  }
+	  })
+	  
+	  $("#pcsDown").click(function(){
+	  	window.location.href=baseUrl+"/xscz/exportZhXscz?id="+$("#fkFjList1").val()+"&token="+token;
+	  })
+	  
+	
+	// 城管
+	
+	function getCg(url){
+		table.render({
+		  elem: '#chenguan'
+		  // ,toolbar: '#toolbarWr'
+		  ,url:url
+		  ,defaultToolbar: []
+		  ,page:true
+		  ,cols: [[
+			 {field: '', title: '序号',width:60,templet: function(d){ return (d.LAY_INDEX); },align:"center"}
+			 ,{field:'deptName',  title: '单位',align:"center",width:120}
+			,{field:'sjhdd',  title: '事件或地点',align:"center"}
+			,{field:'xfsj',  title: '下发时间',align:"center",width:160}
+			,{field:'czsj',  title: '反馈时限',align:"center",width:160}
+			,{field:'fksj',  title: '反馈时间',align:"center",width:160}
+			 ,{field:'sfcs',  title: '是否超时',align:"center",width:120,
+				templet:function(d)
+					{
+						if(d.sfcs==0)
+						   {return "否"}
+						else if(d.sfcs==1)
+						   {return "是"}
+						
+					}
+			 }
+			 ,{field:'czzt', title: '状态',align:"center",width:100,
+			 	templet:function(d)
+			 		{
+			 			if(d.czzt==0)
+			 			   {return "未签收"}
+			 			else if(d.czzt==1)
+			 			   {return "已处理"}
+						else if(d.czzt==2)
+							{return "已签收"}
+						else if(d.czzt==3)
+							{return "已完结"}
+			 		}
+			 }
+			,{title:'操作', toolbar: '#barCg',align:"center",width:140}
+		  ]]
+		  ,id: 'cgtestReload'
+		});
+	}
+	
+	getCg(baseUrl+"/xscz/queryZhXsczPage?type=1&deptId="+deptId);
+	
+	table.on('tool(chenguan)', function(obj){
+			  var data= obj.data;
+			  if(obj.event=="cgdeal"){
+				  // cgdetailBox
+				  console.log(data)
+				  
+				  if(data.zhXsczFjList.length==0){
+				  	$("#cgdownBox").hide();
+				  }else{
+				  	$("#cgdownBox").show();
+				  	// 设置下载id
+				  	$("#cgdownId").val(data.zhXsczFjList[0].id);
+				  }
+				  
+				  $("#cgfwdx").val(data.fwdx);
+				  $("#cglxdh").val(data.fwdxdh);
+				  $("#cgczsj").val(data.czsj);
+				  
+				  $("#cgfileId").val("");
+				  $("#cgjcmj").val("");
+				  $("#cgjcjl").val("");
+				  form.render('select');
+				  
+				  layer.open({
+				   type:1,
+				   area:['800px','550px'],
+				    title: '处理指令',
+				    content: $("#cgdetailBox"),
+				    shade: 0,
+				    btn: ['确定',"取消"]
+				    ,btn1: function(index, layero){
+						if($("#cgjcmj").val()==""){
+							layer.msg("检查民警还未填写！")
+							return
+						}
+						if($("#cgjcjl").val()==""){
+							layer.msg("检查结论还未填写！")
+							return
+						}
+						if($("#cgfileId").val()==""){
+							layer.msg("您还没有上传至少包含3张照片的压缩附件")
+							return
+						}
+						var load1 = layer.load(1);
+								$.ajax({
+								    url:baseUrl + "/xscz/updateZhXscz",
+								    type:"post",
+								    cache:false,
+									data:JSON.stringify({
+										"id":data.id,
+										"type":1, 
+										"jcmj":$("#cgjcmj").val(),
+										// "lxsj":$("#cglxsj").val(),
+										// "fwdxsfmy":$("#cgfwdxsfmy").val(),
+										"jcjl":$("#cgjcjl").val(),
+										// "fwdxgtxxqk":$("#cgfknr").val(),
+										"fkFjList":[{"id":$("#cgfileId").val()}]
+									}),
+									dataType : 'JSON',
+									contentType: "application/json",
+									beforeSend: function (XMLHttpRequest) {
+									   XMLHttpRequest.setRequestHeader("token", token);
+									},
+								    success:function(data) {
+										if(data.code==0){
+											layer.close(load1);
+										    layer.msg("处理成功");
+											table.reload("cgtestReload");
+										}else {
+											layer.close(load1);
+										    layer.msg(data.msg);
+										}
+								    },
+								    error : function (res) {
+										layer.close(load1);
+								        layer.msg('处理失败');
+								    }
+								})
+								layer.closeAll();
+								 $("#cgdetailBox").hide();
+						  },
+							  btn2: function(index, layero){
+									layer.closeAll();
+									 $("#cgdetailBox").hide();
+							  },
+							cancel: function(layero,index){ 
+								 layer.closeAll();
+								  $("#cgdetailBox").hide();
+							  }
+						});
+			  }else if(obj.event=="cgcheckDet"){
+				 layer.open({
+				   type: 1,
+				   // skin: 'layui-layer-rim', //加上边框
+				   area: ['80%', '80%'], //宽高
+				   content:`
+				   <div style="margin:10px">
+				 	<table class="layui-table" >
+				 	<colgroup>
+				 	  <col width="150">
+				 	  <col width="">
+				 	  <col width="150">
+				 	  <col width="">
+				 	</colgroup>
+				 	  <tbody>
+				 		  <tr>
+				 			<td>服务对象</td>
+				 			<td id="cgtbfwdx"></td>
+				 			<td>联系电话</td>
+				 			<td id="cgtblxdh"></td>
+				 		  </tr>
+				 		 <tr>
+				 		 	<td>处置所队</td>
+				 			<td id="cgtbczsd"></td>
+				 			<td>检查民警</td>
+				 			<td id="cgtbjcmj"></td>
+				 		 </tr>
+				 		 <tr>
+				 			 <td>处置时间</td>
+				 			 <td id="cgtbczsj" colspan="3"></td>
+				 		 </tr>
+				 		 <tr>
+				 			 <td>检查结论</td>
+				 			 <td id="cgtbjcjl" colspan="3"></td>
+				 		 </tr>
+				 	  </tbody>
+				 	</table>
+				    </div>
+				   `
+				 });
+				 $("#cgtbfwdx").text(data.fwdx);
+				 $("#cgtblxdh").text(data.fwdxdh);
+				 $("#cgtbczsd").text(data.czsd);
+				 $("#cgtbjcmj").text(data.jcmj);
+				 $("#cgtbczsj").text(data.czsj);
+				 $("#cgtbjcjl").text(data.jcjl);
+				 $("#cgtblxsj").text(data.lxsj);
+				  
+			  }else if(obj.event=="cgqs"){
+				  var load1 = layer.load(1);
+				  $.ajax({
+				      url:baseUrl + "/xscz/qsZhXscz",
+				      type:"post",
+				      cache:false,
+				  	data:JSON.stringify({
+				  		"id":data.id,
+				  		"type":1, 
+						"czzt":2
+				  	}),
+				  	dataType : 'JSON',
+				  	contentType: "application/json",
+				  	beforeSend: function (XMLHttpRequest) {
+				  	   XMLHttpRequest.setRequestHeader("token", token);
+				  	},
+				      success:function(data) {
+				  		if(data.code==0){
+				  			layer.close(load1);
+				  		    layer.msg("签收成功");
+				  			table.reload("cgtestReload");
+				  		}else {
+				  			layer.close(load1);
+				  		    layer.msg(data.msg);
+				  		}
+				      },
+				      error : function (res) {
+				  		layer.close(load1);
+				          layer.msg('签收失败');
+				      }
+				  })
+					var url1 = baseUrl+"/xscz/exportWord?id="+data.id+"&token="+token;
+					var url2 = baseUrl+"/xscz/exportZhXscz?id="+data.zhXsczFjList[0].id+"&token="+token;
+					var downloadUrl=[url1,url2];
+					$(downloadUrl).multiDownload();
+				  
+			  }else if(obj.event=="cgxg"){
+				  console.log(data);
+				  if(data.zhXsczFjList.length==0){
+				  	$("#cgdownBox1").hide();
+				  }else{
+				  	$("#cgdownBox1").show();
+				  	// 设置下载id
+				  	$("#cgdownId1").val(data.zhXsczFjList[0].id);
+				  }
+				  
+				  
+				  // $("#cgfileId1").val(data.fkFjList[0].id);
+				  
+				  // 展示默认信息
+				  $("#cgfwdx1").val(data.fwdx);
+				  $("#cglxdh1").val(data.fwdxdh);
+				  $("#cgczsj1").val(data.czsj);
+				  
+				  $("#cgjcmj1").val(data.jcmj);
+				  $("#cgjcjl1").val(data.jcjl);
+				  
+				  // [{"id":$("#cgfileId1").val()}]
+				  
+				  form.render('select');
+				  layer.open({
+				   type:1,
+				   area:['800px','550px'],
+				    title: '修改',
+				    content: $("#cgxgBox"),
+				    shade: 0,
+				    btn: ['确定',"取消"]
+				    ,btn1: function(index, layero){
+						if($("#cgjcmj1").val()==""){
+							layer.msg("检查民警还未填写！")
+							return
+						}
+						if($("#cgjcjl1").val()==""){
+							layer.msg("检查结论还未填写！")
+							return
+						}
+						var load1 = layer.load(1);
+						$.ajax({
+							url:baseUrl + "/xscz/modifyZhXscz",
+							type:"post",
+							cache:false,
+							data:JSON.stringify({
+								"id":data.id,
+								"type":1, 
+								"jcmj":$("#cgjcmj1").val(),
+								"jcjl":$("#cgjcjl1").val(),
+								"fkFjList":xgcgfjlist
+							}),
+							dataType : 'JSON',
+							contentType: "application/json",
+							beforeSend: function (XMLHttpRequest) {
+							   XMLHttpRequest.setRequestHeader("token", token);
+							},
+							success:function(data) {
+								if(data.code==0){
+									layer.close(load1);
+									layer.msg("处理成功");
+									table.reload("cgtestReload");
+								}else {
+									layer.close(load1);
+									layer.msg(data.msg);
+								}
+							},
+							error : function (res) {
+								layer.close(load1);
+								layer.msg('处理失败');
+							}
+						})
+						
+				  		layer.closeAll();
+				  		 $("#cgxgBox").hide();
+				    }
+					,btn2: function(index, layero){
+						layer.closeAll();
+						 $("#cgxgBox").hide();
+					},
+				  	cancel: function(layero,index){ 
+				  		 $("#cgxgBox").hide();
+				  			layer.closeAll();
+				  	  }
+				  });
+				  
+			  }
+	
+	})
+	
+	
+	
+	// cgdownId下载下发的附件
+	$("#cgdownLoad").click(function(){
+		window.location.href=baseUrl+"/xscz/exportZhXscz?id="+$("#cgdownId").val()+"&token="+token;
+	})
+	
+	
+	// 详情下载派发附件cgdownId1
+	$("#cgdownLoad1").click(function(){
+		window.location.href=baseUrl+"/xscz/exportZhXscz?id="+$("#cgdownId1").val()+"&token="+token;
+	})
+	
+	$("#cgfklist").click(function(){
+		window.location.href=baseUrl+"/xscz/exportZhXscz?id="+$("#cgfileId1").val()+"&token="+token;
+	})
+	
+	
+	upload.render({ //允许上传的文件后缀
+	    elem: '#cgtest4'
+	    ,url: baseUrl +'/xscz/uploadZhXsczFj?token='+token+"&type=1" //改成您自己的上传接口
+	    ,accept: 'file' //普通文件
+	    ,exts: 'zip|rar|7z' //只允许上传压缩文件
+		,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+		    layer.load(); //上传loading
+		  }
+	    ,done: function(res){
+	      // console.log(res);城管上传文件
+		  $("#cgfileId").val(res.data.fjId);
+		  layer.closeAll('loading');
+		  layer.msg('上传成功');
+	    }
+	  });
+	  
+	  upload.render({ //允许上传的文件后缀
+	      elem: '#xgcgtest4'
+	      ,url: baseUrl +'/xscz/uploadZhXsczFj?token='+token+"&type=1" //改成您自己的上传接口
+	      ,accept: 'file' //普通文件
+	      ,exts: 'zip|rar|7z' //只允许上传压缩文件
+	  	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+	  	    layer.load(); //上传loading
+	  	  }
+	      ,done: function(res){
+	        // console.log(res);城管上传文件
+	  	  $("#cgfileId1").val(res.data.fjId);
+		  // [{"id":$("#cgfileId1").val()}]
+		  xgcgfjlist.push({"id":$("#cgfileId1").val()});
+	  	  layer.closeAll('loading');
+	  	  layer.msg('上传成功');
+	      }
+	    });
+		
+		
+		// 搜按时间区间搜索
+		$("#cgsearch").click(function(){
+			// getWuran(baseUrl+"/xscz/queryZhXsczPage?type=0&deptId="+deptId);
+			var checkTime = $("#cgchooseTime").val();
+			var startDate = checkTime.slice(0,10);
+			var endDate = checkTime.slice(13);
+			var cgczzt = $("#cgczzt").val();
+			getCg(baseUrl+"/xscz/queryZhXsczPage?deptId="+deptId+"&type=1&startDate="+startDate+"&endDate="+endDate+"&czzt="+cgczzt);
+		})  
+		
+		
+		function getWclzd(){
+			$.get(baseUrl+"/xscz/queryCount?deptId="+deptId,function(res){
+				console.log(res);
+				if(res.data.count0!=0&&res.data.count1!=0){
+					// 都不等于0，count0污染 1为城管
+					layer.closeAll();
+					layer.open({
+					  type: 1
+					  ,offset:  "rb"  //具体配置参考：offset参数项['79%', '74%']
+					  ,content: `<div style="padding: 10px">
+								<p style="color:red">您有`+ res.data.count0 +`条污染问题未处理！</p>
+								<p style="color:red">您有`+ res.data.count1 +`条城管问题未处理！</p>
+					  </div>`
+					  ,btn: '关闭全部'
+					  ,btnAlign: 'c' //按钮居中
+					  ,shade: 0 //不显示遮罩
+					  ,yes: function(){
+						  // location.reload();
+					    layer.closeAll();
+					  }
+					});
+				}else if(res.data.count0!=0&&res.data.count1==0){
+					layer.closeAll();
+					layer.open({
+					  type: 1
+					  ,offset:  "rb"  //具体配置参考：offset参数项['79%', '74%']
+					  ,content: `<div style="padding: 10px">
+								<p style="color:red">您有`+ res.data.count0 +`条污染问题未处理！</p>
+					  </div>`
+					  ,btn: '关闭全部'
+					  ,btnAlign: 'c' //按钮居中
+					  ,shade: 0 //不显示遮罩
+					  ,yes: function(){
+						 // location.reload();
+					    layer.closeAll();
+					  }
+					});
+				}else if(res.data.count0==0&&res.data.count1!=0){
+					layer.closeAll();
+					layer.open({
+					  type: 1
+					  ,offset:  "rb"  //具体配置参考：offset参数项['79%', '74%']
+					  ,content: `<div style="padding: 10px">
+								<p style="color:red">您有`+ res.data.count1 +`条城管问题未处理！</p>
+					  </div>`
+					  ,btn: '关闭全部'
+					  ,btnAlign: 'c' //按钮居中
+					  ,shade: 0 //不显示遮罩
+					  ,yes: function(){
+						// location.reload();
+					    layer.closeAll();
+					  }
+					});
+				}
+			});
+		}
+		
+		getWclzd();
+		
+		// setInterval(getWclzd,8000);
+		
+</script>
+	
+
+
+</body>
+</html>

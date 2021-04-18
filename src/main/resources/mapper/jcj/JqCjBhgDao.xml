@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.jcj.dao.JqCjBhgDao">
+
+
+	<select id="queryCjStatic" resultType="java.util.Map">
+
+		select temp1.short_dept_name as deptname, temp1.dept_code,
+				ifnull(temp2.ccs,0) AS 'ccs',
+				ifnull(temp2.bhgs,0) AS 'bhgs',
+				ifnull(temp2.zgs,0) AS 'zgs',
+				ifnull(temp2.wzgs,0) AS 'wzgs',
+				ifnull(temp2.24xsnzgs,0) AS '24xsnzgs',
+				ifnull(temp2.24xsnwzgs,0) AS '24xsnwzgs'
+		from
+		(select * from tdept where cj &gt;=1 order by cj) temp1
+		left join
+		(
+			select
+				dept_code, ifnull(count(*),0) as ccs,
+				ifnull(SUM(CASE type WHEN -1 THEN 0 ELSE 1 END),0) AS 'bhgs',
+				ifnull(SUM(CASE WHEN type != -1 AND state=2 THEN 1 ELSE 0 END),0) AS 'zgs',
+				ifnull(SUM(CASE when type != -1 AND state!=2 THEN 1 ELSE 0 END),0) AS 'wzgs',
+				ifnull(SUM(CASE WHEN type != -1 AND state=2 AND TIMESTAMPDIFF(DAY, create_time, update_time)&lt;1 THEN 1 ELSE 0 END),0) AS '24xsnzgs',
+				ifnull(SUM(CASE WHEN type != -1 AND state=2 AND TIMESTAMPDIFF(DAY, create_time, update_time)&gt;=1 THEN 1
+						  		WHEN type != -1 AND state!=2  THEN 1 ELSE 0 END),0) AS '24xsnwzgs'
+			from jq_cj_bhg
+			where left(jjsj,10) &gt;= #{params.startDate}
+			and left(jjsj,10) &lt;= #{params.endDate}
+			and isdel=0
+			and frm =0
+			group by dept_code
+		)temp2 on temp1.dept_code = temp2.dept_code
+	</select>
+
+	<select id="queryCj" resultType="java.util.Map">
+		select  temp1.dept_code as deptCode,  temp1.short_dept_name as deptName,
+		   count(temp2.id) as yjcs
+		from
+		(select * from tdept where cj &gt;=1 order by cj) temp1
+		left join
+		(select * from jq_cj_bhg bhg where isdel = 0
+			<if test="params.beforeDate != null and params.beforeDate != ''">
+				and left(jjsj,10) &gt;= #{params.beforeDate}
+			</if>
+			<if test="params.afterDate != null and params.afterDate != ''">
+				and left(jjsj,10) &lt;= #{params.afterDate}
+			</if>
+		) temp2
+		on temp1.dept_code = temp2.dept_code and temp2.frm=1
+		where 1=1
+		<if test="params.dw != null and params.dw != ''">
+			and temp2.dept_code = #{params.dw}
+		</if>
+		group by temp1.dept_code,temp1.dept_name
+	</select>
+
+</mapper>

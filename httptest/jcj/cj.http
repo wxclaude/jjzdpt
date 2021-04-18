@@ -1,0 +1,147 @@
+POST http://127.0.0.1:8080/sys/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{  "username": "104722",   "password": "111111" }
+> {% client.global.set("token", response.body.token); %}
+
+###
+
+
+#派出所 不合格处警 记录该处警已查看
+GET http://localhost:8080/cj/addJqCjView?cjbh=C3210035420042200003&deptId=D0086&deptCode=32100354
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#查看派出所当天未查看的不合格处警数量
+GET http://localhost:8080/cj/queryJqCjView?deptId=D0086&deptCode=32100354
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#703 手动添加不合格警情
+POST http://localhost:8080/cj/addJqCjBhg
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{  "cjbh": "C3210035120042200004",   "reason": "测试的" ,"deptCode": "32100351"}
+//{  "cjbh": "C3210035420042200003",   "reason": "测试的" ,"deptCode": "32100354"}
+
+
+###
+
+
+#派出所 手动更新不合格警情
+GET http://localhost:8080/cj/updateJqCjBhg?id=10
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+#703 手动添加不合格警情new
+#type为数组 所有不合格原因（01,02,03.....25） 正常警情传空
+#frm 0指挥中心 1派出所
+#jcr 巡查人  frm为1的时候需要
+POST http://localhost:8080/cj/addJqCjBhgNew
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{  "jjbh": "J3210035420042200001", "jjsj":"2020/08/03 07:14", "deptCode": "32100351","typeList": ["01","02","99"],"remark":"自定义异常描述", "dw":"邗上", "frm":1,"jcr": "张三"}
+
+
+###
+
+#不合格处警信息查询new, startDate=2020-04-02&endDate=2020-04-12&deptCode=32100317
+#type 类型
+GET http://localhost:8080/cj/queryIllegalCjxxNew?page=1&limit=100&deptCode=32100351&frm=
+Accept: */*
+Cache-Control: no-cache
+token:{{token}}
+
+###
+
+
+#派出所/703 手动整改不合格警情
+GET http://localhost:8080/cj/updateJqCjBhgNew?id=22&state=2
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+###
+
+#当日、当月、当年抽查情况汇总
+GET http://localhost:8080/cj/queryCjStatic?startDate=2020-08-01&endDate=2020-09-10
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+#派出所 703异常警情提醒 703 deptCode不传 state传1  派出所 deptCode传 state传0
+GET http://localhost:8080/cj/queryCjNotice?deptCode=&state=0
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+#删除抽查警情
+GET http://localhost:8080/cj/deleteJqCjBhgNew?id=39
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+###
+
+
+#分页 巡查人列表
+GET http://localhost:8080/cj/queryXcr?deptCode=32100351&page=1&limit=10
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+#新增 巡查人
+POST http://localhost:8080/cj/addXcr
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{  "name": "张三", "deptCode": "32100351" }
+###
+
+#删除巡查人
+GET http://localhost:8080/cj/deleteXcr?id=1
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+###
+
+#修改警情
+#type为数组 所有不合格原因（01,02,03.....25） 正常警情传空
+#frm 0指挥中心 1派出所
+#jcr 巡查人  frm为1的时候需要
+POST http://localhost:8080/cj/addJqCjBhgNewWithUpdate
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+token:{{token}}
+
+{"id":507, "jjbh": "J3210035420042200001", "typeList": ["01","02","03"],"remark":"自定义异常描述", "frm":0, "jcr": "张三"}
+
+
+###

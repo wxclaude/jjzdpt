@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.xlgl.dao.TxlDao">
+    <select id="queryXlByPage" resultType="io.renren.modules.xlgl.entity.TxlEntity">
+        select
+            xl.*,
+            dk1.dkh as sl_dkh, dk1.dklx as sl_dklx, dk1.bkh as sl_bkh,
+            dk2.dkh as xl_dkh, dk2.dklx as xl_dklx, dk2.bkh as xl_bkh
+        from tV_RWXL xl
+        left join tV_RWDK dk1 on dk1.id = xl.sl_dk_id and dk1.isdel = 0
+        left join tV_RWDK dk2 on dk2.id = xl.xl_dk_id and dk2.isdel = 0
+        where xl.isdel = 0
+        <!-- and (xl.sl_sb_id in (${params.sbIds}) or xl.xl_sb_id in (${params.sbIds})) -->
+        <if test="params.xlbh != null and params.xlbh != ''">
+            and xl.xlbh LIKE '%'+#{params.xlbh}+'%'
+        </if>
+        <if test="params.sbbh != null and params.sbbh != ''">
+            and (
+                xl.sl_sb_id LIKE '%'+#{params.sbbh}+'%'
+              or
+                xl.xl_sb_id LIKE '%'+#{params.sbbh}+'%'
+            )
+        </if>
+        order by xl.xlbh
+    </select>
+
+    <!--
+    <select id="queryXlByPage" resultType="io.renren.modules.xlgl.entity.TxlEntity">
+        select
+        xl.*,
+        dk1.dkh as sl_dkh, dk1.dklx as sl_dklx, dk1.bkh as sl_bkh,
+        dk2.dkh as xl_dkh, dk2.dklx as xl_dklx, dk2.bkh as xl_bkh,
+        sb1.sbbh as sl_sbbh, sb2.sbbh as xl_sbbh
+        from tV_RWXL xl
+        left join tV_RWDK dk1 on dk1.id = xl.sl_dk_id and dk1.isdel = 0
+        left join tsb sb1 on sb1.id = dk1.sb_id and sb1.isdel = 0
+        left join tV_RWDK dk2 on dk2.id = xl.xl_dk_id and dk2.isdel = 0
+        left join tsb sb2 on sb2.id = dk2.sb_id and sb2.isdel = 0
+        where xl.isdel = 0
+        <if test="params.xlbh != null and params.xlbh != ''">
+            and xl.xlbh LIKE CONCAT(CONCAT('%', #{params.xlbh}),'%')
+        </if>
+        <if test="params.sbbh != null and params.sbbh != ''">
+            and (
+            sb1.sbbh LIKE CONCAT(CONCAT('%', #{params.sbbh}),'%')
+            or
+            sb2.sbbh LIKE CONCAT(CONCAT('%', #{params.sbbh}),'%')
+            )
+        </if>
+        order by xl.xlbh
+    </select>
+    -->
+
+
+    <select id="queryDkAndSbInfoByXlbh" resultType="io.renren.modules.xlgl.entity.TxlInfoEntity">
+        select
+            top 1 'sb' as type, dk.sb_id as sbid, dk.sb_id as sbbh,
+            <if test="params.upOrDown == 'up'">
+                dk.dklx + '/' + dk.bkh + '/' + dk.dkh as xldk, '' as sldk
+            </if>
+            <if test="params.upOrDown == 'down'">
+                '' as xldk, dk.dklx + '/' + dk.bkh + '/' + dk.dkh as sldk
+            </if>
+        from tV_RWXL xl
+        <if test="params.upOrDown == 'up'">
+            inner join tV_RWDK dk on xl.sl_dk_id = dk.id and dk.isdel=0
+        </if>
+        <if test="params.upOrDown == 'down'">
+            inner join tV_RWDK dk on xl.xl_dk_id = dk.id and dk.isdel=0
+        </if>
+        where xl.xlbh = #{params.xlbh} and xl.isdel=0
+    </select>
+
+    <select id="getSlDkAndSbEntity" resultType="io.renren.modules.xlgl.entity.TxlInfoEntity">
+        select
+            top 1 'sb' as type, sb.id as sbid, sb.sbbh as sbbh, dk.dkh as xldk, '' as sldk
+        from tV_RWXL xl
+        inner join tV_RWDK dk on xl.sl_dk_id = dk.id and dk.isdel=0
+        inner join tsb sb on dk.sb_id = sb.id and sb.isdel=0
+        where xl.xlbh = #{params.xlbh} and xl.isdel=0
+    </select>
+    <delete id="deleteBySbId">
+        update tV_RWXL
+        set isdel = 1
+        where
+          sl_dk_id in (select id from tV_RWDK where sb_id = #{sbId})
+        or
+          xl_dk_id in (select id from tV_RWDK where sb_id = #{sbId})
+    </delete>
+
+    <select id="getSbById" resultType="java.util.Map">
+        select sb.* ,
+        d1.DictionaryText as sblx, d2.DictionaryText as jrlx , d3.DictionaryText as sbzt ,
+        d.DeptSName as deptName, p.PoliceName as syr
+        from tV_RWSB sb
+        left join tDictionary d1 on d1.DictionaryName = 'D_RWSBLX' and sb.RWSBLX = d1.Dictionary
+      left join tDictionary d2 on d2.DictionaryName = 'D_WLLX' and sb.DWID = d2.Dictionary
+      left join tDictionary d3 on d2.DictionaryName = 'D_SXJStatus' and sb.BZs2 = d3.Dictionary
+        left join tDept d on d.DeptId = sb.BZs5
+        left join tPolice p on p.PoliceId = sb.BZs3
+        where sb.V_RWSBId = #{sbid}
+    </select>
+
+</mapper>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-一键点调</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		.midd{
+			text-align: center;
+		}
+		.midd th{
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="topbar">
+		<div class="topbarbox">
+			<div style="float: left;">
+				今天是
+				<span id="nongli"></span>
+			</div>
+			<div style="float: right;">
+				您好！
+				<span id="yonghuming"></span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:;" id="out" style="color: red;">退出</a>
+			</div>
+		</div>
+	</div>
+	
+    <div class="topBanner"></div>
+	
+	<!-- 导航栏 -->
+	<div class="wrap" id="app">
+	    <ul class="layui-nav cbox padd">
+			<li class="layui-nav-item"><a href="index.html">首页</a></li>
+	        <li class="layui-nav-item" v-for="item in list">
+	          <a href="javascript:;">{{item.modelName}}</a>
+			  <dl class="layui-nav-child">
+			        <dd v-for="k in item.subModelList">
+			        	<a :href="k.url" v-html="k.modelName"></a>
+			        </dd>
+			    </dl>
+	        </li>
+	      </ul>
+	</div>
+	<!-- 导航栏 -->
+	
+	<div class="zhibantable" style="margin-bottom: 150px;">
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>一键点调</legend>
+	      </fieldset>  
+		<form class="layui-form" lay-filter="formTest" id="formTest">
+			<div class="layui-form-item">
+			    <label class="layui-form-label">姓名</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="name" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			      <label class="layui-form-label">性别</label>
+			      <div class="layui-input-block">
+			        <input type="radio" name="sex" value="男" title="男">
+			        <input type="radio" name="sex" value="女" title="女">
+			      </div>
+			    </div>
+				<div class="layui-form-item">
+				    <label class="layui-form-label">爱好</label>
+				    <div class="layui-input-block">
+				      <input type="checkbox" name="hobby" title="1" lay-skin="primary" value="1">
+				      <input type="checkbox" name="hobby" title="2" lay-skin="primary" value="2"> 
+				    </div>
+				  </div>
+			
+			<div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+			      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				  <button type="button" class="layui-btn layui-btn-primary" id="fuzhi">赋值</button>
+			    </div>
+			</div>
+		</form>
+		
+	</div>
+	
+	
+	
+	
+	
+<div id="footer"></div>
+    
+
+
+
+
+
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="vnav.js" type="text/javascript" charset="utf-8"></script>
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<!-- <script src="base.js" type="text/javascript" charset="utf-8"></script> -->
+<script type="text/javascript">
+	
+	$("#footer").load("public/footer.html");
+	var laydate = layui.laydate;
+	var form = layui.form;
+	laydate.render({
+	   elem: '#ri'
+	   ,type: 'datetime'
+	 });
+	
+	form.on('submit(formDemo)', function(data){
+		// console.log(data.field);
+	    // layer.msg(JSON.stringify(data.field));
+		
+		console.log($('input[name="sex"]:checked').val());
+		// 获取多选数组内容
+		var fdata = [];
+		$('input[name="hobby"]:checked').each(function(){
+			fdata.push($(this).val());
+		})
+		
+		var params = $("#formTest").serialize();
+		console.log(params);
+		$.post(baseUrl + "/cj/addJqCjBhgNew",params,function(res){
+			console.log(res);
+		})
+		return false;
+	  });
+	
+	var val = ["1","2"];
+	var len = $('input[name="mvp"]').length;
+	for(var i = 0 ;i<val.length;i++){
+		var mvp = $('input[name="mvp"]');
+		for(var j = 0;j<len;j++){
+			if(mvp[j].title==val[i]){
+				mvp[j].value=val[i];
+				mvp[j].checked = true;
+			}
+		}
+	}
+	form.render();
+	
+	// //给复选框赋值
+	// var unitType = [];
+	// unitType = json.user_permission.split(",");
+	// for (var j = 0; j < unitType.length; j++) {
+	// 	var unitTypeCheckbox = $("input[id='permission']");
+	// 	for (var i = 0; i < unitTypeCheckbox.length; i++) {
+	// 		if (unitTypeCheckbox[i].title == unitType[j]) {
+	// 			unitTypeCheckbox[i].value = unitType[j];
+	// 			unitTypeCheckbox[i].checked = true;
+	// 		}
+	// 	}
+	// }
+	// form.render();
+	
+	
+	$("#fuzhi").click(function(){
+		form.val("formTest", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+		  "sex": "女",
+		});
+	})
+	
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>

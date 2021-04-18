@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>综合指挥质效平台-情报信息</title>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" href="css/common.css">
+	<style type="text/css">
+		#qbxx th,#qbxx td{
+			text-align: center;
+		}
+		.avtive{
+			background-color: red;
+			color: white;
+		}
+		.disnone{
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div  style="margin-bottom: 150px;padding: 0 10px;" >
+	    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 25px;">
+	        <legend>打分详情</legend>
+	      </fieldset>
+		<div id="app">
+			<table class="layui-table" id="qbxx">
+			  <thead>
+				<tr>
+				  <th colspan="10" style="font-size: 18px;">情报信息<small>（绩效分值55分）</small></th>
+				</tr> 
+			  </thead>
+			  <tbody>
+				<tr>
+				  <td rowspan="2">单位</td>
+				  <td colspan="3">全警搜集</td>
+				  <td colspan="3">互联网信息</td>
+				  <td colspan="2">分局采用</td>
+				  <td rowspan="2">得分</td>
+				</tr>
+				<tr>
+					
+				  <td>指标数</td>
+				  <td>实报数</td>
+				  <td>完成率</td>
+				  <td>指标数</td>
+				  <td>实报数</td>
+				  <td>完成率</td>
+				  
+				  <td>采用数</td>
+				  <td>完成率</td>
+				</tr>
+				
+				<tr v-for="k in info">
+					<td>{{k.dept}}</td>
+					<td class="disnone">{{k.deptId}}</td>
+					<td>{{k.s1}}</td>
+					<td>{{k.s2}}</td>
+					<td>{{k.s3}}</td>
+					<td>{{k.s8}}</td>
+					<td>{{k.s4}}</td>
+					<td>{{k.s5}}</td>
+					<td>{{k.s6}}</td>
+					<td>{{k.s7}}</td>
+					<td>{{k.s9}}</td>
+				</tr>
+				
+				
+			  </tbody>
+			</table>
+		</div>
+		
+	</div>
+	
+	<ul v-for="item in info">
+		<li>{{item.s1}}</li>
+	</ul>
+	
+	
+<div id="footer">
+	
+</div>
+    
+<script src="axios.js" type="text/javascript" charset="utf-8"></script>
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="layui.all.js"></script>
+<script src="jquery.js"></script>
+<script src="locationurl.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	$("#footer").load("public/footer.html");
+	var table = layui.table;
+	// 获取浏览器字符串
+	 function getQueryStringRegExp(name)
+	{
+	 var reg = new RegExp("(^|\\?|&)"+ name +"=([^&]*)(\\s|&|$)", "i"); 
+	 if (reg.test(location.href)) return unescape(RegExp.$2.replace(/\+/g, " ")); return "";
+	}
+	
+	
+	// #根据年月和category/type查看该category打分项所有单位打分详情
+	// #type 1为派出所 2为机关
+	// #0情报信息 1数据赋能 2综合指挥 3警情质量考核
+	// GET {{baseUrl}}/df/queryDfDetailByDfMonthAndTypeAndCategory?dfMonth=2020-06&type=1&category=2
+	// Accept: */*
+	// Cache-Control: no-cache
+	// ###
+	
+	var dfMonth = getQueryStringRegExp("dfMonth");
+	var type = getQueryStringRegExp("type");
+	var category = getQueryStringRegExp("category");
+	var deptId = getQueryStringRegExp("deptId");
+	
+	$.get(baseUrl+"/df/queryDfDetailByDfMonthAndTypeAndCategory?dfMonth="+dfMonth+"&type=1&category="+category,function(res){
+		
+		var vm = new Vue({
+			el:"#app",
+			data:{
+				info: res.data,
+				dept:""
+			},
+			methods:{
+			},
+			created(){
+				// console.log(this.info)
+			}
+			
+		});
+		
+		// 各派出所点击之后变色
+		// $(".disnone").each(function(i){
+		// 	console.log($(this)[0].textContent);
+		// 	// console.log(deptId);
+		// 	if($(this)[0].textContent==deptId){
+		// 		alert(1);
+		// 	}
+		// })
+		
+	}) 
+	
+	// 	new Vue({
+	// 		el:"#app",
+	// 		data:{
+	// 			info:""
+	// 		},
+	// 		mounted(){
+	// 		    this.getdata();
+	// 		},
+	// 		methods:{
+	// 			getdata(){
+	// 				axios(baseUrl+"/df/queryDfDetailByDfMonthAndTypeAndCategory",{       // 还可以直接把参数拼接在url后边
+	// 				    params:{
+	// 				        dfMonth:dfMonth,
+	// 						type:1,
+	// 						category:category,
+	// 				    }
+	// 				}).then(function(res){
+	// 				    this.info = res.data.data;
+	// 					console.log(this.info)
+	// 				}).catch(function (error) {
+	// 				    console.log(error);
+	// 				});
+	// 			}
+	// 		},
+			
+	// 	})
+	
+	
+	
+	
+	
+	
+	
+</script>
+	
+
+
+
+
+
+
+
+</body>
+</html>
