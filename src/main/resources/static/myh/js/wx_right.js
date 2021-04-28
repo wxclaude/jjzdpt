@@ -14,10 +14,23 @@ function zbmjAll() {
     $(".zbmjAlert").show();
 }
 var url = 'http://localhost:4000/';
-
+//
 (function(){
-    $.get(url,'',function(result){
-        console.log(result);
+    //$.get(url,'',function(result){
+        var result = {
+            'list':[],
+            'category':{
+                'dianjing':[],
+                'kakou':[],
+                'qiuji':[],
+                'quanchen':[],
+                'record':[],
+                'lixian':[],
+                'butong':[],
+                'xiulu':[],
+                'weixiu':[]
+            }
+        }
 //平台点位情况
             //接入平台数量情况展示
             var jieruPointsData = {
@@ -123,7 +136,7 @@ var url = 'http://localhost:4000/';
                 
             })
 
-    })
+    //})
 })();
 
 //绑定点击事件
