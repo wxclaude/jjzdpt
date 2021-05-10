@@ -13,6 +13,19 @@
 function zbmjAll() {
     $(".zbmjAlert").show();
 }
+
+function getRoadsNum(arr) {
+    var obj = {};
+    for (var i in arr ){
+        var roadskey = arr[i].channel_detail_obj.roadOrg;
+        if(!obj[roadskey]){
+            obj[roadskey] = 1;
+        }else{
+            obj[roadskey]++;
+        }
+    }
+    return Object.keys(obj).length;
+}
 var url = 'http://localhost:4000/';
 //
 (function(){
@@ -33,42 +46,50 @@ var url = 'http://localhost:4000/';
         }
 //平台点位情况
             //接入平台数量情况展示
+            //丢一种类型的数据进函数，返回路口数量
+            var dianjingRoads = getRoadsNum(result.category.dianjing);
+            var kakouRoads = getRoadsNum(result.category.kakou);
+            var qiujiRoads = getRoadsNum(result.category.qiuji);
+            var quanchenRoads = getRoadsNum(result.category.quanchen);
             var jieruPointsData = {
-                'key':['平台点位总数：','电警数量：','球机数量：','卡口数量：','全程监控数量：'],
-                'value':[result.list.length,result.category.dianjing.length,result.category.qiuji.length,result.category.kakou.length,result.category.quanchen.length],
-                'target':['total','dianjing','qiuji','kakou','quanchen']
+                'key':['电警路口数量：','球机路口数量：','卡口路口数量：','全程监控路口数量：'],
+                'value':[dianjingRoads,qiujiRoads,kakouRoads,quanchenRoads],
+                'channel_value':[result.category.dianjing,result.category.qiuji,result.category.kakou,result.category.quanchen],
+                'target':['dianjing','qiuji','kakou','quanchen']
             };
             var jieruPointsHtml='';
+
+
             for(var i=0;i<jieruPointsData.key.length;i++){
-                jieruPointsHtml += '<div class="pointsInfo"><div class="pointsInfoTitle">'+jieruPointsData.key[i]+'</div><div class="pointsInfoBody" data-target="'+jieruPointsData.target[i]+'">'+jieruPointsData.value[i]+'</div></div>';
+                jieruPointsHtml += '<div class="pointsInfo"><div class="pointsInfoTitle">'+jieruPointsData.key[i]+'</div><div class="pointsInfoBody" data-target="'+jieruPointsData.target[i]+'">'+jieruPointsData.value[i]+' (相机数量：<span class="pointsNum">'+jieruPointsData.channel_value[i].length+'</span>)</div></div>';
             };
             $('.jieru-points .points-body').html(jieruPointsHtml);
             //平台点位状态情况展示
             var onlineC = result.list.length - result.category.lixian.length;
             var statusPointsData = {
-                'key':['在线相机数量：','离线相机数量：','网络不通相机数量：','修路状态相机数量：','维修中相机数量：'],
-                'value':[onlineC,result.category.lixian.length,result.category.butong.length,result.category.xiulu.length,result.category.weixiu.length],
-                'target':['zaixian','lixian','butong','xiulu','weixiu']
+                'key':['平台相机总数：','在线相机数量：','离线相机数量：','网络不通相机数量：','修路状态相机数量：','维修中相机数量：'],
+                'value':[result.list.length,onlineC,result.category.lixian.length,result.category.butong.length,result.category.xiulu.length,result.category.weixiu.length],
+                'target':['total','zaixian','lixian','butong','xiulu','weixiu']
             };
             var statusPointsHtml = '';
             for(var i=0;i<statusPointsData.key.length;i++){
-                statusPointsHtml += '<div class="pointsInfo"><div class="pointsInfoTitle">'+statusPointsData.key[i]+'</div><div class="pointsInfoBody" data-target="'+statusPointsData.target[i]+'">'+statusPointsData.value[i]+'</div></div>';
+                statusPointsHtml += '<div class="pointsInfo"><div class="pointsInfoTitle">'+statusPointsData.key[i]+'</div><div class="pointsInfoBody" data-target="'+statusPointsData.target[i]+'"><span>'+statusPointsData.value[i]+'</span></div></div>';
             };
             $('.status-points .points-body').html(statusPointsHtml);
             //平台右下角情况展示
             //录像情况
             var recordPointsData = {
-                'key':['平台录像点位数量：'],
+                'key':['平台录像相机数量：'],
                 'value':[result.category.record.length],
                 'target':['record']
             };
             var recordPointsHtml='';
             for(var i=0;i<recordPointsData.key.length;i++){
-                recordPointsHtml += '<div class="pointsInfo"><div class="pointsInfoTitle">'+recordPointsData.key[i]+'</div><div class="pointsInfoBody" data-target="'+recordPointsData.target[i]+'">'+recordPointsData.value[i]+'</div></div>';
+                recordPointsHtml += '<div class="pointsInfo"><div class="pointsInfoTitle">'+recordPointsData.key[i]+'</div><div class="pointsInfoBody" data-target="'+recordPointsData.target[i]+'"><span>'+recordPointsData.value[i]+'</span></div></div>';
             };
             $('.others-points .points-body').html(recordPointsHtml);
 
-            $('body').on('click','.pointsInfo .pointsInfoBody',function(){
+            $('body').on('click','.pointsInfo .pointsInfoBody span',function(){
                 var targetStr = $(this).data('target');
                 var targetAlertHtml='<h2>设备详细情况<i class="closeBtn"></i></h2><div class="listContent"><div id="'+targetStr+'Table"></div></div>',targetTableData;
                 switch(targetStr){
@@ -109,19 +130,43 @@ var url = 'http://localhost:4000/';
                 $('.pointsTableAlert').html(targetAlertHtml);
                 $('.pointsTableAlert').show();
                 var dataA=[
-                    {'CHANNEL_NAME':'电警','channel_IP':'192.168.100.111','build_time':'2020-02-01 12:12:11','build_company':'国脉'}
-                ]
+                    {   'CHANNEL_NAME':'东-文昌中路与泰州路-电警1',
+                        'channel_IP':'192.168.100.111',
+                        'build_company':'国脉',
+                        'IS_ONLINE':1,
+                        'build_time':'2000-01-01',
+                        'program_version':'',
+                        'channel_detail_obj':{
+                            'roadOrg':'未配置所属路口',
+                            'channel_style':'未配置相机类型',
+                            'channel_record':'录像未知',
+                            'channel_status':'未配置在线状态'
+                        }
+                    }
+                ];
+                var dataArr = targetTableData;
+                for(var i in dataArr){
+                    dataArr[i]['roadOrg'] = dataArr[i].channel_detail_obj.roadOrg;
+                    dataArr[i]['channel_style'] = dataArr[i].channel_detail_obj.channel_style;
+                    dataArr[i]['channel_record'] = dataArr[i].channel_detail_obj.channel_record;
+                    dataArr[i]['channel_status'] = dataArr[i].channel_detail_obj.channel_status;
+                }
                 layui.use('table', function(){
                     var table = layui.table;
                     
                     //展示已知数据
                     table.render({
                         elem: '#'+targetStr+'Table'
+                        ,cellMinWidth: 80
                         ,cols: [[ //标题栏
-                            ,{field: 'CHANNEL_NAME', title: '设备名称',with:80}
-                            ,{field: 'channel_IP', title: '设备IP', width: 80}
-                            ,{field: 'build_time', title: '加入时间', width: 80}
-                            ,{field: 'build_company', title: '建设单位', width: 80}
+                            {field: 'CHANNEL_NAME', title: '设备名称',width:250},
+                            {field: 'channel_IP', title: '设备IP'}
+                            ,{field: 'build_company', title: '建设单位'}
+                            ,{field: 'build_time', title: '加入时间'}
+                            ,{field:'channel_record',title:'是否录像'}
+                            ,{field:'roadOrg',title:'所属路口'}
+                            ,{field:'channel_style',title:'相机类型'}
+                            ,{field:'channel_status',title:'在离线状态'}
                         ]]
                         ,data: dataA//targetTableData
                         ,page: true //开启分页
