@@ -1,0 +1,376 @@
+#fykd .wrap {
+    overflow: hidden;
+    height: 3rem;
+    padding: 0;
+    margin: 0;
+}
+
+#fykd .wrap li {
+    height: .5rem;
+}
+
+#fykd .wrap .pull_left {
+    line-height: .5rem;
+    font-size: .18rem;
+    color: rgba(255, 255, 255, .6);
+    float: left;
+}
+
+#fykd .wrap .pull_right {
+    line-height: .5rem;
+    font-size: .18rem;
+    color: rgba(255, 255, 255, .6);
+    float: right;
+}
+
+#sqsj .wrap {
+    overflow: hidden;
+    height: 3rem;
+    padding: 0;
+    margin: 0;
+}
+
+#sqsj .wrap li {
+    height: .5rem;
+}
+
+#sqsj .wrap li span:first-child {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: calc(100% - 130px);
+    padding-left: 20px;
+}
+
+#sqsj .wrap .pull_left {
+    line-height: .5rem;
+    font-size: .18rem;
+    color: rgba(255, 255, 255, .6);
+    float: left;
+}
+
+#sqsj .wrap .pull_right {
+    line-height: .5rem;
+    font-size: .18rem;
+    color: rgba(255, 255, 255, .6);
+    float: right;
+    width: 120px;
+}
+
+#fykd h2,
+#sqsj h2 {
+    color: #fff;
+    padding: 5px;
+}
+
+.rightAlert {
+    width: 1291px;
+    background-color: #000c2b;
+    height: 538px;
+    position: fixed;
+    left: 5%;
+    
+    top: 10%;
+    
+    z-index: 99999999;
+    border: 1px solid #0d4eab;
+}
+.rightAlert .listContent {
+    width: 1281px;
+    height: 488px;
+    background: #061e46;
+    margin: 4px auto 0 auto;
+}
+.rightAlert h2 {
+    height: 38px;
+    border-bottom: 1px solid #0d4eab;
+    color: #fff;
+    line-height: 38px;
+    font-size: 18px;
+    font-weight: normal;
+    text-indent: 18px;
+    background: #023480;
+}
+
+.rightAlert h2 i {
+    cursor: pointer;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    right: 16px;
+    top: 13px;
+    background: url('../images/listclosed_03.png');
+}
+
+
+
+#sqsj li {
+    cursor: pointer;
+}
+
+.sqsjAlert .thingHeader {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.sqsjAlert .listContent {
+    padding: 10px;
+}
+
+.sqsjAlert .thingHeader>div {
+    color: #c5ccff;
+    font-size: 16px;
+    height: 28px;
+    line-height: 28px;
+}
+
+.sqsjAlert .thingHeader>div>span:first-child {
+    display: inline-block;
+    width: 150px;
+    text-align: right;
+}
+
+.sqsjAlert .thingHeader>div:last-child {
+    height: auto;
+    max-height: calc(100% - 140px);
+}
+
+.zbmjAlert .listContent {
+    overflow: hidden;
+    padding: 40px;
+}
+
+.zbmjAlert .listContent .imgDiv {
+    float: left;
+    height: 267px;
+    width: 200px;
+    border: 1px solid #fff;
+    overflow: hidden;
+}
+
+.zbmjAlert .listContent .imgInfo {
+    float: right;
+    height: 200px;
+    width: calc(100% - 280px);
+    color: #fff;
+    padding: 20px;
+}
+
+.zbmjAlert .listContent .policeCommon {
+    font-size: 16px;
+    height: 28px;
+    line-height: 28px;
+}
+
+.mainbox div.no .no-hd li {
+    cursor: pointer;
+}
+
+.sqxxAlert .listContent {
+    overflow: hidden;
+}
+
+.sqxxAlert .listContent .imgInfoTitle {
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    margin-top: 30px;
+    font-size: 30px;
+}
+
+.sqxxAlert .listContent .imgInfoBody {
+    padding: 30px;
+    overflow: hidden;
+    word-break: break-all;
+    font-size: 20px;
+    text-indent: 40px;
+    line-height: 36px;
+}
+
+.sqxxAlert .listContent .imgInfo {
+    font-size: 16px;
+    color: #fff;
+}
+
+.myhcontent {
+    padding: 20px;
+    font-size: 20px;
+    color: #FFF5D4;
+    line-height: 30px;
+}
+
+#headTitle {
+    cursor: pointer;
+}
+
+.zhibanTitle {
+    overflow: hidden;
+}
+
+.zhibanDiv {
+    color: #fff;
+    height: calc(100% - 0.6rem);
+}
+
+.zhibanBody {
+    overflow: hidden;
+    height: 100%;
+    padding-right: 5px;
+}
+
+.zhibanBody .imgDiv {
+    border: 1px solid #fff;
+    width: 100px;
+    height: 133px;
+    margin: auto;
+}
+
+.zhibanBody .imgInfo {
+    margin-top: 10px;
+    height: calc(100% - 100px);
+}
+
+.zhibanBody .imgInfo div {
+    text-align: center;
+}
+
+.ptAccess{
+    color: #fff!important;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: rgba(187, 182, 182, 0.3);
+}
+.ptAccess>div{
+    height: 0.4rem;
+    line-height: 0.4rem;
+    overflow: hidden;
+}
+.ptAccess>div>span{
+    display: inline-block;
+    font-size: 0.25rem;
+    height: 0.4rem;
+}
+.ptAccess .newDeviceCount{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+.zaitu-line .chart>div:first-child,.zaitu-line .chart>div>canvas,.zaitu-table table{
+    width: 100%!important;
+}
+
+#users-login{
+    position: absolute;
+    left: 8px;
+    top: 0;
+    line-height: 0.9375rem;
+    height: 0.9375rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.15rem;
+    overflow: hidden;
+}
+#users-login>span,#users-login>div{
+    float: left;
+    height: 0.9375rem;
+    line-height: 0.9375rem;
+}
+
+#usersLogin li .pull_right{
+    margin-left: 10px;
+}
+#review_box{
+    height: 40px;
+    margin: 5px;
+    width: 400px;
+    overflow: hidden;
+    
+}
+#review_box ul {
+    list-style: none;
+    transform: translate(0,13px);
+}
+
+#review_box li {
+    height: 20px;
+    line-height: 20px;
+    margin-bottom:3px;
+}
+html,body{
+    height: 100%;
+    width: 100%;
+}
+.panel .points-body{
+    height: calc(100% - 0.6rem);
+    width: 100%;
+
+}
+.pointsInfo {
+    overflow: hidden;
+    margin: 10px;
+    font-size: 24px;
+    line-height: 24px;
+    color: white;
+    
+}
+.pointsInfoTitle{
+    float: left;
+    width: 48%;
+    text-align: right;
+}
+.pointsInfoBody{
+    float: left;
+    
+}
+.pointsInfoBody span{
+    font-size: 24px;
+    color: #fff;
+    font-weight: bold;
+}
+.pointsInfoBody span.cameraNumber{
+    cursor: pointer;
+    text-decoration: underline;
+}
+.chartModel .chartBtn{
+    font-size: 12px;
+    line-height: 12px;
+    text-align: right;
+    text-decoration: underline;
+    color: white;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.ptInfo> .ptInfoTitle{
+    height: 0.6rem;
+    color: #fff;
+    line-height: 0.6rem;
+}
+.ptInfo>.ptInfoBody{
+    height: calc(100% - 0.6rem);
+    padding-top: 20px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+}
+.ptInfo>.ptInfoBody>.sy{
+    float: left;
+    height: 100%;
+    width: 33%;
+}
+.ptInfo>.ptInfoBody>.sy>div:first-child{
+    height: 70%;
+}
+.ptInfo>.ptInfoBody>.sy>div:last-child{
+    height: 30%;
+    padding: 0.3rem;
+    text-align: center;
+}
+.others-points {
+    height: calc(50% - 0.1875rem)!important;
+}
+.mainbox .weifa-div,.mainbox .zaitu-div{
+    height: calc(50% - 0.1875rem);
+}

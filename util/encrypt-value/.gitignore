@@ -1,0 +1,8 @@
+node_modules
+package-lock.json
+*.log
+.*.swp
+.direcotry
+.DS_Store
+Thumbs.db
+*~

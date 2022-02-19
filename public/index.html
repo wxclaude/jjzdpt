@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <meta http-equiv="refresh" content="3600">
+    <title>交警支队监控平台运维情况</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/wx_right.css">
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="stylesheet" type="text/css" href="css/swiper-bundle.min.css" />
+    
+</head>
+
+<body>
+    <!-- 头部的盒子 -->
+    <header>
+        <h1 id="headTitle">交警支队监控平台运维情况</h1>
+        <div class="showTime"></div>
+        <!--
+        <div id="users-login">
+                <span>登录用户：</span>
+                <div id="usersLogin">
+                    <div id="review_box"></div>
+                </div>
+        </div>  
+        -->
+        <div class="ptAccess">
+            <div class="ptAccessY">
+                <span>今年新接入设备数量：</span>
+                <span class="newDeviceCount newDeviceY" data-target='thisYearPoints'>0</span>
+            </div>
+        </div> 
+        
+
+    </header>
+
+    <!-- 页面主体部分 -->
+    <section class="mainbox">
+        <div class="column">
+            <div class="panel line2 ptInfo">
+                <div class="ptInfoTitle"><h2>云存储系统情况</h2></div>
+                <div class="ptInfoBody">
+                    <div class="sy">
+                        <div id="echarts1"></div>
+                        <div class="echartDetail echarts1Detail"></div>
+                    </div>
+                    <div class="sy">
+                        <div id="echarts2"></div>
+                        <div class="echartDetail echarts2Detail"></div>
+                    </div>
+                    <div class="sy">
+                        <div id="echarts3"></div>
+                        <div class="echartDetail echarts3Detail"></div>
+                    </div>
+                </div>
+                <div class="panel-footer"></div> 
+            </div>
+            <div class="panel line weifa-div chartModel">
+                <div class="weifa-line">
+                    <h2>违法量走势图</h2>
+                    <div class="chartBtn weifaTableBtn" data-charttable='weifa'>查看详细列表</div>
+                    <div class="chart">图表</div>
+                    <div class="panel-footer"></div>               
+                </div>
+                <!--
+                <div class="weifa-table">
+                    <h2>违法量表格</h2>
+                    <div class="weifa-table-div" >
+                        <table class="layui-hide" id="weifa-table" ></table>
+                    </div>
+                </div>
+                -->
+            </div>  
+        </div>
+        <div class="column">
+            <!-- no模块制作 -->          
+                <div class="panel line jieru-points">
+                    <h2>平台点位接入情况</h2>
+                    <div class="points-body">
+                        <div class="pointsInfo"><div class="pointsInfoTitle">卡警路口数量：</div><div class="pointsInfoBody" data-target=""><span class="cameraNumber">6531</span>(相机数量：<span class="pointsNum cameraNumber">1001</span>)</div></div>
+                        <div class="pointsInfo"><div class="pointsInfoTitle">卡口路口数量：</div><div class="pointsInfoBody" data-target=""><span class="cameraNumber">6531</span>(相机数量：<span class="pointsNum cameraNumber">1001</span>)</div></div>
+                        <div class="pointsInfo"><div class="pointsInfoTitle">球机路口数量：</div><div class="pointsInfoBody" data-target=""><span class="cameraNumber">6531</span>(相机数量：<span class="pointsNum cameraNumber">1001</span>)</div></div>
+                        <div class="pointsInfo"><div class="pointsInfoTitle">道路监控路口数量：</div><div class="pointsInfoBody" data-target=""><span class="cameraNumber">6531</span>(相机数量：<span class="pointsNum cameraNumber">1001</span>)</div></div>
+
+                        
+                    </div>
+                    <div class="panel-footer"></div>
+                </div>
+                
+            <div class="panel line zaitu-div chartModel">
+                <div class="zaitu-line">
+                    <h2>在途量走势图</h2>
+                    <div class="chartBtn zaituTableBtn" data-charttable='zaitu'>查看详细列表</div>
+                    <div class="chart">图表</div>
+                    <div class="panel-footer"></div>               
+                </div>
+                <!--
+                <div class="zaitu-table">
+                    <h2>在途量表格</h2>
+                    <div class="zaitu-table-div">
+                        <table class="layui-hide" id="zaitu-table"></table>
+                    </div>
+                </div>
+                -->
+            </div>            
+        </div>
+        <div class="column">
+            <div class="panel line status-points">
+                    <h2>平台点位在离线情况</h2>
+                    <div class="points-body" style='overflow:hidden;'>
+                        <div class="pointsInfo"><div class="pointsInfoTitle">平台相机总数：</div><div class="pointsInfoBody" data-target=""><span class="cameraNumber">6531</span></div></div>
+                        <div class="pointsInfo"><div class="pointsInfoTitle">平台相机总数：</div><div class="pointsInfoBody" data-target=""><span class="cameraNumber">6531</span></div></div>
+                        <div class="pointsInfo"><div class="pointsInfoTitle">平台相机总数：</div><div class="pointsInfoBody" data-target=""><span class="cameraNumber">6531</span></div></div>
+
+                        <div id="textArea"></div>
+                        <div id="chartAreaLeft">
+                            <div id="echartsOnline"></div>
+                        </div>
+                        <div id="chartAreaRight">
+                            <div id="echartsOffline"></div>
+                        </div>
+                    </div>
+                    <div class="panel-footer"></div>
+            </div>
+            <div class="panel line others-points">
+                    <h2>平台点位卡口图片情况</h2>
+                    <div class="points-body" style='overflow:hidden;'>
+                        
+                    </div>
+                    <div class="panel-footer"></div>
+            </div>
+        </div>
+    </section>
+    <!-- 弹窗 违法或者在途量展示表格-->
+    <article class="rightAlert pointsTableAlert" style="display: none;">
+        
+    </article>
+    <!-- 弹窗 违法或者在途量展示表格-->
+    <article class="rightAlert chartTableAlert" style="display: none;">
+        
+    </article>
+    <!-- 弹窗 今年新接入设备情况-->
+    <article class="rightAlert newDeviceYAlert" style="display: none;">
+        <h2>今年新接入设备情况<i class="closeBtn"></i></h2>
+        <div class="listContent">
+            <div id="newDeviceYTable"></div>
+        </div>
+    </article>
+    <!-- 弹窗 今天新接入设备情况-->
+    <article class="rightAlert newDeviceTAlert" style="display: none;">
+        <h2>今天新接入设备情况<i class="closeBtn"></i></h2>
+        <div class="listContent">
+            <div class="imgDiv"></div>
+            <div class="imgInfo"></div>
+        </div>
+    </article>
+
+    <script>
+        //清除掉所有定时器
+        if(window.allIntervals && window.allIntervals.length>1){
+            window.allIntervals.forEach(function(item,index){
+                clearInterval(item);
+            })
+        };
+        window.allIntervals = [];
+    </script>
+
+    <script src="js/flexible.js"></script>
+    <script src="js/echarts.min.js"></script>
+    <!-- 先引入jquery -->
+    <script src="js/jquery.js"></script>
+    <!-- 必须先引入china.js 这个文件 因为中国地图需要 -->
+    <script src="js/china.js"></script>
+    <!-- <script src="js/index.js"></script> -->
+    <script src="js/xlsx.full.min.js"></script>
+    <script src="layui.all.js" type="text/javascript" charset="utf-8"></script>
+    <!-- <script src="js/MD5.js" type="text/javascript" charset="utf-8"></script> -->
+    <!-- <script src="js/wx_right.js"></script> -->
+    <script src="js/hxx.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/swiper-bundle.min.js" type="text/javascript" charset="utf-8"></script>
+ 
+    <script type="text/javascript">
+        var mySwiper = new Swiper('.swiper-container', {
+            autoplay: true, //可选选项，自动滑动
+            loop: true,
+            delay: 1000, //1秒切换一次
+        });
+        var table = layui.table;
+    </script>
+    
+    
+</body>
+
+</html>

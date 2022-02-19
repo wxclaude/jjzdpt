@@ -1,0 +1,41 @@
+{
+  "name": "encrypt-value",
+  "version": "2.1.0",
+  "description": "Encrypt and decrypt a property value.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "bin": {
+    "encrypt-value": "./cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zuojiang/encrypt-value.git"
+  },
+  "preferGlobal": true,
+  "keywords": [
+    "crypto",
+    "aes",
+    "properties",
+    "encrypt",
+    "decrypt",
+    "secret",
+    "ciphertext",
+    "value",
+    "key"
+  ],
+  "author": "zuojiang.wang@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zuojiang/encrypt-value/issues"
+  },
+  "homepage": "https://github.com/zuojiang/encrypt-value#readme",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1",
+    "inquirer": "^5.0.1",
+    "normalize-name": "^1.0.1",
+    "optimist": "^0.6.1",
+    "read-pkg-up": "^6.0.0"
+  }
+}
